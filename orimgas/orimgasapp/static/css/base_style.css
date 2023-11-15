@@ -1,0 +1,122 @@
+body{
+    background-color: aliceblue;
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+h1{
+    margin: 1rem;
+    padding: 0.3rem;
+    padding-left: 1rem;
+    float: center
+}
+h1{
+    text-decoration: none;
+    font-family: sans-serif;
+    font-size: 2rem;
+    color: #252525;
+}
+header, footer{
+    padding: 0;
+    margin: 0;
+    background-color: #01017a;
+    color: white;
+}
+footer{
+    padding: 0;
+    margin-top: auto;
+    background-color: #01017a;
+    color: white;
+    text-align: center;
+}
+footer p{
+    margin-top: auto;
+    padding: 0.5rem;
+    float: bottom;
+    text-align: center;
+    text-shadow: #252525;
+
+}
+
+ul.nav{
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+}
+ul.nav li{
+    float: left;
+    margin: 1rem;
+    padding: 0.2rem;
+
+}
+header a{
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: sans-serif;
+}
+header a:hover{
+    color: rgb(61, 61, 61);
+}
+
+ul.list{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(204, 204, 204);
+}
+ul.list li{
+    margin-left: 1rem;
+    padding: 0.2rem;
+    text-decoration: none;
+    list-style:georgian;
+    list-style-type: none;
+    border-bottom: 1px solid #01017a;
+    box-shadow: 1px 1px 1px #25252588;
+}
+ul.list li a{
+    color: black;
+    text-decoration: none;
+    font-size: 1rem;
+    font-family: sans-serif;
+}
+ul.list li a:hover{
+    color: rgb(61, 61, 61);
+}
+div.form{
+    margin-left: 1rem;
+    padding: 0.2rem;
+    text-decoration: none;
+    list-style:georgian;
+    list-style-type: none;
+}
+div.form p{
+    margin-left: 1rem;
+    padding: 0.2rem;
+    width: fit-content;
+    text-decoration: none;
+    list-style:georgian;
+    list-style-type: none;
+}
+div.form label{
+    margin-left: 0;
+    padding: 0;
+    min-width: 500px;
+    width: fit-content;
+    text-decoration: none;
+    list-style:georgian;
+    list-style-type: none;
+}
+div.form input{
+    margin-left: 1rem;
+    padding: 0.2rem;
+    text-decoration: none;
+    list-style:georgian;
+    list-style-type: none;
+}
+

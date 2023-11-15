@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+<title>{% block title %}Meniu {{ block.super }}{% endblock title %}</title>
+{% block content %}
+    <h1>Meniu</h1>
+    <ul class="list">
+        {% if user.is_authenticated %}
+        <li>
+            <a href= "{% url 'user_instructions' %}">Mano instrukcijos</a>
+        </li>
+        <li>
+            <a href= "{% url 'user_edit' user.id %}">Redaguoti mano vartotoja</a>
+        </li>
+        {% endif %}
+        {% if user.is_supervisor %}<li>
+            <a href= "{% url 'user_add' %}">Sukurti naują vartotoja</a>
+        </li>
+        <li>
+            <a>Mano kompanijos vartotojai</a>
+        </li>
+        {% endif %}
+        {% if user.is_superuser %}
+        <li>
+            <a href="{% url 'admin:index' %}">Admin</a>
+        </li>
+        {% endif %}
+    </ul>
+ {% endblock content %} 

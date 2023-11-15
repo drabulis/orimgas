@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+<title>{% block title %}{{ user.get_full_name }} detail{% endblock title %}</title>
+{% block content %}
+    <h1>User detail</h1>
+    <ul class="list">
+        <li><b>First name:</b> {{ user.first_name }}</li>
+        <li><b>Last name:</b> {{ user.last_name }}</li>
+        <li><b>Email:</b> {{ user.email }}</li>
+        <li><b>Company:</b> {{ user.company }}</li>
+        <li><b>Position:</b> {{ user.position }}</li>
+        <li><b>Instructions:</b> {{ user.instructions }}</li>
+
+    </ul>
+{% endblock content %}

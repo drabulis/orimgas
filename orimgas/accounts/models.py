@@ -1,5 +1,6 @@
 from typing import Any
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import UserManager,AbstractBaseUser, PermissionsMixin
 
@@ -53,6 +54,11 @@ class User(AbstractBaseUser, PermissionsMixin):
                                 related_name="users",
                                 blank=True, null=True,
                                 default=None)
+    instructions = models.ManyToManyField("orimgasapp.Instruction",
+                                verbose_name=_("instructions"),
+                                related_name="users",
+                                blank=True,
+                                default=None)
     
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -67,6 +73,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    def get_absolute_url(self):
+        return reverse("library/userdetail/<int:pk>", kwargs={"pk": self.pk})
+    
 
     def __str__(self):
         return self.email

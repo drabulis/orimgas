@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}User instructions{{ block.super }}{% endblock title %}
+{% block content %}
+    <h1>User instructions</h1>
+    <ul class="list">
+        {% for instruction in user.instructions.all %}
+            <li>
+                {{ instruction.name }}
+            </li>
+        {% endfor %}
+    </ul>
+    
+{% endblock content %}

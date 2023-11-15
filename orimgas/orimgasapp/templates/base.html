@@ -1,0 +1,22 @@
+{% load static i18n %}
+<html>
+    <head>
+        <title>{% block title %}Orimgas Workshop{% endblock title %}</title>
+        <link rel="stylesheet" href ={% static "css/base_style.css" %}>
+    </head>
+    <body>
+        <header>
+            <ul class="nav">
+                <li><a href="{% url "menu" %}">Orimgas Meniu</a></li>
+                <li><a href="{% url "user_detail" user.id %}">Mano vartotojas</a></li>
+            </ul>
+        </header>
+
+        {% block content %}
+        {% endblock content %}
+        <footer>
+            <p>Orimgas</p>
+        </footer>
+    </body>
+
+</html>
