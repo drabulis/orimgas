@@ -119,4 +119,42 @@ div.form input{
     list-style:georgian;
     list-style-type: none;
 }
+.users_list{
+    margin-left: 1rem;
+    padding: 0.2rem;
+    text-decoration: none;
+    list-style:georgian;
+    list-style-type: none;
+}
+.user_list th{
+    margin-left: 1rem;
+    padding: 0.2rem;
+    text-decoration: none;
+    list-style:georgian;
+    list-style-type: none;
+    border-bottom: 1px solid #01017a;
+    box-shadow: 1px 1px 1px #25252588;
+    text-align: left;
+    font-size: 1.2rem;
+    font-family: sans-serif;
+
+}
+.user_list td{
+    margin-left: 1rem;
+    padding: 0.2rem;
+    text-decoration: none;
+    list-style:georgian;
+    list-style-type: none;
+}
+.paginator {
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+    margin: 0.25rem;
+    padding: 0.25rem;
+}
+ul.nav li.right {
+    float: right;
+    flex-grow: 1;
+}
 

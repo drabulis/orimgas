@@ -1,0 +1,16 @@
+{% load static %}
+<html>
+    <head>
+        <title>Atsijungėt nuo Orimgas</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/logout_style.css' %}">
+    </head>
+    <body>
+        <h1>Orimgas</h1>
+        <p>Sėkmingai atsijungėte nuo Orimgas.</p>
+        <div>
+            <a href="{% url 'login' %}">Prisijungti</a>
+            <br>
+            <a href="{% url 'password_reset' %}">Pamiršote slaptažodį?</a>
+        </div>
+    </body>
+</html>

@@ -15,7 +15,7 @@
             <a href= "{% url 'user_add' %}">Sukurti naują vartotoja</a>
         </li>
         <li>
-            <a>Mano kompanijos vartotojai</a>
+            <a href= "{% url 'my_company_users' %}">Mano kompanijos vartotojai</a>
         </li>
         {% endif %}
         {% if user.is_superuser %}

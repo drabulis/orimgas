@@ -26,6 +26,10 @@ class Instruction(models.Model):
 
     def __str__(self):
         return f"{self.company} {self.name}"
+    
+    def display_instuctions(self):
+        return ', '.join([instruction.name for instruction in self.instructions.all()])
+    display_instuctions.short_description = _('instructions')
 
 
 class Position(models.Model):
@@ -38,6 +42,10 @@ class Position(models.Model):
 
     def __str__(self):
         return f"{self.company} {self.name}"
+    
+    def display_positions(self):
+        return ', '.join([position.name for position in self.positions.all()])
+    display_positions.short_description = _('positions')
 
 
 class PositionInstruction(models.Model):

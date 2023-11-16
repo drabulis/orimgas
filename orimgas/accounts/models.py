@@ -59,6 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                                 related_name="users",
                                 blank=True,
                                 default=None)
+    photo = models.ImageField("photo", upload_to="users", blank=True, null=True)
     
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True, blank=True, null=True)

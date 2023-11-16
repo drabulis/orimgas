@@ -1,0 +1,26 @@
+{% load static %}
+<html>
+    <head>
+        <title>Prisijungti prie Orimgas</title>
+        <link rel="stylesheet" type="text/css" href="{% static 'css/login_style.css' %}">
+    </head>
+    
+    {% if form.errors %}
+        <p>Jūs turite uzpildyti visus laukus</p>
+    {% endif %}
+    <div class="form-container">
+        <h1>Orimgas</h1>
+        <h3>Prisijungti</h3>
+        <form method="post" action="{% url "login" %}">
+            {% csrf_token %}
+                <label for="username">El. paštas:</label>
+                <input type="text" id="username" name="username" required>
+                <br>
+                <label for="password">Slaptažodis:</label>
+                <input type="password" id="password" name="password" required>
+                <br>
+                <button type="submit">Prisijungti</button>
+                <p><a href="{% url "password_reset" %}">Forgot password?</a></p>
+        </form>
+    </div>
+</html>

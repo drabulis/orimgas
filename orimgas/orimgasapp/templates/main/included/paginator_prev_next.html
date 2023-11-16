@@ -1,0 +1,23 @@
+<div class="pager">
+    {% if page_obj.has_previous %}
+        <a href="{{ request.path }}?query={{ request.GET.query }}&page=1">&laquo;</a>
+        {% if page_obj.previous_page_number != 1 %}
+            <a href="{{ request.path }}?query={{ request.GET.query }}&page={{ page_obj.previous_page_number }}">&lArr;</a>
+        {% endif %}
+    {% endif %}
+    <span class="current">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }} </span>
+    {% if page_obj.has_next %}
+        {% if page_obj.next_page_number != page_obj.paginator.num_pages %}
+            <a href="{{ request.path }}?query={{ request.GET.query }}&page={{ page_obj.next_page_number }}">&rArr;</a>
+        {% endif %}
+        <a href="{{ request.path }}?query={{ request.GET.query }}&page={{ page_obj.paginator.num_pages }}">&raquo;</a>
+    {% endif %}
+</div>
+    {% if search %}
+        <form method="GET" action="{{ request.path }}">
+            <input type="text" name="query" value="{{ request.GET.query }}" placeholder="Ieškoti">
+            <button type="submit">&#128269;</button>
+            <a href="{{ request.path }}">reset</a>
+        </form>
+    {% endif %}
+</div>
