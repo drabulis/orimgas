@@ -2,10 +2,9 @@
 <title>{% block title %}Add user{% endblock title %}</title>
 {% block content %}
     <h1>Add user</h1>
-    <form method="post">
+    <form  method="post" action = {{ request.path }}>
         {% csrf_token %}
-        <div class="form">{{ form.as_p }}
+        {{ form.as_p }}
         <input type="submit" value="Submit">
-        </div>
     </form>
 {% endblock content %}

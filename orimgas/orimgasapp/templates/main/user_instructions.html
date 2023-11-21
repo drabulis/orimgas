@@ -2,12 +2,21 @@
 {% block title %}User instructions{{ block.super }}{% endblock title %}
 {% block content %}
     <h1>User instructions</h1>
-    <ul class="list">
-        {% for instruction in user.instructions.all %}
-            <li>
-                {{ instruction.name }}
-            </li>
-        {% endfor %}
-    </ul>
-    
+    {% if userinstructionsign_list %}
+        <table class="user_list">
+            <tr>
+                <th>Instrukcijos pavadinimas</th>
+                <th>Parašas</th>
+                <th>Pasirašymo data</th>
+                <th>Pakartotinio pasirašymo data</th>
+            </tr>
+            {% for instruction in userinstructionsign_list %}
+                <tr>
+                    <td><a href="{% url 'user_instruction_detail' instruction.id %}">{{ instruction.instruction.name }}</a></td>
+                    <td>{{ instruction.status }}</td>
+                    <td>{{ instruction.date_signed }}</td>
+                    <td>{{ instruction.next_sign }}</td>
+            {% endfor %}
+        </table>
+    {% endif %}
 {% endblock content %}

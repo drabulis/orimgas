@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 <title>{% block title %}Meniu {{ block.super }}{% endblock title %}</title>
 {% block content %}
+    <div class="menu">
     <h1>Meniu</h1>
     <ul class="list">
         {% if user.is_authenticated %}
@@ -24,4 +25,5 @@
         </li>
         {% endif %}
     </ul>
+    </div>
  {% endblock content %} 

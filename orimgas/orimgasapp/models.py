@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
+from datetime import datetime
 
 User = get_user_model()
 
@@ -21,7 +22,7 @@ class Instruction(models.Model):
                                 related_name='instructions'
                                 )
     name = models.CharField(max_length=100)
-    periodity = models.DateField(_("periodicity"), default=None, blank=True, null=True)
+    periodiskumas = models.IntegerField(_("periodicity"),default=0, blank=True, null=True)
     pdf = models.FileField(upload_to='instructions')
 
     def __str__(self):
@@ -48,16 +49,29 @@ class Position(models.Model):
     display_positions.short_description = _('positions')
 
 
-class PositionInstruction(models.Model):
-    position = models.ForeignKey(Position, 
-                                 verbose_name=_("position"), 
-                                 on_delete=models.CASCADE,
-                                 related_name='position_instruction'
-                                 )
-    instruction = models.ManyToManyField(Instruction,
-                                        verbose_name=_("instruction"),
-                                        related_name='position_instruction',
-                                        )
+SIGNATURE_STATUS = (
+    (0, _("not signed")),
+    (1, _("signed")),
+
+)
+
+class UserInstructionSign(models.Model):
+    user = models.ForeignKey(User,
+                            verbose_name=_("user"),
+                            on_delete=models.CASCADE
+                            )
+    instruction = models.ForeignKey(Instruction, 
+                                    verbose_name=_("instruction"), 
+                                    on_delete=models.CASCADE
+                                    )
+    status = models.PositiveSmallIntegerField(
+        _("status"), choices=SIGNATURE_STATUS, default=0
+    )
+    date_signed = models.DateField(_("date signed"), 
+                                   default=None, blank=True, null=True)
+    next_sign = models.DateField(_("next sign"),
+                                 default=None, blank=True, null=True)
+    
 
     def display_instructions(self):
         return ', '.join([instruction.name for instruction in self.instruction.all()])

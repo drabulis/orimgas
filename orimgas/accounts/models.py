@@ -75,9 +75,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    def get_absolute_url(self):
-        return reverse("library/userdetail/<int:pk>", kwargs={"pk": self.pk})
-    
+
 
     def __str__(self):
         return self.email

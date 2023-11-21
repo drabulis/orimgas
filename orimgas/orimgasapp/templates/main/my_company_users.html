@@ -3,31 +3,30 @@
 {% block content %}
     <h1>My company users</h1>
     {% include "main/included/paginator_prev_next.html" %}
-        <table class="user_list">
+    <table class="user_list">
+        <tr>
+            <th>Vardas Pavardė</th>
+            <th>El. paštas</th>
+            <th>Kompanija</th>
+            <th>Pozicija</th>
+            <th>Instrukcijos</th>
+            <th>Perziureti</th>
+            <th>Redaguoti</th>
+        </tr>
+        {% for user_list_obj in paginator.object_list %}
             <tr>
-                    <th>Vardas Pavardė</th>
-                    <th>El. paštas</th>
-                    <th>Kompanija</th>
-                    <th>Pozicija</th>
-                    <th>Instrukcijos</th>
-                    <th>Perziureti</th>
-                    <th>Redaguoti</th>
-                </tr>
-                {% for user_list_obj in paginator.object_list %}
-                {% if user.company == user_list_obj.company %}
-                    <tr>
-                        <td>{{ user_list_obj.get_full_name }}</td>
-                        <td>{{ user_list_obj.email }}</td>
-                        <td>{{ user_list_obj.company.name }}</td>
-                        <td>{{ user_list_obj.position.name }}</td>
-                        <td>{% for instruction in user_list_obj.instructions.all  %}
-                            {{ instruction.name }},
-                            {% endfor %}</td>
+                <td>{{ user_list_obj.get_full_name }}</td>
+                <td>{{ user_list_obj.email }}</td>
+                <td>{{ user_list_obj.company.name }}</td>
+                <td>{{ user_list_obj.position.name }}</td>
+                <td>{% for instruction in user_list_obj.instructions.all  %}
+                    {{ instruction.name }},
+                    {% endfor %}
+                </td>
+                <td><a href="{% url 'user_detail' user_list_obj.id %}">Perziureti vartotoja</a></td>
+                <td><a href="{% url 'supervisor_edit_user' user_list_obj.id %}">&#xf4fe;</a></td>
+            </tr>
+        {% endfor %}
+    </table>
 
-                        <td><a href="{% url 'user_detail' user.id %}">Perziureti vartotoja</a></td>
-                        <td><a href="{% url 'user_edit' user.id %}">&#xf4fe;</a></td>
-                    </li>
-                {% endif %}
-                {% endfor %}
-            </table>
 {% endblock content %}

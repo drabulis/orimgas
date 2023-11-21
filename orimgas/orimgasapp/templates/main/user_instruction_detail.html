@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ instruction.name }}</h1>
+    <a href="{% url 'serve_pdf' instruction.id %}" target="_blank">Skaityti instrukciją</a>
+    <form method="post" id="userInstructionForm">
+        {% csrf_token %}
+        <div class="form">{{ form.as_p }}</div>
+        <input type="checkbox" id="agreeCheckbox" onchange="toggleSubmitButton()">
+        <label for="agreeCheckbox">Su instrukcija susipažinau.</label>
+        <input type="submit" value="Pasirašyti" id="submitButton" disabled>
+    </form>
+    <script>
+        function toggleSubmitButton() {
+            var checkbox = document.getElementById('agreeCheckbox');
+            var submitButton = document.getElementById('submitButton');
+            submitButton.disabled = !checkbox.checked;
+        }
+    </script>
+{% endblock %}
