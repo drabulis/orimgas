@@ -2,6 +2,7 @@ from typing import Any
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.hashers import make_password, is_password_usable
 from django.contrib.auth.models import UserManager,AbstractBaseUser, PermissionsMixin
 
 class CustomUserManager(UserManager):
@@ -10,6 +11,7 @@ class CustomUserManager(UserManager):
             raise ValueError('The given email must be set')
         
         email = self.normalize_email(email)
+        password = make_password(password)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -21,6 +23,7 @@ class CustomUserManager(UserManager):
             raise ValueError('The given email must be set')
         
         email = self.normalize_email(email)
+        password = make_password(password)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -59,7 +62,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                                 related_name="users",
                                 blank=True,
                                 default=None)
-    photo = models.ImageField("photo", upload_to="users", blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
     
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -75,7 +78,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    def save(self, *args, **kwargs):
+        # Hash the password only if it's not already hashed
+        if not self.password or not self.password.startswith(('pbkdf2_sha256$', 'bcrypt', 'argon2')):
+            self.password = make_password(self.password)
 
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.email

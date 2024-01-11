@@ -12,6 +12,7 @@ from . import models, forms
 from django.core.exceptions import PermissionDenied
 
 
+
 class UserMeniuView(LoginRequiredMixin, generic.ListView):
     model = models.User
     template_name = 'main/menu.html'
@@ -99,6 +100,9 @@ class UserEditView(LoginRequiredMixin, generic.UpdateView):
     template_name = 'main/user_edit.html'
     fields = ['email', 'first_name', 'last_name', 'password']
 
+    def get_success_url(self):
+        return reverse_lazy('menu')
+
 
 class MyCompanyUsersView(LoginRequiredMixin, generic.ListView):
     model = models.User
@@ -159,6 +163,9 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
 
     def form_valid(self, form):
         user = form.save(commit=False)
+        password = self.request.POST.get('password')
+        if password:
+            user.set_password(password)
         user.save()
         instructions = form.cleaned_data.get('instructions')
         existing_signs = models.UserInstructionSign.objects.filter(user=user)

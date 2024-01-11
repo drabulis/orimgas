@@ -23,6 +23,12 @@ class AddUserForm(UserCreationForm):
 
 
 class SupervisorEditUserForm(forms.ModelForm):
+    password = forms.CharField(
+    label="Password",
+    strip=False,
+    required=False,
+    widget=forms.PasswordInput(attrs={'placeholder': 'Leave empty if unchanged'}),
+    )
     class Meta:
         model = models.User
         fields = ['email', 'first_name', 'last_name', 'position', 'instructions', 'company', 'password']
@@ -30,6 +36,13 @@ class SupervisorEditUserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['company'].widget = forms.HiddenInput()
+        self.fields['password'].required = False
+        self.fields['password'].widget.attrs['placeholder'] = 'Leave empty if unchanged'
+
+    def clean_password(self):
+        # If the password is not provided, return the original password
+        return self.cleaned_data.get('password', self.instance.password)
+
 
 
 

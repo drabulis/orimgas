@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth.views import LoginView
 from . import views
 
 
@@ -12,4 +13,5 @@ urlpatterns = [
     path('main/user_instructions/<int:pk>_sign/', views.UserInstructionSignUpdateView.as_view(), name='user_instruction_detail'),
     path('serve_pdf/<int:instruction_id>/', views.serve_pdf, name='serve_pdf'),
     path('main/supervisor_edit_user/<int:pk>/', views.SupervisorEditUserView.as_view(), name='supervisor_edit_user'),
+    path('login/', LoginView.as_view(), name='login'),
 ]

@@ -19,8 +19,8 @@
                 <td>{{ user_list_obj.email }}</td>
                 <td>{{ user_list_obj.company.name }}</td>
                 <td>{{ user_list_obj.position.name }}</td>
-                <td>{% for instruction in user_list_obj.instructions.all  %}
-                    {{ instruction.name }},
+                <td>{% for instruction in user_list_obj.userinstructionsign_all  %}
+                    {{ instruction.instruction.name }}-{{ instruction.status }}
                     {% endfor %}
                 </td>
                 <td><a href="{% url 'user_detail' user_list_obj.id %}">Perziureti vartotoja</a></td>
