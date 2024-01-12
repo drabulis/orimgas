@@ -98,7 +98,7 @@ def serve_pdf(request, instruction_id):
 class UserEditView(LoginRequiredMixin, generic.UpdateView):
     model = models.User
     template_name = 'main/user_edit.html'
-    fields = ['email', 'first_name', 'last_name', 'password']
+    form_class = forms.UserEditForm
 
     def get_success_url(self):
         return reverse_lazy('menu')
