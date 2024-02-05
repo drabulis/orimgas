@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-from datetime import datetime
+from datetime import datetime, timedelta
 
 User = get_user_model()
 
@@ -42,7 +42,7 @@ class Position(models.Model):
                                 )
 
     def __str__(self):
-        return f"{self.company} {self.name}"
+        return f"{self.name}"
     
     def display_positions(self):
         return ', '.join([position.name for position in self.positions.all()])
@@ -76,4 +76,15 @@ class UserInstructionSign(models.Model):
     def display_instructions(self):
         return ', '.join([instruction.name for instruction in self.instruction.all()])
     display_instructions.short_description = _('instructions')
+
+    def recreate_if_needed(self):
+        # Recreate UserInstructionSign instance
+        recreated_sign = UserInstructionSign.objects.create(
+            user=self.user,
+            instruction=self.instruction,
+            status=0,
+            date_signed=None,
+            next_sign=None,
+        )
+        return recreated_sign
 

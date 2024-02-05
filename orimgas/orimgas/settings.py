@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = local_settings.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -35,12 +35,19 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'orimgasapp',
     'accounts',
+    'django_cron',
+    'rangefilter',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+]
+
+CRON_CLASSES = [
+    'orimgasapp.cron.RecreateUserInstructionSignsWeeklyCronJob',
+    'orimgasapp.cron.SendReminderEmailsCronJob',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -142,7 +149,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = local_settings.EMAIL_HOST
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

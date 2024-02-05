@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-<title>{% block title %}Meniu {{ block.super }}{% endblock title %}</title>
+<title>{% block title %}Menu {{ block.super }}{% endblock title %}</title>
 {% block content %}
+<h1>{{ user.company }}</h1>
+
+<h2>{{ user.position }} - {{ user.get_full_name }}</h2>
 <div class="menu">
-<h1>{{ user.get_full_name }} - {{ user.company }}</h1>
-<h3>{{ user.company }}</h3>
 <ul >
     {% if user.is_authenticated %}
     <li>

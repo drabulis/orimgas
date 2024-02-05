@@ -22,7 +22,7 @@ class UserMeniuView(LoginRequiredMixin, generic.ListView):
 class UserDetailView(LoginRequiredMixin, generic.DetailView):
     model = models.User
     template_name = 'main/user_detail.html'
-    fields = ['photo', 'first_name', 'last_name', 'email', 'position', 'instructions']
+    fields = ['first_name', 'last_name', 'email', 'position']
 
 
 class AddUserView(LoginRequiredMixin, generic.CreateView):
@@ -38,7 +38,6 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.user = self.request.user
         form.fields['position'].queryset = models.Position.objects.filter(company=self.request.user.company)
         form.fields['instructions'].queryset = models.Instruction.objects.filter(company=self.request.user.company)
         return form
@@ -53,7 +52,6 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 
-
 class UserInstructionSignView(LoginRequiredMixin, generic.ListView):
     model = models.UserInstructionSign
     template_name = 'main/user_instructions.html'
@@ -61,7 +59,7 @@ class UserInstructionSignView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(user=self.request.user)
+        queryset = queryset.filter(user=self.request.user, status=0)
         return queryset
     
 
@@ -73,9 +71,6 @@ class UserInstructionSignUpdateView(LoginRequiredMixin, generic.UpdateView):
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['instruction'] = self.object.instruction
-        context['status'] = 1
-        context['date_signed'] = datetime.now()
-        context['next_sign'] = datetime.now() + timedelta(int(self.object.instruction.periodiskumas))
         return context
 
     def form_valid(self, form):
@@ -102,6 +97,19 @@ class UserEditView(LoginRequiredMixin, generic.UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('menu')
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        password = self.request.POST.get('password')
+
+        # Check if the password field is not empty before updating
+        if password:
+            user.set_password(password)
+
+        user.save()
+
+        return super().form_valid(form)
+
 
 
 class MyCompanyUsersView(LoginRequiredMixin, generic.ListView):
@@ -164,11 +172,13 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
     def form_valid(self, form):
         user = form.save(commit=False)
         password = self.request.POST.get('password')
-        if password:
-            user.set_password(password)
-        user.save()
         instructions = form.cleaned_data.get('instructions')
         existing_signs = models.UserInstructionSign.objects.filter(user=user)
+
+        if password:
+            user.set_password(password)
+
+        user.save()
 
         for instruction in instructions:
             existing_sign = existing_signs.filter(instruction=instruction).first()
@@ -178,6 +188,7 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
                 models.UserInstructionSign.objects.create(
                     user=user,
                     instruction=instruction,
-                 )
+                )
 
         return super().form_valid(form)
+    

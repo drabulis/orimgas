@@ -82,6 +82,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         # Hash the password only if it's not already hashed
         if not self.password or not self.password.startswith(('pbkdf2_sha256$', 'bcrypt', 'argon2')):
             self.password = make_password(self.password)
+        
+        if not self.is_active:
+            # Delete UserInstructionSign instances with status=0
+            self.userinstructionsign_set.filter(status=0).delete()
 
         super().save(*args, **kwargs)
 

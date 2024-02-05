@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <p>Hello {{ user.company.supervisor.first_name }} {{ user.company.supervisor.last_name }},</p>
+    <p>The following users in your company have UserInstructionSign instances with status=0:</p>
+    <ul>
+        {% for u in user.company.users.all %}
+            <li>{{ u.first_name }} {{ u.last_name }} - Instructions: {{ u.userinstructions.filter(status=0).values_list('instruction_name', flat=True)|join:', ' }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

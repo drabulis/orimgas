@@ -1,10 +1,11 @@
 {% extends "base.html" %}
-<title>{% block title %}Edit user {{ block.super }}{% endblock title %}</title>
+<title>{% block title %}Redaguoti {{ block.super }}{% endblock title %}</title>
 {% block content %}
-    <h1>Edit user</h1>
+    <h1>Redaguoti vartotoją</h1>
     <form method="post">
         {% csrf_token %}
-        <div class="form">{{ form.as_p }}</div>
-        <input type="submit" value="Submit">
+            {{ form.as_p }}
+            <button class="button" type="post">Patvirtinti</button>
+            <a class="button" href="{% url "menu" %}">Atgal</a>
     </form>
 {% endblock content %}

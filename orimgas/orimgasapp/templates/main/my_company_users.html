@@ -1,30 +1,30 @@
 {% extends "base.html" %}
-<title>My company users</title>
+{% block title %}Kompanijos vartotojai {{ block.super }}{% endblock title %}
 {% block content %}
-    <h1>My company users</h1>
+    <h1>Kompanijos vartotojai</h1>
     {% include "main/included/paginator_prev_next.html" %}
-    <table class="user_list">
+    <table class="nice-table">
         <tr>
             <th>Vardas Pavardė</th>
+            <th>Gymimo metai</th>
             <th>El. paštas</th>
-            <th>Kompanija</th>
-            <th>Pozicija</th>
-            <th>Instrukcijos</th>
+            <th>Pareigos</th>
+            <th>Aktyvus</th>
             <th>Perziureti</th>
             <th>Redaguoti</th>
         </tr>
         {% for user_list_obj in paginator.object_list %}
             <tr>
                 <td>{{ user_list_obj.get_full_name }}</td>
+                <td>{{ user_list_obj.date_of_birth }}</td>
                 <td>{{ user_list_obj.email }}</td>
-                <td>{{ user_list_obj.company.name }}</td>
                 <td>{{ user_list_obj.position.name }}</td>
-                <td>{% for instruction in user_list_obj.userinstructionsign_all  %}
-                    {{ instruction.instruction.name }}-{{ instruction.status }}
-                    {% endfor %}
+                <td>{% if user_list_obj.is_active %}Aktyvus
+                    {% else %}Neaktyvus
+                    {% endif %}
                 </td>
                 <td><a href="{% url 'user_detail' user_list_obj.id %}">Perziureti vartotoja</a></td>
-                <td><a href="{% url 'supervisor_edit_user' user_list_obj.id %}">&#xf4fe;</a></td>
+                <td><a href="{% url 'supervisor_edit_user' user_list_obj.id %}">Redaguoti</a></td>
             </tr>
         {% endfor %}
     </table>

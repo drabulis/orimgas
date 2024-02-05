@@ -26,14 +26,7 @@
                 <label for="password">Slaptažodis:</label>
                 <input type="password" id="password" name="password" required>
                 <br>
-                <button type="submit">Prisijungti</button>
-                <p><a href="{% url "password_reset" %}">Forgot password?</a></p>
+                <button class="button" type="submit">Prisijungti</button>
+                <p><a href="{% url "password_reset" %}">Pamiršote slaptažodį?</a></p>
         </form>
     </div>
-    {% comment %} {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %} {% endcomment %}

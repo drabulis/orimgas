@@ -1,4 +1,5 @@
 from django.contrib import admin
+from rangefilter.filters import DateRangeFilter
 from . import models
 
 
@@ -19,7 +20,11 @@ class InstructionAdmin(admin.ModelAdmin):
 class UserInstructionSignAdmin(admin.ModelAdmin):
     list_display = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
     search_fields = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
-
+    list_filter = (
+        'status',
+        ('user__company', admin.RelatedOnlyFieldListFilter),
+        ('date_signed', DateRangeFilter),  # Add the DateRangeFilter for the date range selection
+    )
 
 
 admin.site.register(models.Company, CompanyAdmin)
