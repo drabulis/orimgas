@@ -21,7 +21,7 @@ class Command(BaseCommand):
             # Send reminder email to the user
             subject = 'Priminimas: Turite neužbaigtų darbų'
             message = f'Gerbiamas {user.first_name},\n\nKviečiame prisijungti prie jūsų profilio, susipažinti su instrukcijomis.\nPrie profilio prisijungti galite čia: \nPrimename, kad prisijungimo vardas jūsų elektroninis paštas.\n\nPagarbiai,\n„Orimgas“ komanda'
-            send_mail(subject, message, 'orimgas@online.com', [user.email])
+            send_mail(subject, message, 'info@orimgas.online', [user.email])
 
     def send_supervisor_reminder_emails(self):
         supervisor_users = User.objects.filter(is_supervisor=True)
@@ -42,6 +42,6 @@ class Command(BaseCommand):
 
                 message += '\nUžtikrinkite, kad darbuotojai susipažintu su instrukcijom.\n\nPagarbiai,\n„Orimgas“ komanda'
 
-                send_mail(subject, message, 'orimgas@online.com', [supervisor.email])
+                send_mail(subject, message, 'info@orimgas.online', [supervisor.email])
 
         self.stdout.write(self.style.SUCCESS('Reminder emails sent successfully.'))
