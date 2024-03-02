@@ -41,6 +41,11 @@ class CustomUserManager(UserManager):
         extra_fields.setdefault('is_superuser', True)
         return self._create_superuser(email, password, **extra_fields)
     
+MED_PATIKROS_PERIODAS = (
+    (12, _("12 Mėnesių")),
+    (24, _("24 Mėnesių")),
+
+)
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
@@ -62,7 +67,26 @@ class User(AbstractBaseUser, PermissionsMixin):
                                 related_name="users",
                                 blank=True,
                                 default=None)
+    priesgaisrines = models.ManyToManyField("orimgasapp.PriesgiasrinesInstrukcijos",
+                                verbose_name=_("PriesgiasrinesInstrukcijos"),
+                                related_name="users",
+                                blank=True,
+                                default=None)
+    mokymai = models.ManyToManyField("orimgasapp.Mokymai",
+                                verbose_name=_("mokymai"),
+                                related_name="users",
+                                blank=True,
+                                default=None)
+    kiti_dokumentai = models.ManyToManyField("orimgasapp.KitiDokumentai",
+                                verbose_name=_("kiti dokumentai"),
+                                related_name="users",
+                                blank=True,
+                                default=None)
     date_of_birth = models.DateField(blank=True, null=True)
+    med_patikros_data = models.DateField(blank=True, null=True)
+    med_patikros_periodas = models.SmallIntegerField(
+        _('med patikros periodas'), choices=MED_PATIKROS_PERIODAS, default=12)
+    sekanti_med_patikros_data = models.DateField(blank=True, null=True)
     
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True, blank=True, null=True)
