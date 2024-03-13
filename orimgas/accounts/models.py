@@ -1,6 +1,7 @@
 from typing import Any
 from django.db import models
 from django.urls import reverse
+from datetime import timedelta
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.hashers import make_password, is_password_usable
 from django.contrib.auth.models import UserManager,AbstractBaseUser, PermissionsMixin
@@ -110,6 +111,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         if not self.is_active:
             # Delete UserInstructionSign instances with status=0
             self.userinstructionsign_set.filter(status=0).delete()
+            # Delete PriesgaisriniuPasirasymas instances with status=0
+            self.priesgaisriniupasirasymas_set.filter(status=0).delete()
+            # Delete MokymuPasirasymas instances with status=0
+            self.mokymupasirasymas_set.filter(status=0).delete()
+            # Delete KitiDocPasirasymas instances with status=0
+            self.kitudocpasirasymas_set.filter(status=0).delete()
+
 
         super().save(*args, **kwargs)
 

@@ -40,6 +40,9 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
         form = super().get_form(form_class)
         form.fields['position'].queryset = models.Position.objects.filter(company=self.request.user.company)
         form.fields['instructions'].queryset = models.Instruction.objects.filter(company=self.request.user.company)
+        form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
+        form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=self.request.user.company)
+        form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
         return form
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -49,6 +52,16 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
     
     def form_valid(self, form):
         form.instance.company = self.request.user.company
+        med_patikros_data = form.cleaned_data.get('med_patikros_data')
+        med_patikros_periodas = form.cleaned_data.get('med_patikros_periodas')
+
+
+        if med_patikros_data and med_patikros_periodas:
+            if isinstance(med_patikros_periodas, str):
+                med_patikros_periodas = int(med_patikros_periodas)
+            timedelta_periodas = timedelta(days=med_patikros_periodas / 12 * 365)
+            form.instance.sekanti_med_patikros_data = med_patikros_data + timedelta_periodas
+
         return super().form_valid(form)
 
 
@@ -62,6 +75,12 @@ class UserInstructionSignView(LoginRequiredMixin, generic.ListView):
         queryset = queryset.filter(user=self.request.user, status=0)
         return queryset
     
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['priesrines_instrukcijos'] = models.PriesgaisriniuPasirasymas.objects.filter(user=self.request.user, status=0)
+        context['mokymo_instrukcijos'] = models.MokymuPasirasymas.objects.filter(user=self.request.user, status=0)
+        context['kitu_doc'] = models.KituDocPasirasymas.objects.filter(user=self.request.user, status=0)
+        return context
 
 class UserInstructionSignUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = models.UserInstructionSign
@@ -78,6 +97,67 @@ class UserInstructionSignUpdateView(LoginRequiredMixin, generic.UpdateView):
         form.instance.status = 1
         form.instance.date_signed = datetime.now()
         form.instance.next_sign = datetime.now() + timedelta(int(self.object.instruction.periodiskumas))
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('user_instructions')
+
+
+class PriesgaisrinioSignView(LoginRequiredMixin, generic.UpdateView):
+    model = models.PriesgaisriniuPasirasymas
+    form_class = forms.UserInstructionSignForm
+    template_name = 'main/user_instruction_detail.html'
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['instruction'] = self.object.instruction
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.status = 1
+        form.instance.date_signed = datetime.now()
+        form.instance.next_sign = datetime.now() + timedelta(int(self.object.instruction.periodiskumas))
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('user_instructions')
+    
+
+class MokymuSignView(LoginRequiredMixin, generic.UpdateView):
+    model = models.MokymuPasirasymas
+    form_class = forms.UserInstructionSignForm
+    template_name = 'main/user_instruction_detail.html'
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['instruction'] = self.object.instruction
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.status = 1
+        form.instance.date_signed = datetime.now()
+        form.instance.next_sign = datetime.now() + timedelta(int(self.object.instruction.periodiskumas))
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('user_instructions')
+    
+
+class KituDocSignView(LoginRequiredMixin, generic.UpdateView):
+    model = models.KituDocPasirasymas
+    form_class = forms.UserInstructionSignForm
+    template_name = 'main/user_instruction_detail.html'
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['instruction'] = self.object.instruction
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.status = 1
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -143,6 +223,139 @@ class MyCompanyUsersView(LoginRequiredMixin, generic.ListView):
         return queryset
 
 
+class DarbuSaugosZurnalas(LoginRequiredMixin, generic.ListView):
+    model = models.UserInstructionSign
+    template_name ='main/darbu_saugos_zurnalas.html'
+    paginate_by = 10
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_supervisor:
+            raise PermissionDenied("You do not have permission to access this view.")
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search"] = True
+        return context
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        company = self.request.user.company
+        queryset = queryset.filter(user__company=company)
+        
+        query = self.request.GET.get('query')
+        if query:
+            queryset = queryset.filter(
+                Q(user__position__name__icontains=query) |
+                Q(user__email__icontains=query) |
+                Q(user__first_name__icontains=query) |
+                Q(user__last_name__icontains=query)
+            )
+        print("Queryset:", queryset)  
+        return queryset
+
+
+class MokymuZurnalas(LoginRequiredMixin, generic.ListView):
+    model = models.MokymuPasirasymas
+    template_name ='main/mokymu_zurnalas.html'
+    paginate_by = 10
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_supervisor:
+            raise PermissionDenied("You do not have permission to access this view.")
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search"] = True
+        return context
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        company = self.request.user.company
+        queryset = queryset.filter(user__company=company)
+        
+        query = self.request.GET.get('query')
+        if query:
+            queryset = queryset.filter(
+                Q(user__position__name__icontains=query) |
+                Q(user__email__icontains=query) |
+                Q(user__first_name__icontains=query) |
+                Q(user__last_name__icontains=query)
+            )
+        print("Queryset:", queryset)  
+        return queryset
+    
+
+class KituDocZurnalas(LoginRequiredMixin, generic.ListView):
+    model = models.KituDocPasirasymas
+    template_name ='main/kitu_doc_zurnalas.html'
+    paginate_by = 10
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_supervisor:
+            raise PermissionDenied("You do not have permission to access this view.")
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search"] = True
+        return context
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        company = self.request.user.company
+        queryset = queryset.filter(user__company=company)
+        
+        query = self.request.GET.get('query')
+        if query:
+            queryset = queryset.filter(
+                Q(user__position__name__icontains=query) |
+                Q(user__email__icontains=query) |
+                Q(user__first_name__icontains=query) |
+                Q(user__last_name__icontains=query)
+            )
+        print("Queryset:", queryset)  
+        return queryset
+    
+
+class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
+    model = models.PriesgaisriniuPasirasymas
+    template_name ='main/priesgaisrines_saugos_zurnalas.html'
+    paginate_by = 10
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_supervisor:
+            raise PermissionDenied("You do not have permission to access this view.")
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search"] = True
+        return context
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        company = self.request.user.company
+        queryset = queryset.filter(user__company=company)
+        
+        query = self.request.GET.get('query')
+        if query:
+            queryset = queryset.filter(
+                Q(user__position__name__icontains=query) |
+                Q(user__email__icontains=query) |
+                Q(user__first_name__icontains=query) |
+                Q(user__last_name__icontains=query)
+            )
+        
+        return queryset
+    
+
+class SveikatosTikrinimoGrafikas(LoginRequiredMixin, generic.ListView):
+    model = models.User
+    template_name ='main/sveikatos_tikrinimo_grafikas.html'
+
+
 class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
     model = models.User
     form_class = forms.SupervisorEditUserForm
@@ -153,6 +366,9 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         form.user = self.request.user
         form.fields['position'].queryset = models.Position.objects.filter(company=self.request.user.company)
         form.fields['instructions'].queryset = models.Instruction.objects.filter(company=self.request.user.company)
+        form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=self.request.user.company)
+        form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
+        form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
         return form
 
     def dispatch(self, request, *args, **kwargs):
@@ -173,10 +389,24 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         user = form.save(commit=False)
         password = self.request.POST.get('password')
         instructions = form.cleaned_data.get('instructions')
+        priesgaisrines = form.cleaned_data.get('priesgaisrines')
+        mokymai = form.cleaned_data.get('mokymai')
+        kitidokumentai = form.cleaned_data.get('kiti_dokumentai')
+        med_patikros_data = form.cleaned_data.get('med_patikros_data')
+        med_patikros_periodas = form.cleaned_data.get('med_patikros_periodas')
+        priesgaisrinesinstrukcijospasirasymai = models.PriesgaisriniuPasirasymas.objects.filter(user=user)
+        mokymaipasirasymai = models.MokymuPasirasymas.objects.filter(user=user)
+        kitidokumentaipasirasymai = models.KituDocPasirasymas.objects.filter(user=user)      
         existing_signs = models.UserInstructionSign.objects.filter(user=user)
 
         if password:
             user.set_password(password)
+
+        if med_patikros_data and med_patikros_periodas:
+            if isinstance(med_patikros_periodas, str):
+                med_patikros_periodas = int(med_patikros_periodas)
+            timedelta_periodas = timedelta(days=med_patikros_periodas / 12 * 365)
+            user.sekanti_med_patikros_data = med_patikros_data + timedelta_periodas
 
         user.save()
 
@@ -186,6 +416,36 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
                 existing_sign.save()
             else:
                 models.UserInstructionSign.objects.create(
+                    user=user,
+                    instruction=instruction,
+                )
+
+        for instruction in priesgaisrines:
+            existing_sign = priesgaisrinesinstrukcijospasirasymai.filter(instruction=instruction).first()
+            if existing_sign:
+                existing_sign.save()
+            else:
+                models.PriesgaisriniuPasirasymas.objects.create(
+                    user=user,
+                    instruction=instruction,
+                )
+
+        for instruction in mokymai:
+            existing_sign = mokymaipasirasymai.filter(instruction=instruction).first()
+            if existing_sign:
+                existing_sign.save()
+            else:
+                models.MokymuPasirasymas.objects.create(
+                    user=user,
+                    instruction=instruction,
+                )
+
+        for instruction in kitidokumentai:
+            existing_sign = kitidokumentaipasirasymai.filter(instruction=instruction).first()
+            if existing_sign:
+                existing_sign.save()
+            else:
+                models.KituDocPasirasymas.objects.create(
                     user=user,
                     instruction=instruction,
                 )

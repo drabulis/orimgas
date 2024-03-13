@@ -8,6 +8,7 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = (
         'company',
         'position',
+        'is_active',
     )
 
 admin.site.register(models.User, UserAdmin)

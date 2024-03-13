@@ -11,14 +11,29 @@
         <a href= "{% url 'user_instructions' %}">Mano instrukcijos</a>
     </li>
     <li>
-        <a href= "{% url 'user_edit' user.id %}">Redaguoti mano vartotoja</a>
-    </li>
+        <a href= "{% url 'user_edit' user.id %}">Redaguoti mano vartotoją</a>
+    </li>  
     {% endif %}
     {% if user.is_supervisor %}<li>
-        <a href= "{% url 'user_add' %}">Sukurti naują vartotoja</a>
+        <a href= "{% url 'user_add' %}">Sukurti naują vartotoją</a>
     </li>
     <li>
         <a href= "{% url 'my_company_users' %}">Mano kompanijos vartotojai</a>
+    </li>
+    <li>
+        <a href= "{% url 'darbu_saugos_zurnalas' %}">Darbu saugos instruktavimo registras</a>
+    </li>
+    <li>
+        <a href= "{% url 'priesgaisrinės_saugos_zurnalas' %}">Priesgaisrines saugos žurnalas</a>
+    </li>
+    <li>
+        <a href= "{% url 'mokymu_zurnalas' %}">Neformalus mokymas</a>
+    </li>
+    <li>
+        <a href= "{% url 'kitu_doc_zurnalas' %}">Kiti dokumentai</a>
+    </li>
+    <li>
+        <a href= "{% url 'sveikatos_tikrinimo_grafikas' %}">Darbuotojų sveikatos tikrinimo grafikas</a>
     </li>
     {% endif %}
     {% if user.is_superuser %}

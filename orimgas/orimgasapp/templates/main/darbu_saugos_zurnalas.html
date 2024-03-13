@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Priešgaisrinės saugos žurnalas{% endblock title %}
+{% block content %}
+<h1>Darbuotojų saugos ir sveikatos instruktavimų darbo vietoje registras</h1>
+
+<form method="GET" action="{% url 'darbu_saugos_zurnalas' %}">
+    <input type="text" name="query" placeholder="Search...">
+    <button type="submit">Search</button>
+</form>
+
+{% if object_list %}
+    <table class="nice-table">
+        <tr>
+            <th>Vartotojas</th>
+            <th>Instrukcija</th>
+            <th>Pasirašymas</th>
+            <th>Pasirašymo data</th>
+            <th>Kito pasirašymo data</th>
+        </tr>
+        {% for pasirasymas in object_list %}
+            <tr>
+                <td>{{ pasirasymas.user.get_full_name }}</td>
+                {% if pasirasymas.instruction.name %}
+                    <td>{{ pasirasymas.instruction.name }}</td>
+                    {% else %}
+                    <td>{{ pasirasymas.instruction.pavadinimas }}</td>
+                {% endif %}
+                <td>{{ pasirasymas.get_status_display }}</td>
+                <td>{{ pasirasymas.date_signed|default:"Nepasirašyta" }}</td>
+                <td>{{ pasirasymas.next_sign|default:"Nepatikslinta" }}</td>
+            </tr>
+
+        {% endfor %}
+
+{% else %}
+    <p>Darbų saugos žurnale įrašų nerasta.</p>
+{% endif %}
+
+{% endblock content %}

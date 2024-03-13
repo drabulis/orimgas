@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Priešgaisrinės saugos žurnalas{% endblock title %}
+{% block content %}
+<h1>Darbuotojų saugos ir sveikatos instruktavimų darbo vietoje registras</h1>
+
+<form method="GET" action="{% url 'sveikatos_tikrinimo_grafikas' %}">
+    <input type="text" name="query" placeholder="Search...">
+    <button type="submit">Search</button>
+</form>
+
+{% if object_list %}
+    <table class="nice-table">
+        <tr>
+            <th>Vartotojas</th>
+            <th>Sveikatos tikrinimo data</th>
+            <th>Sveikatos tikrinimo periodiškumas</th>
+            <th>Sekanti sveikatos tikrinimo data</th>
+        </tr>
+        {% for vartotojas in object_list %}
+            <tr>
+                <td>{{ vartotojas.get_full_name }}</td>
+                <td>{{ vartotojas.med_patikros_data }}</td>
+                <td>{{ vartotojas.med_patikros_periodas }}</td>
+                <td>{{ vartotojas.sekanti_med_patikros_data }}</td>
+            </tr>
+        {% endfor %}
+
+{% else %}
+    <p>Darbų saugos žurnale įrašų nerasta.</p>
+{% endif %}
+
+{% endblock content %}

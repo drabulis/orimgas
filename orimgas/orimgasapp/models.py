@@ -131,8 +131,8 @@ class Position(models.Model):
 
 
 SIGNATURE_STATUS = (
-    (0, _("not signed")),
-    (1, _("signed")),
+    (0, _("Nepasirašyta")),
+    (1, _("Pasirašyta")),
 
 )
 

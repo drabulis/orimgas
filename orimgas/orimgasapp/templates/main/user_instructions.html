@@ -1,21 +1,75 @@
 {% extends "base.html" %}
 {% block title %}Vartotojo instrukcijos {{ block.super }}{% endblock title %}
 {% block content %}
-    <h1>Vartotojo Instrukcijos</h1>
+    <h1>Darbų saugos instrukcijos</h1>
     {% if userinstructionsign_list %}
         <table class="nice-table">
             <tr>
                 <th>Instrukcijos pavadinimas</th>
-                <th>Peržiurėti</th>
+                <th>Peržiūrėti</th>
             </tr>
             {% for instruction in userinstructionsign_list %}
                 <tr>
                     <td>{{ instruction.instruction.name }}</td>
-
-                    <td><a href="{% url 'user_instruction_detail' instruction.id %}">Skaityti/Pasirašyti</a></td> 
+                    <td><a href="{% url 'user_instruction_detail' instruction.id %}">Skaityti/Pasirašyti</a></td>
+                </tr>
             {% endfor %}
         </table>
     {% else %}
-        <p>Šiuo metu darbų nėra.</p>
+        <p>Šiuo metu darbų saugos instrukcijų neturite.</p>
+    {% endif %}
+    
+    <h1>Priešgaisrinės instrukcijos</h1>
+    {% if priesrines_instrukcijos %}
+        <table class="nice-table">
+            <tr>
+                <th>Instrukcijos pavadinimas</th>
+                <th>Peržiūrėti</th>
+            </tr>
+            {% for priesgaisrine in priesrines_instrukcijos %}
+                <tr>
+                    <td>{{ priesgaisrine.instruction.pavadinimas }}</td>
+                    <td><a href="{% url 'priesgaisrinis_sign' priesgaisrine.id %}">Skaityti/Pasirašyti</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Šiuo metu priešgaisrinės instrukcijos neturite.</p>
+    {% endif %}
+    
+    <h1>Mokymai</h1>
+    {% if mokymo_instrukcijos %}
+        <table class="nice-table">
+            <tr>
+                <th>Instrukcijos pavadinimas</th>
+                <th>Peržiūrėti</th>
+            </tr>
+            {% for mokymas in mokymo_instrukcijos %}
+                <tr>
+                    <td>{{ mokymas.instruction.pavadinimas }}</td>
+                    <td><a href="{% url 'mokymu_sign' mokymas.id %}">Skaityti/Pasirašyti</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Šiuo metu mokymų neturite.</p>
+    {% endif %}
+    
+    <h1>Kiti dokumentai</h1>
+    {% if kitu_doc %}
+        <table class="nice-table">
+            <tr>
+                <th>Dokumento pavadinimas</th>
+                <th>Peržiūrėti</th>
+            </tr>
+            {% for kito_dokumento_pasirasymas in kitu_doc %}
+                <tr>
+                    <td>{{ kito_dokumento_pasirasymas.instruction.pavadinimas }}</td>
+                    <td><a href="{% url 'kitu_doc_sign' kito_dokumento_pasirasymas.id %}">Skaityti/Pasirašyti</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Šiuo metu kiti dokumentai neturite.</p>
     {% endif %}
 {% endblock content %}
