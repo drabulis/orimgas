@@ -1,17 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Kitų dokumentų registras{% endblock title %}
+{% block title %}Civilinės saugos žurnalas{% endblock title %}
 {% block content %}
-<h1>Kitų dokumentų registras</h1>
+<h1>Civilinės saugos instruktavimų registracijos žurnalas</h1>
 {% include "main/included/paginator_prev_next.html" %}
 <br><br>
 {% if object_list %}
     <table class="nice-table">
         <tr>
-            <th>Vardas ir Pavardė</th>
-            <th>Darbuotojo pareigos</th>
-            <th>Dokumento pavadinimas</th>
-            <th>Pasirašymas</th>
-            <th>Supažindinimo data</th>
+            <th>Instruktuojamojo vardas ir pavardė</th>
+            <th>Instruktuojamojo pareigos</th>
+            <th>Instrukcijos Nr.</th>
+            <th>Instruktavimo pavadinimas</th>
+            <th>Instruktuojamojo parašas</th>
+            <th>Pasirašymo data</th>
+            <th>Sekančio pasirašymo data</th>
         </tr>
         {% for pasirasymas in object_list %}
             <tr>
@@ -22,14 +24,18 @@
                     {% else %}
                     <td>{{ pasirasymas.instruction.pavadinimas }}</td>
                 {% endif %}
+                <td>{% if pasirasymas.instruktavimo_tipas == 0 %}Įvadinis
+                    {% else %}Periodinis{% endif %}
+                </td>
                 <td>{{ pasirasymas.get_status_display }}</td>
                 <td>{{ pasirasymas.date_signed|default:"Nepasirašyta" }}</td>
+                <td>{{ pasirasymas.next_sign|default:"Nepatikslinta" }}</td>
             </tr>
 
         {% endfor %}
 
 {% else %}
-    <p style="text-align: center;">Kitų dokumentų žurnale įrašų nerasta.</p>
+    <p>Darbų saugos žurnale įrašų nerasta.</p>
 {% endif %}
 
 {% endblock content %}

@@ -1,23 +1,25 @@
 {% load static i18n %}
 <html>
-    <head>
-        <title>{% block title %}Orimgas Workshop{% endblock title %}</title>
-        <link rel="stylesheet" href ={% static "css/base_style.css" %}>
-    </head>
-    <body>
-        <header>
-            <ul class="nav">
-                <li><a href="{% url "menu" %}">Orimgas Meniu</a></li>
-                <li><a href="{% url "user_detail" user.id %}">Mano vartotojas</a></li>
-                <li class="right"><a href="{% url "logout" %}">Atsijungti</a></li>
-            </ul>
-        </header>
-
+<head>
+    <title>{% block title %}Orimgas {% endblock title %}</title>
+    <link rel="stylesheet" href="{% static "css/base_style.css" %}">
+</head>
+<body>
+    <header>
+        <ul class="nav">
+            <li><a href="{% url "menu" %}">Orimgas Meniu</a></li>
+            <li><a href="{% url "user_detail" user.uuid %}">Mano vartotojas</a></li>
+            <li class="right"><a href="{% url "logout" %}">Atsijungti</a></li>
+        </ul>
+    </header>
+    
+    <div class="content">
         {% block content %}
         {% endblock content %}
-        <footer>
-            <p>Orimgas</p>
-        </footer>
+    </div>
 
-    </body>
+    <footer>
+        <p>Orimgas</p>
+    </footer>
+</body>
 </html>

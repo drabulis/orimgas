@@ -13,6 +13,7 @@
         <a href="{{ request.path }}?query={{ request.GET.query }}&page={{ page_obj.paginator.num_pages }}">&raquo;</a>
     {% endif %}
 </div>
+<div>
     {% if search %}
         <form method="GET" action="{{ request.path }}">
             <input type="text" name="query" value="{{ request.GET.query }}" placeholder="Ieškoti">

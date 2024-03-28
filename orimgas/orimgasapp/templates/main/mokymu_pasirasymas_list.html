@@ -1,17 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Kitų dokumentų registras{% endblock title %}
+{% block title %}Mokymo protokolas{% endblock title %}
 {% block content %}
-<h1>Kitų dokumentų registras</h1>
+<h1>Atestavimo protokolas</h1>
 {% include "main/included/paginator_prev_next.html" %}
 <br><br>
 {% if object_list %}
     <table class="nice-table">
         <tr>
             <th>Vardas ir Pavardė</th>
-            <th>Darbuotojo pareigos</th>
-            <th>Dokumento pavadinimas</th>
-            <th>Pasirašymas</th>
-            <th>Supažindinimo data</th>
+            <th>Pareigos</th>
+            <th>Mokymo programa</th>
+            <th>Vertinimo rezultatas</th>
+            <th>Pasirašymo data</th>
+            <th>Sekančio pasirašymo data</th>
         </tr>
         {% for pasirasymas in object_list %}
             <tr>
@@ -22,14 +23,19 @@
                     {% else %}
                     <td>{{ pasirasymas.instruction.pavadinimas }}</td>
                 {% endif %}
-                <td>{{ pasirasymas.get_status_display }}</td>
+                <td>
+                    {% if pasirasymas.status == 0 %}Neįskaityta
+                    {% else %}Įskaityta
+                    {% endif %}
+                </td>
                 <td>{{ pasirasymas.date_signed|default:"Nepasirašyta" }}</td>
+                <td>{{ pasirasymas.next_sign|default:"Nepatikslinta" }}</td>
             </tr>
 
         {% endfor %}
 
 {% else %}
-    <p style="text-align: center;">Kitų dokumentų žurnale įrašų nerasta.</p>
+    <p style="text-align: center;">Mokymų žurnale įrašų nerasta.</p>
 {% endif %}
 
 {% endblock content %}

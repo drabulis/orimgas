@@ -3,6 +3,7 @@
 {% block content %}
     <h1>Kompanijos vartotojai</h1>
     {% include "main/included/paginator_prev_next.html" %}
+    <br><br>
     <table class="nice-table">
         <tr>
             <th>Vardas Pavardė</th>
@@ -23,8 +24,8 @@
                     {% else %}Neaktyvus
                     {% endif %}
                 </td>
-                <td><a href="{% url 'user_detail' user_list_obj.id %}">Perziureti vartotoja</a></td>
-                <td><a href="{% url 'supervisor_edit_user' user_list_obj.id %}">Redaguoti</a></td>
+                <td><a href="{% url 'user_detail' user_list_obj.uuid %}">Perziureti vartotoja</a></td>
+                <td><a href="{% url 'supervisor_edit_user' user_list_obj.uuid %}">Redaguoti</a></td>
             </tr>
         {% endfor %}
     </table>

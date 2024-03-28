@@ -1,11 +1,51 @@
 {% extends "base.html" %}
-{% block title %}Edit {{ block.super }}{% endblock title %}
+{% block title %}{{ block.super }}Redaguoti {{ user.get_full_name }} {% endblock title %}
 {% block content %}
-    <h1>Pakeisti vartotoją</h1>
-    <form method="post">
+    <h1>Redaguoti vartotoją</h1>
+    <form method="POST">
         {% csrf_token %}
-            {{ form.as_p }}
-            <button class="button" type="post">Patvirtinti</button>
-            <a class="button" href="{% url "my_company_users" %}">Atgal</a>
-    </form>
+        <div class="row-container">
+            <div class="collumn">
+                <label for="id_first_name">Vardas:</label>
+                {{ form.first_name }}
+                <label for="id_last_name">Pavardė:</label>
+                {{ form.last_name }}
+                <label for="id_email">El. Paštas:</label>
+                {{ form.email }}
+                <label for="id_date_of_birth">Gymimo Data:</label>
+                {{ form.date_of_birth }}
+                <label for="id_position">Pareigos:</label>
+                {{ form.position }}
+                <br><br>
+                <label for="id_password">Slaptažodis:</label>
+                {{ form.password }}
+                <label for="is_active">Aktyvus:</label>
+                {{ form.is_active }}
+            </div>
+            <div class="collumn">
+                <label for="id_instructions">Darbų Saugos Instrukcijos:</label>
+                {{ form.instructions }}
+                <label for="id_priesgaisrines">Priesgaisrinės Instrukcijos:</label>
+                {{ form.priesgaisrines }}
+                <label for="id_civiline_sauga">Civiline Saugos Instrukcijos:</label>
+                {{ form.civiline_sauga }}
+            </div>
+            <div class="collumn">
+                <label for="id_mokymai">Mokymai:</label>
+                {{ form.mokymai }}
+            </div>
+            <div class="collumn">
+                <label for="id_kiti_dokumentai">Kiti Dokumentai:</label>
+                {{ form.kiti_dokumentai }}
+            </div>
+            <div class="collumn">
+                <label for="id_med_patikros_data">Med Patikros Data:</label>
+                {{ form.med_patikros_data }}
+                <label for="id_med_patikros_periodas">Med Patikros Periodas:</label>
+                {{ form.med_patikros_periodas }}
+            </div>
+        </div>
+        <button class="button" type="post">Patvirtinti</button>
+        <a class="button" href="{% url "my_company_users" %}">Atgal</a>
+    </form><br><br><br><br>
 {% endblock content %}

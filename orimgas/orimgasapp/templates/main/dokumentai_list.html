@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Vartotojo instrukcijos {{ block.super }}{% endblock title %}
+{% block title %}Dokumetai {{ block.super }}{% endblock title %}
 {% block content %}
     <h1>Darbų saugos instrukcijos</h1>
-    {% if userinstructionsign_list %}
+    {% if dokumentai %}
         <table class="nice-table">
             <tr>
                 <th>Instrukcijos pavadinimas</th>
                 <th>Peržiūrėti</th>
             </tr>
-            {% for instruction in userinstructionsign_list %}
+            {% for instruction in dokumentai %}
                 <tr>
-                    <td>{{ instruction.instruction.name }}</td>
-                    <td><a href="{% url 'user_instruction_detail' instruction.uuid %}">Skaityti/Pasirašyti</a></td>
+                    <td>{{ instruction.name }}</td>
+                    <td><a href="{% url 'darbu_sagos_detail' instruction.uuid %}">Skaityti/Pasirašyti</a></td>
                 </tr>
             {% endfor %}
         </table>
@@ -28,8 +28,8 @@
             </tr>
             {% for priesgaisrine in priesrines_instrukcijos %}
                 <tr>
-                    <td>{{ priesgaisrine.instruction.pavadinimas }}</td>
-                    <td><a href="{% url 'priesgaisrinis_sign' priesgaisrine.uuid %}">Skaityti/Pasirašyti</a></td>
+                    <td>{{ priesgaisrine.pavadinimas }}</td>
+                    <td><a href="{% url 'priesgaisrinio_detail' priesgaisrine.uuid %}">Skaityti/Pasirašyti</a></td>
                 </tr>
             {% endfor %}
         </table>
@@ -45,8 +45,8 @@
             </tr>
             {% for instruction in civiline_sauga %}
                 <tr>
-                    <td>{{ instruction.instruction.pavadinimas }}</td>
-                    <td><a href="{% url 'civiline_sauga_sign' instruction.uuid %}">Skaityti/Pasirašyti</a></td>
+                    <td>{{ instruction.pavadinimas }}</td>
+                    <td><a href="{% url 'civiline_sauga_detail' instruction.uuid %}">Skaityti/Pasirašyti</a></td>
                 </tr>
             {% endfor %}
         </table>
@@ -62,8 +62,8 @@
             </tr>
             {% for mokymas in mokymo_instrukcijos %}
                 <tr>
-                    <td>{{ mokymas.instruction.pavadinimas }}</td>
-                    <td><a href="{% url 'mokymu_sign' mokymas.uuid %}">Skaityti/Pasirašyti</a></td>
+                    <td>{{ mokymas.pavadinimas }}</td>
+                    <td><a href="{% url 'mokymu_detail' mokymas.uuid %}">Skaityti/Pasirašyti</a></td>
                 </tr>
             {% endfor %}
         </table>
@@ -80,8 +80,8 @@
             </tr>
             {% for kito_dokumento_pasirasymas in kitu_doc %}
                 <tr>
-                    <td>{{ kito_dokumento_pasirasymas.instruction.pavadinimas }}</td>
-                    <td><a href="{% url 'kitu_doc_sign' kito_dokumento_pasirasymas.uuid %}">Skaityti/Pasirašyti</a></td>
+                    <td>{{ kito_dokumento_pasirasymas.pavadinimas }}</td>
+                    <td><a href="{% url 'kiti_dokumentai_detail' kito_dokumento_pasirasymas.uuid %}">Skaityti/Pasirašyti</a></td>
                 </tr>
             {% endfor %}
         </table>

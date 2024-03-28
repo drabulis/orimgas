@@ -39,11 +39,8 @@
     </style>
 </head>
 <h1>{{ instruction.name }}</h1>
-<iframe src="{{ instruction.pdf.url }}" width="100%" height="600px" frameborder="0"></iframe>
 <form method="post" id="userInstructionForm">
-    <div style="width: 100%; height: 600px; overflow: auto;">
-        <embed src="data:application/pdf;base64,{{ instruction.pdf }}" width="100%" height="100%" type="application/pdf" />
-    </div>>
+    {{ form.render_pdf }}
     {% csrf_token %}
     <div class="form">{{ form.as_p }}</div>
     <div class="form-group">
@@ -52,6 +49,7 @@
     </div>
     <input class="button" type="submit" value="Pasirašyti" id="submitButton" disabled>
 </form>
+<br><br><br><br>
 <script>
     function toggleSubmitButton() {
         var checkbox = document.getElementById('agreeCheckbox');

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ object.name }} {{ block.super }}{% endblock title %}
+{% block content %}
+<h1>{{ object.name }}</h1>
+<form method="post" id="userInstructionForm">
+    {{ form.render_pdf }}
+    {% csrf_token %}
+    <br><br>
+    <a class="button" style="justify-content: center" href="{% url "dokumentai_list" %}">Atgal</a>
+</form>
+<br><br><br><br>
+{% endblock %}

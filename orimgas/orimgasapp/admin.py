@@ -28,6 +28,14 @@ class PriesrinesInstrukcijosAdmin(admin.ModelAdmin):
         'imone',
     )
 
+
+class CivilineSaugaAdmin(admin.ModelAdmin):
+    list_display = ('pavadinimas', 'imone')
+    search_fields = ('pavadinimas', 'imone')
+    list_filter = (
+        'imone',
+    )
+
 class MokymaiAdmin(admin.ModelAdmin):
     list_display = ('pavadinimas', 'imone')
     search_fields = ('pavadinimas', 'imone')
@@ -52,6 +60,15 @@ class UserInstructionSignAdmin(admin.ModelAdmin):
     )
 
 class KituDocPasirasymasAdmin(admin.ModelAdmin):
+    list_display = ('user', 'instruction', 'status', 'date_signed', 'next_sign',)
+    search_fields = ('user', 'instruction', 'status', 'date_signed', 'next_sign',)
+    list_filter = (
+        'status',
+        ('user__company', admin.RelatedOnlyFieldListFilter),
+        ('date_signed', DateRangeFilter),
+    )
+
+class PriesgaisriniuPasirasymasAdmin(admin.ModelAdmin):
     list_display = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
     search_fields = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
     list_filter = (
@@ -60,7 +77,8 @@ class KituDocPasirasymasAdmin(admin.ModelAdmin):
         ('date_signed', DateRangeFilter),
     )
 
-class PriesgaisriniuPasirasymasAdmin(admin.ModelAdmin):
+
+class CivilineSaugaPasirasymasAdmin(admin.ModelAdmin):
     list_display = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
     search_fields = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
     list_filter = (
@@ -100,10 +118,12 @@ admin.site.register(models.Company, CompanyAdmin)
 admin.site.register(models.Position, PositionAdmin)
 admin.site.register(models.Instruction, InstructionAdmin)
 admin.site.register(models.PriesgiasrinesInstrukcijos, PriesrinesInstrukcijosAdmin)
+admin.site.register(models.CivilineSauga, CivilineSaugaAdmin)
 admin.site.register(models.Mokymai, MokymaiAdmin)
 admin.site.register(models.KitiDokumentai, KitiDokumentaiAdmin)
 admin.site.register(models.KituDocPasirasymas, KituDocPasirasymasAdmin)
 admin.site.register(models.PriesgaisriniuPasirasymas, PriesgaisriniuPasirasymasAdmin)
+admin.site.register(models.CivilineSaugaPasirasymas, CivilineSaugaPasirasymasAdmin)
 admin.site.register(models.MokymuPasirasymas, MokymuPasirasymasAdmin)
 admin.site.register(models.UserInstructionSign, UserInstructionSignAdmin)
 admin.site.register(models.Testai, TestAdmin)

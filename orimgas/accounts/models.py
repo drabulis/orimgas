@@ -3,7 +3,8 @@ from django.db import models
 from django.urls import reverse
 from datetime import timedelta
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.hashers import make_password, is_password_usable
+import uuid
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import UserManager,AbstractBaseUser, PermissionsMixin
 
 class CustomUserManager(UserManager):
@@ -83,6 +84,11 @@ class User(AbstractBaseUser, PermissionsMixin):
                                 related_name="users",
                                 blank=True,
                                 default=None)
+    civiline_sauga = models.ManyToManyField("orimgasapp.CivilineSauga",
+                                verbose_name=_("CivilineSauga"),
+                                related_name="users",
+                                blank=True,
+                                default=None)
     date_of_birth = models.DateField(blank=True, null=True)
     med_patikros_data = models.DateField(blank=True, null=True)
     med_patikros_periodas = models.SmallIntegerField(
@@ -96,6 +102,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     objects = CustomUserManager()
 

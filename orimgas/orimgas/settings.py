@@ -27,6 +27,9 @@ SECRET_KEY = local_settings.SECRET_KEY
 DEBUG = True
 
 ALLOWED_HOSTS = [*local_settings.ALLOWED_HOSTS,]
+CSRF_TRUSTED_ORIGINS= [*local_settings.CSRF_TRUSTED_ORIGINS,]
+CSRF_COOKIE_DOMAIN = local_settings.CSRF_COOKIE_DOMAIN
+
 
 
 
@@ -37,6 +40,7 @@ INSTALLED_APPS = [
     'accounts',
     'django_cron',
     'rangefilter',
+    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -69,6 +73,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'orimgas.urls'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -91,16 +97,7 @@ WSGI_APPLICATION = 'orimgas.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'orimgas123',
-        'HOST': 'localhost',
-        'PORT': '5432',   
-    }
-}
+DATABASES = local_settings.DATABASES
 
 
 # Password validation

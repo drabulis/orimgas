@@ -13,6 +13,10 @@
             <td>{{ user.last_name }}</td>
         </tr>
         <tr>
+            <th>Gymimo data</th>
+            <td>{{ user.date_of_birth }}</td>
+        </tr>
+        <tr>
             <th>El. paštas</th>
             <td>{{ user.email }}</td>
         </tr>
@@ -25,10 +29,40 @@
             <td>{{ user.position }}</td>
         </tr>
         <tr>
-            <th>Instrukcijos</th>
+            <th>Darbų saugos instrukcijos</th>
             <td>{% for instruction in user.instructions.all %}
                 {{ instruction.name }}, <br>
                 {% endfor %}
             </td>
+        </tr>
+        <tr>
+            <th>Priešgaisrinės instrukcijos</th>
+            <td>{% for instruction in user.priesgaisrines.all %}
+                {{ instruction.pavadinimas }}, <br>
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th>Mokymai</th>
+            <td>{% for mokymas in user.mokymai.all %}
+                {{ mokymas.pavadinimas }}, <br>
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th>Kiti dokumentai</th>
+            <td>{% for dok in user.kiti_dokumentai.all %}
+                {{ dok.pavadinimas }}, <br>
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <th>Medicininės patikros data</th>
+            <td>{{ user.med_patikros_data }}</td>
+        </tr>
+        <tr>
+            <th>Medicininės patikros periodas</th>
+            <td>{{ user.get_med_patikros_periodas_display }}</td>
+        </tr>
     </table>
 {% endblock content %}

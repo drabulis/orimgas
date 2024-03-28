@@ -9,7 +9,9 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.http import FileResponse
 from . import models, forms
+from django.http import Http404
 from django.core.exceptions import PermissionDenied
+from django.conf import settings
 
 
 
@@ -22,7 +24,11 @@ class UserMeniuView(LoginRequiredMixin, generic.ListView):
 class UserDetailView(LoginRequiredMixin, generic.DetailView):
     model = models.User
     template_name = 'main/user_detail.html'
-    fields = ['first_name', 'last_name', 'email', 'position']
+    fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines', 'mokymai', 'kiti_dokumentai', 'med_patikros_data','med_patikros_periodas',]
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.User, uuid=uuid)
 
 
 class AddUserView(LoginRequiredMixin, generic.CreateView):
@@ -32,17 +38,20 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy('my_company_users')
 
     def dispatch(self, request, *args, **kwargs):
+        print("You got this far")
         if not self.request.user.is_supervisor:
             raise PermissionDenied("Tau čia negalima!")
         return super().dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
+        print("You got this far get_form")
         form.fields['position'].queryset = models.Position.objects.filter(company=self.request.user.company)
         form.fields['instructions'].queryset = models.Instruction.objects.filter(company=self.request.user.company)
         form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
         form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=self.request.user.company)
         form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
+        form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=self.request.user.company)
         return form
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -51,6 +60,7 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
         return context
     
     def form_valid(self, form):
+        print("You got this far")
         form.instance.company = self.request.user.company
         med_patikros_data = form.cleaned_data.get('med_patikros_data')
         med_patikros_periodas = form.cleaned_data.get('med_patikros_periodas')
@@ -80,14 +90,46 @@ class UserInstructionSignView(LoginRequiredMixin, generic.ListView):
         context['priesrines_instrukcijos'] = models.PriesgaisriniuPasirasymas.objects.filter(user=self.request.user, status=0)
         context['mokymo_instrukcijos'] = models.MokymuPasirasymas.objects.filter(user=self.request.user, status=0)
         context['kitu_doc'] = models.KituDocPasirasymas.objects.filter(user=self.request.user, status=0)
+        context['civiline_sauga'] = models.CivilineSaugaPasirasymas.objects.filter(user=self.request.user, status=0)
         return context
+
 
 class UserInstructionSignUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = models.UserInstructionSign
     form_class = forms.UserInstructionSignForm
     template_name = 'main/user_instruction_detail.html'
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.UserInstructionSign, uuid=uuid)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['instruction'] = self.object.instruction
+        context['pdf_url'] = self.object.instruction.pdf  # Correctly set the PDF URL
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.status = 1
+        form.instance.date_signed = datetime.now()
+        form.instance.next_sign = datetime.now() + timedelta(int(self.object.instruction.periodiskumas))
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('user_instructions')
+
+
+class CivilineSaugaSignView(LoginRequiredMixin, generic.UpdateView):
+    model = models.CivilineSaugaPasirasymas
+    form_class = forms.UserInstructionSignForm
+    template_name = 'main/user_instruction_detail.html'
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.CivilineSaugaPasirasymas, uuid=uuid)
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['instruction'] = self.object.instruction
         return context
@@ -108,7 +150,11 @@ class PriesgaisrinioSignView(LoginRequiredMixin, generic.UpdateView):
     form_class = forms.UserInstructionSignForm
     template_name = 'main/user_instruction_detail.html'
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.PriesgaisriniuPasirasymas, uuid=uuid)
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['instruction'] = self.object.instruction
         return context
@@ -122,6 +168,7 @@ class PriesgaisrinioSignView(LoginRequiredMixin, generic.UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('user_instructions')
+
     
 
 class MokymuSignView(LoginRequiredMixin, generic.UpdateView):
@@ -129,7 +176,11 @@ class MokymuSignView(LoginRequiredMixin, generic.UpdateView):
     form_class = forms.UserInstructionSignForm
     template_name = 'main/user_instruction_detail.html'
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.MokymuPasirasymas, uuid=uuid)
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['instruction'] = self.object.instruction
         return context
@@ -143,14 +194,18 @@ class MokymuSignView(LoginRequiredMixin, generic.UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('user_instructions')
-    
+
 
 class KituDocSignView(LoginRequiredMixin, generic.UpdateView):
     model = models.KituDocPasirasymas
     form_class = forms.UserInstructionSignForm
     template_name = 'main/user_instruction_detail.html'
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.KituDocPasirasymas, uuid=uuid)
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['instruction'] = self.object.instruction
         return context
@@ -158,10 +213,12 @@ class KituDocSignView(LoginRequiredMixin, generic.UpdateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         form.instance.status = 1
+        form.instance.date_signed = datetime.now()
         return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('user_instructions')
+
 
 
 def serve_pdf(request, instruction_id):
@@ -174,6 +231,10 @@ class UserEditView(LoginRequiredMixin, generic.UpdateView):
     model = models.User
     template_name = 'main/user_edit.html'
     form_class = forms.UserEditForm
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.User, uuid=uuid)
 
     def get_success_url(self):
         return reverse_lazy('menu')
@@ -253,11 +314,10 @@ class DarbuSaugosZurnalas(LoginRequiredMixin, generic.ListView):
             )
         print("Queryset:", queryset)  
         return queryset
-
-
-class MokymuZurnalas(LoginRequiredMixin, generic.ListView):
-    model = models.MokymuPasirasymas
-    template_name ='main/mokymu_zurnalas.html'
+    
+class CivilinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
+    model = models.CivilineSaugaPasirasymas
+    template_name ='main/civilines_saugos_zurnalas.html'
     paginate_by = 10
 
     def dispatch(self, request, *args, **kwargs):
@@ -285,7 +345,43 @@ class MokymuZurnalas(LoginRequiredMixin, generic.ListView):
             )
         print("Queryset:", queryset)  
         return queryset
+
+
+class MokymuZurnalas(LoginRequiredMixin, generic.ListView):
+    model = models.Mokymai
+    template_name ='main/mokymu_zurnalas.html'
+    paginate_by = 10
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_supervisor:
+            raise PermissionDenied("You do not have permission to access this view.")
+        return super().dispatch(request, *args, **kwargs)
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search"] = True
+        return context
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        company = self.request.user.company
+        queryset = queryset.filter(imone=company)
+        return queryset
+
+class MokymuPasirasymasList(generic.ListView):
+    model = models.MokymuPasirasymas
+    template_name = 'main/mokymu_pasirasymas_list.html'  # Update with your template name
+
+    def get_queryset(self):
+        # Assuming you're passing the UUID through URL parameter
+        uuid = self.kwargs['uuid']
+        
+        # Fetch the MokymuPasirasymas objects based on UUID
+        queryset = models.MokymuPasirasymas.objects.filter(instruction__uuid=uuid)
+        
+        return queryset
+
+
 
 class KituDocZurnalas(LoginRequiredMixin, generic.ListView):
     model = models.KituDocPasirasymas
@@ -369,8 +465,13 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=self.request.user.company)
         form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
         form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
+        form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=self.request.user.company)
         return form
 
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.User, uuid=uuid)
+    
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_supervisor:
             raise PermissionDenied("You do not have permission to access this view.")
@@ -390,11 +491,13 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         password = self.request.POST.get('password')
         instructions = form.cleaned_data.get('instructions')
         priesgaisrines = form.cleaned_data.get('priesgaisrines')
+        civiline_sauga = form.cleaned_data.get('civiline_sauga')
         mokymai = form.cleaned_data.get('mokymai')
         kitidokumentai = form.cleaned_data.get('kiti_dokumentai')
         med_patikros_data = form.cleaned_data.get('med_patikros_data')
         med_patikros_periodas = form.cleaned_data.get('med_patikros_periodas')
         priesgaisrinesinstrukcijospasirasymai = models.PriesgaisriniuPasirasymas.objects.filter(user=user)
+        civilinesaugapasirasymai = models.CivilineSaugaPasirasymas.objects.filter(user=user)
         mokymaipasirasymai = models.MokymuPasirasymas.objects.filter(user=user)
         kitidokumentaipasirasymai = models.KituDocPasirasymas.objects.filter(user=user)      
         existing_signs = models.UserInstructionSign.objects.filter(user=user)
@@ -429,6 +532,16 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
                     user=user,
                     instruction=instruction,
                 )
+        
+        for instruction in civiline_sauga:
+            existing_sign = civilinesaugapasirasymai.filter(instruction=instruction).first()
+            if existing_sign:
+                existing_sign.save()
+            else:
+                models.CivilineSaugaPasirasymas.objects.create(
+                    user=user,
+                    instruction=instruction,
+                )
 
         for instruction in mokymai:
             existing_sign = mokymaipasirasymai.filter(instruction=instruction).first()
@@ -452,3 +565,96 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
 
         return super().form_valid(form)
     
+
+class DokumentuListView(LoginRequiredMixin, generic.ListView):
+    model = models.Instruction
+    template_name = 'main/dokumentai_list.html'
+    context_object_name = 'dokumentai'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['priesrines_instrukcijos'] = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
+        context['mokymo_instrukcijos'] = models.Mokymai.objects.filter(imone=self.request.user.company)
+        context['kitu_doc'] = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
+        context['civiline_sauga'] = models.CivilineSauga.objects.filter(imone=self.request.user.company)
+        return context
+    
+
+class UserInstructionReviewView(LoginRequiredMixin, generic.UpdateView):
+    model = models.Instruction
+    form_class = forms.RenderPDFForm
+    template_name = 'main/dokumento_view.html'
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.Instruction, uuid=uuid)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['instruction'] = self.object
+        return context
+
+
+class CivilineSaugaReviewView(LoginRequiredMixin, generic.UpdateView):
+    model = models.CivilineSauga
+    form_class = forms.RenderPDFForm
+    template_name = 'main/dokumento_view.html'
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.CivilineSauga, uuid=uuid)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['instruction'] = self.object
+        return context
+
+
+class PriesgaisrinioReviewView(LoginRequiredMixin, generic.UpdateView):
+    model = models.PriesgiasrinesInstrukcijos
+    form_class = forms.RenderPDFForm
+    template_name = 'main/dokumento_view.html'
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.PriesgiasrinesInstrukcijos, uuid=uuid)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['instruction'] = self.object
+        return context
+    
+
+class MokymuReviewView(LoginRequiredMixin, generic.UpdateView):
+    model = models.Mokymai
+    form_class = forms.RenderPDFForm
+    template_name = 'main/dokumento_view.html'
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.Mokymai, uuid=uuid)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['instruction'] = self.object
+        return context
+
+
+class KituDocReviewView(LoginRequiredMixin, generic.UpdateView):
+    model = models.KitiDokumentai
+    form_class = forms.RenderPDFForm
+    template_name = 'main/dokumento_view.html'
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.KitiDokumentai, uuid=uuid)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['instruction'] = self.object
+        return context

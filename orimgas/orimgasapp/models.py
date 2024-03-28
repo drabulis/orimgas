@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
+import uuid, base64
 from datetime import datetime, timedelta
 
 User = get_user_model()
@@ -31,7 +32,7 @@ class TestoKlausimas(models.Model):
                                )
 
     def __str__(self):
-        return self.klausimas
+        return f"{self.testas} - {self.klausimas}"
     
 class TestoAtsakymas(models.Model):
     atsakymas = models.CharField(max_length=100)
@@ -58,12 +59,21 @@ class Mokymai(models.Model):
     testas = models.ForeignKey(Testai,
                                verbose_name=_("test"),
                                on_delete=models.CASCADE,
-                               related_name='mokymai'
+                               related_name='mokymai',
+                               blank=True, null=True,
+                               default=None
                                )
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     def __str__(self):
         return self.pavadinimas
 
+
+INSTRUKTAVIMO_TIPAS = (
+    (0, _("Įvadinis")),
+    (1, _("Periodinis")),
+
+)
 
 class PriesgiasrinesInstrukcijos(models.Model):
     imone = models.ForeignKey(Company,
@@ -77,8 +87,11 @@ class PriesgiasrinesInstrukcijos(models.Model):
     testas = models.ForeignKey(Testai,
                                verbose_name=_("test"),
                                on_delete=models.CASCADE,
-                               related_name='priesgiasrines_instrukcijos'
+                               related_name='priesgiasrines_instrukcijos',
+                               blank=True, null=True,
+                               default=None
                                )
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     def __str__(self):
         return self.pavadinimas
@@ -92,6 +105,28 @@ class KitiDokumentai(models.Model):
                               )
     pavadinimas = models.CharField(max_length=100)
     pdf = models.FileField(upload_to='kiti_dokumentai')
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+
+    def __str__(self):
+        return self.pavadinimas
+    
+class CivilineSauga(models.Model):
+    imone = models.ForeignKey(Company,
+                              verbose_name=_("company"),
+                              on_delete=models.CASCADE,
+                              related_name='civiline_sauga'
+                              )
+    pavadinimas = models.CharField(max_length=100)
+    periodiskumas = models.IntegerField(_("periodicity"),default=365, blank=True, null=True)
+    pdf = models.FileField(upload_to='civiline_sauga')
+    testas = models.ForeignKey(Testai,
+                               verbose_name=_("test"),
+                               on_delete=models.CASCADE,
+                               related_name='civiline_sauga',
+                               blank=True, null=True,
+                               default=None
+                               )
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     def __str__(self):
         return self.pavadinimas
@@ -105,6 +140,14 @@ class Instruction(models.Model):
     name = models.CharField(max_length=100)
     periodiskumas = models.IntegerField(_("periodicity"),default=365, blank=True, null=True)
     pdf = models.FileField(upload_to='instructions')
+    testas = models.ForeignKey(Testai,
+                             verbose_name=_("test"),
+                             on_delete=models.CASCADE,
+                             related_name='instructions',
+                             blank=True, null=True,
+                             default=None
+                             )
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     def __str__(self):
         return f"{self.name}"
@@ -152,6 +195,10 @@ class UserInstructionSign(models.Model):
                                    default=None, blank=True, null=True)
     next_sign = models.DateField(_("next sign"),
                                  default=None, blank=True, null=True)
+    instruktavimo_tipas = models.PositiveSmallIntegerField(
+        _("status"), choices=INSTRUKTAVIMO_TIPAS, default=0
+    )
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     
 
     def display_instructions(self):
@@ -159,15 +206,81 @@ class UserInstructionSign(models.Model):
     display_instructions.short_description = _('instructions')
 
     def recreate_if_needed(self):
-        # Recreate UserInstructionSign instance
-        recreated_sign = UserInstructionSign.objects.create(
+        # Check the instruction's instruktavimo_tipas field
+        if self.instruktavimo_tipas == 0:
+            # If instruktavimo_tipas is 0, change it to 1 and recreate the instance
+            recreated_sign = UserInstructionSign.objects.create(
+                user=self.user,
+                instruction=self.instruction,
+                status=0,
+                date_signed=None,
+                next_sign=None,
+                instruktavimo_tipas=1,
+            )
+            return recreated_sign
+        else:
+            # If instruktavimo_tipas is already 1, do nothing
+            recreated_sign = UserInstructionSign.objects.create(
             user=self.user,
             instruction=self.instruction,
             status=0,
             date_signed=None,
             next_sign=None,
         )
-        return recreated_sign
+        # Recreate PriesgaisriniuPasirasymas instance
+            return recreated_sign
+    
+
+class CivilineSaugaPasirasymas(models.Model):
+    user = models.ForeignKey(User,
+                            verbose_name=_("user"),
+                            on_delete=models.CASCADE
+                            )
+    instruction = models.ForeignKey(CivilineSauga, 
+                                    verbose_name=_("instruction"), 
+                                    on_delete=models.CASCADE
+                                    )
+    status = models.PositiveSmallIntegerField(
+        _("status"), choices=SIGNATURE_STATUS, default=0
+    )
+    date_signed = models.DateField(_("date signed"), 
+                                   default=None, blank=True, null=True)
+    next_sign = models.DateField(_("next sign"),
+                                 default=None, blank=True, null=True)
+    instruktavimo_tipas = models.PositiveSmallIntegerField(
+        _("status"), choices=INSTRUKTAVIMO_TIPAS, default=0
+    )
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    
+
+    def display_instructions(self):
+        return ', '.join([instruction.name for instruction in self.instruction.all()])
+    display_instructions.short_description = _('instructions')
+
+    def recreate_if_needed(self):
+        # Check the instruction's instruktavimo_tipas field
+        if self.instruktavimo_tipas == 0:
+            # If instruktavimo_tipas is 0, change it to 1 and recreate the instance
+            recreated_sign = CivilineSaugaPasirasymas.objects.create(
+                user=self.user,
+                instruction=self.instruction,
+                status=0,
+                date_signed=None,
+                next_sign=None,
+                instruktavimo_tipas=1,
+            )
+            return recreated_sign
+        else:
+            # If instruktavimo_tipas is already 1, do nothing
+            recreated_sign = CivilineSaugaPasirasymas.objects.create(
+            user=self.user,
+            instruction=self.instruction,
+            status=0,
+            date_signed=None,
+            next_sign=None,
+        )
+        # Recreate PriesgaisriniuPasirasymas instance
+            return recreated_sign
 
 
 class PriesgaisriniuPasirasymas(models.Model):
@@ -186,22 +299,39 @@ class PriesgaisriniuPasirasymas(models.Model):
                                    default=None, blank=True, null=True)
     next_sign = models.DateField(_("next sign"),
                                  default=None, blank=True, null=True)
-    
+    instruktavimo_tipas = models.PositiveSmallIntegerField(
+        _("status"), choices=INSTRUKTAVIMO_TIPAS, default=0
+    )
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     def display_instructions(self):
         return ', '.join([instruction.name for instruction in self.instruction.all()])
     display_instructions.short_description = _('instructions')
 
     def recreate_if_needed(self):
-        # Recreate PriesgaisriniuPasirasymas instance
-        recreated_sign = PriesgaisriniuPasirasymas.objects.create(
+        # Check the instruction's instruktavimo_tipas field
+        if self.instruktavimo_tipas == 0:
+            # If instruktavimo_tipas is 0, change it to 1 and recreate the instance
+            recreated_sign = PriesgaisriniuPasirasymas.objects.create(
+                user=self.user,
+                instruction=self.instruction,
+                status=0,
+                date_signed=None,
+                next_sign=None,
+                instruktavimo_tipas=1,
+            )
+            return recreated_sign
+        else:
+            # If instruktavimo_tipas is already 1, do nothing
+            recreated_sign = PriesgaisriniuPasirasymas.objects.create(
             user=self.user,
             instruction=self.instruction,
             status=0,
             date_signed=None,
             next_sign=None,
         )
-        return recreated_sign
+        # Recreate PriesgaisriniuPasirasymas instance
+            return recreated_sign
     
 
 class MokymuPasirasymas(models.Model):
@@ -220,6 +350,7 @@ class MokymuPasirasymas(models.Model):
                                    default=None, blank=True, null=True)
     next_sign = models.DateField(_("next sign"),
                                  default=None, blank=True, null=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     
 
     def display_instructions(self):
@@ -254,6 +385,7 @@ class KituDocPasirasymas(models.Model):
                                    default=None, blank=True, null=True)
     next_sign = models.DateField(_("next sign"),
                                  default=None, blank=True, null=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     
 
     def display_instructions(self):
