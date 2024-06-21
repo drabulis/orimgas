@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block title %}{{ object.name }} {{ block.super }}{% endblock title %}
 {% block content %}
 <h1>{{ object.name }}</h1>
@@ -6,7 +7,7 @@
     {{ form.render_pdf }}
     {% csrf_token %}
     <br><br>
-    <a class="button" style="justify-content: center" href="{% url "dokumentai_list" %}">Atgal</a>
+    <a class="button" style="justify-content: center" href="{% url "dokumentai_list" %}">{% trans "Atgal" %}</a>
 </form>
 <br><br><br><br>
 {% endblock %}

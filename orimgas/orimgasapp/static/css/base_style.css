@@ -6,6 +6,16 @@ body{
     display: flex;
     flex-direction: column;
 }
+.blank {
+    border: none;
+    outline: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    margin-left: 0;
+    float: left;
+    margin-right: 1px; /* Adjust margin to match the "Atsijungti" link */
+}
 
 h1{
     margin: 1rem;
@@ -206,6 +216,7 @@ ul.nav li.right {
     flex-grow: 1;
     text-align: right;
     margin-right: 5rem;
+    margin-left: 0;
 
 }
 .form-container {

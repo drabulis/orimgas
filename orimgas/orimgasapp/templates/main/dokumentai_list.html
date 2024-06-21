@@ -1,92 +1,93 @@
 {% extends "base.html" %}
-{% block title %}Dokumetai {{ block.super }}{% endblock title %}
+{% load i18n %}
+{% block title %}{% trans "Dokumetai" %} {{ block.super }}{% endblock title %}
 {% block content %}
-    <h1>Darbų saugos instrukcijos</h1>
+    <h1>{% trans "Darbų saugos instrukcijos" %}</h1>
     {% if dokumentai %}
         <table class="nice-table">
             <tr>
-                <th>Instrukcijos pavadinimas</th>
-                <th>Peržiūrėti</th>
+                <th>{% trans "Instrukcijos pavadinimas" %}</th>
+                <th>{% trans "Peržiūrėti" %}</th>
             </tr>
             {% for instruction in dokumentai %}
                 <tr>
                     <td>{{ instruction.name }}</td>
-                    <td><a href="{% url 'darbu_sagos_detail' instruction.uuid %}">Skaityti/Pasirašyti</a></td>
+                    <td><a href="{% url 'darbu_sagos_detail' instruction.uuid %}">{% trans "Skaityti/Pasirašyti" %}</a></td>
                 </tr>
             {% endfor %}
         </table>
     {% else %}
-        <p style="text-align: center;">Šiuo metu darbų saugos instrukcijų neturite.</p>
+        <p style="text-align: center;">{% trans "Šiuo metu darbų saugos instrukcijų neturite." %}</p>
     {% endif %}
     
-    <h1>Priešgaisrinės instrukcijos</h1>
+    <h1>{% trans "Priešgaisrinės instrukcijos" %}</h1>
     {% if priesrines_instrukcijos %}
         <table class="nice-table">
             <tr>
-                <th>Instrukcijos pavadinimas</th>
-                <th>Peržiūrėti</th>
+                <th>{% trans "Instrukcijos pavadinimas" %}</th>
+                <th>{% trans "Peržiūrėti" %}</th>
             </tr>
             {% for priesgaisrine in priesrines_instrukcijos %}
                 <tr>
                     <td>{{ priesgaisrine.pavadinimas }}</td>
-                    <td><a href="{% url 'priesgaisrinio_detail' priesgaisrine.uuid %}">Skaityti/Pasirašyti</a></td>
+                    <td><a href="{% url 'priesgaisrinio_detail' priesgaisrine.uuid %}">{% trans "Skaityti/Pasirašyti" %}</a></td>
                 </tr>
             {% endfor %}
         </table>
     {% else %}
-        <p style="text-align: center;">Šiuo metu priešgaisrinės instrukcijos neturite.</p>
+        <p style="text-align: center;">{% trans "Šiuo metu priešgaisrinės instrukcijos neturite." %}</p>
     {% endif %}
-    <h1>Civilinės saugos intrukcijos</h1>
+    <h1>{% trans "Civilinės saugos intrukcijos" %}</h1>
     {% if civiline_sauga %}
         <table class="nice-table">
             <tr>
-                <th>Instrukcijos pavadinimas</th>
-                <th>Peržiūrėti</th>
+                <th>{% trans "Instrukcijos pavadinimas" %}</th>
+                <th>{% trans "Peržiūrėti" %}</th>
             </tr>
             {% for instruction in civiline_sauga %}
                 <tr>
                     <td>{{ instruction.pavadinimas }}</td>
-                    <td><a href="{% url 'civiline_sauga_detail' instruction.uuid %}">Skaityti/Pasirašyti</a></td>
+                    <td><a href="{% url 'civiline_sauga_detail' instruction.uuid %}">{% trans "Skaityti/Pasirašyti" %}</a></td>
                 </tr>
             {% endfor %}
         </table>
     {% else %}
-        <p style="text-align: center;">Šiuo metu civilinės saugos instrukcijų neturite.</p>
+        <p style="text-align: center;">{% trans "Šiuo metu civilinės saugos instrukcijų neturite." %}</p>
     {% endif %}
-    <h1>Mokymai</h1>
+    <h1>{% trans "Mokymai" %}</h1>
     {% if mokymo_instrukcijos %}
         <table class="nice-table">
             <tr>
-                <th>Instrukcijos pavadinimas</th>
-                <th>Peržiūrėti</th>
+                <th>{% trans "Instrukcijos pavadinimas" %}</th>
+                <th>{% trans "Peržiūrėti" %}</th>
             </tr>
             {% for mokymas in mokymo_instrukcijos %}
                 <tr>
                     <td>{{ mokymas.pavadinimas }}</td>
-                    <td><a href="{% url 'mokymu_detail' mokymas.uuid %}">Skaityti/Pasirašyti</a></td>
+                    <td><a href="{% url 'mokymu_detail' mokymas.uuid %}">{% trans "Skaityti/Pasirašyti" %}</a></td>
                 </tr>
             {% endfor %}
         </table>
     {% else %}
-        <p style="text-align: center;">Šiuo metu mokymų neturite.</p>
+        <p style="text-align: center;">{% trans "Šiuo metu mokymų neturite." %}</p>
     {% endif %}
     
-    <h1>Kiti dokumentai</h1>
+    <h1>{% trans "Kiti dokumentai" %}</h1>
     {% if kitu_doc %}
         <table class="nice-table">
             <tr>
-                <th>Dokumento pavadinimas</th>
-                <th>Peržiūrėti</th>
+                <th>{% trans "Dokumento pavadinimas" %}</th>
+                <th>{% trans "Peržiūrėti" %}</th>
             </tr>
             {% for kito_dokumento_pasirasymas in kitu_doc %}
                 <tr>
                     <td>{{ kito_dokumento_pasirasymas.pavadinimas }}</td>
-                    <td><a href="{% url 'kiti_dokumentai_detail' kito_dokumento_pasirasymas.uuid %}">Skaityti/Pasirašyti</a></td>
+                    <td><a href="{% url 'kiti_dokumentai_detail' kito_dokumento_pasirasymas.uuid %}">{% trans "Skaityti/Pasirašyti" %}</a></td>
                 </tr>
             {% endfor %}
         </table>
     {% else %}
-        <p style="text-align: center;">Šiuo metu kiti dokumentai neturite.</p>
+        <p style="text-align: center;">{% trans "Šiuo metu kitu dokumentų neturite." %}</p>
     {% endif %}
     <br><br><br><br>
 {% endblock content %}

@@ -1,41 +1,127 @@
 {% extends "base.html" %}
-{% block title %}Civilinės saugos žurnalas{% endblock title %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Civilinės saugos žurnalas" %}
+{% endblock title %}
+
 {% block content %}
-<h1>Civilinės saugos instruktavimų registracijos žurnalas</h1>
-{% include "main/included/paginator_prev_next.html" %}
-<br><br>
-{% if object_list %}
-    <table class="nice-table">
+  <h1>{% trans "Civilinės saugos instruktavimų registracijos žurnalas" %}</h1>
+  {% include "main/included/paginator_prev_next.html" %}
+  <br><br>
+  <a href="{% url 'civiline_sauga_zurnalas' %}?generate_pdf=true" class="btn btn-primary">PDF</a>
+
+  {% if object_list %}
+    <table class="nice-table" id="pasirasymai-table">
+      <thead>
         <tr>
-            <th>Instruktuojamojo vardas ir pavardė</th>
-            <th>Instruktuojamojo pareigos</th>
-            <th>Instrukcijos Nr.</th>
-            <th>Instruktavimo pavadinimas</th>
-            <th>Instruktuojamojo parašas</th>
-            <th>Pasirašymo data</th>
-            <th>Sekančio pasirašymo data</th>
+          <th id="sort-name">{% trans "Instruktuojamojo vardas ir pavardė" %}</th>
+          <th id="sort-position">{% trans "Instruktuojamojo pareigos" %}</th>
+          <th id="sort-instruction">{% trans "Instrukcijos Nr." %}</th>
+          <th>{% trans "Instruktavimo pavadinimas" %}</th>
+          <th>{% trans "Pasirašymo data" %}</th>
+          <th>{% trans "Sekančio pasirašymo data" %}</th>
         </tr>
+      </thead>
+      <tbody>
         {% for pasirasymas in object_list %}
-            <tr>
-                <td>{{ pasirasymas.user.get_full_name }}</td>
-                <td>{{ pasirasymas.user.position }}</td>
-                {% if pasirasymas.instruction.name %}
-                    <td>{{ pasirasymas.instruction.name }}</td>
-                    {% else %}
-                    <td>{{ pasirasymas.instruction.pavadinimas }}</td>
-                {% endif %}
-                <td>{% if pasirasymas.instruktavimo_tipas == 0 %}Įvadinis
-                    {% else %}Periodinis{% endif %}
-                </td>
-                <td>{{ pasirasymas.get_status_display }}</td>
-                <td>{{ pasirasymas.date_signed|default:"Nepasirašyta" }}</td>
-                <td>{{ pasirasymas.next_sign|default:"Nepatikslinta" }}</td>
-            </tr>
-
+          <tr>
+            <td>{{ pasirasymas.user.get_full_name }}</td>
+            <td>{{ pasirasymas.user.position }}</td>
+            {% if pasirasymas.instruction.name %}
+              <td>{{ pasirasymas.instruction.name }}</td>
+            {% else %}
+              <td>{{ pasirasymas.instruction.pavadinimas }}</td>
+            {% endif %}
+            <td>
+              {% if pasirasymas.instruktavimo_tipas == 0 %}
+                {% trans "Įvadinis" %}
+              {% else %}
+                {% trans "Periodinis" %}
+              {% endif %}
+            </td>
+            <td>{{ pasirasymas.date_signed|default:_("Nepasirašyta") }}</td>
+            <td>{{ pasirasymas.next_sign|default:_("Nepatikslinta") }}</td>
+          </tr>
         {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>{% trans "Darbų saugos žurnale įrašų nerasta." %}</p>
+  {% endif %}
 
-{% else %}
-    <p>Darbų saugos žurnale įrašų nerasta.</p>
-{% endif %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Initialize sorting variables
+      var sorting = {
+        name: 'asc',
+        position: 'asc',
+        instruction: 'asc',
+        date_signed: 'asc',
+        next_sign: 'asc'
+      };
 
+      function sortTable(column) {
+        var table, rows, switching, i, x, y, shouldSwitch;
+        table = document.getElementById("pasirasymai-table");
+        switching = true;
+
+        while (switching) {
+          switching = false;
+          rows = table.rows;
+
+          for (i = 1; i < (rows.length - 1); i++) {
+            shouldSwitch = false;
+            x = rows[i].getElementsByTagName("TD")[column];
+            y = rows[i + 1].getElementsByTagName("TD")[column];
+
+            if (sorting[column] === 'asc') {
+              if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                shouldSwitch = true;
+                break;
+              }
+            } else {
+              if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                shouldSwitch = true;
+                break;
+              }
+            }
+          }
+
+          if (shouldSwitch) {
+            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+
+            // Switch sorting direction
+            if (sorting[column] === 'asc') {
+              sorting[column] = 'desc';
+            } else {
+              sorting[column] = 'asc';
+            }
+          }
+        }
+      }
+
+      $("#sort-name").click(function() {
+        sortTable(0); // Column index for name
+      });
+
+      $("#sort-position").click(function() {
+        sortTable(1); // Column index for position
+      });
+
+      $("#sort-instruction").click(function() {
+        sortTable(2); // Column index for instruction
+      });
+
+      $("#sort-date-signed").click(function() {
+        sortTable(4); // Column index for date_signed
+      });
+
+      $("#sort-next-sign").click(function() {
+        sortTable(5); // Column index for next_sign
+      });
+    });
+  </script>
 {% endblock content %}

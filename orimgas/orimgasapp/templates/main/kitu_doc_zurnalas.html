@@ -1,17 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Kitų dokumentų registras{% endblock title %}
+{% load i18n %}
+{% block title %}{% trans "Kitų dokumentų registras" %}{% endblock title %}
 {% block content %}
-<h1>Kitų dokumentų registras</h1>
+<h1>{% trans "Kitų dokumentų registras" %}</h1>
 {% include "main/included/paginator_prev_next.html" %}
 <br><br>
 {% if object_list %}
+<a href="{% url 'kitu_doc_zurnalas' %}?generate_pdf=true" class="btn btn-primary" target="_blank">PDF</a>
     <table class="nice-table">
         <tr>
-            <th>Vardas ir Pavardė</th>
-            <th>Darbuotojo pareigos</th>
-            <th>Dokumento pavadinimas</th>
-            <th>Pasirašymas</th>
-            <th>Supažindinimo data</th>
+            <th>{% trans "Vardas ir Pavardė" %}</th>
+            <th>{% trans "Darbuotojo pareigos" %}</th>
+            <th>{% trans "Dokumento pavadinimas" %}</th>
+            <th>{% trans "Pasirašymas" %}</th>
+            <th>{% trans "Supažindinimo data" %}</th>
         </tr>
         {% for pasirasymas in object_list %}
             <tr>
@@ -29,7 +31,7 @@
         {% endfor %}
 
 {% else %}
-    <p style="text-align: center;">Kitų dokumentų žurnale įrašų nerasta.</p>
+    <p style="text-align: center;">{% trans "Kitų dokumentų žurnale įrašų nerasta." %}</p>
 {% endif %}
 
 {% endblock content %}

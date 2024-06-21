@@ -51,8 +51,8 @@ MED_PATIKROS_PERIODAS = (
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
+    first_name = models.CharField(_("first name"), max_length=100)
+    last_name = models.CharField(_("last name"), max_length=100)
     company = models.ForeignKey("orimgasapp.Company", 
                                 verbose_name=_("company"), 
                                 on_delete=models.CASCADE, 

@@ -1,9 +1,11 @@
 from django.urls import path
 from django.contrib.auth.views import LoginView
+from django.views.i18n import set_language
 from . import views
 
 
 urlpatterns = [
+    path('i18n/setlang/', set_language, name='set_language'),
     path('', views.UserMeniuView.as_view(), name='menu'),
     path('main/user_add/', views.AddUserView.as_view(), name='user_add'),
     path('main/user_instructions/', views.UserInstructionSignView.as_view(), name='user_instructions'),
@@ -25,7 +27,7 @@ urlpatterns = [
     path('main/kitu_doc_zurnalas', views.KituDocZurnalas.as_view(), name='kitu_doc_zurnalas'),
     path('main/sveikatos_tikrinimo_grafikas', views.SveikatosTikrinimoGrafikas.as_view(), name='sveikatos_tikrinimo_grafikas'),
     path('main/dokumentai_list', views.DokumentuListView.as_view(), name='dokumentai_list'),
-    path('main/darbu_sagos/<uuid:uuid>/', views.UserInstructionReviewView.as_view(), name='darbu_sagos_detail'),
+    path('main/darbu_saugos/<uuid:uuid>/', views.UserInstructionReviewView.as_view(), name='darbu_sagos_detail'),
     path('main/priesgaisrinis/<uuid:uuid>/', views.PriesgaisrinioReviewView.as_view(), name='priesgaisrinio_detail'),
     path('main/civiline_sauga/<uuid:uuid>/', views.CivilineSaugaReviewView.as_view(), name='civiline_sauga_detail'),
     path('main/mokymai/<uuid:uuid>/', views.MokymuReviewView.as_view(), name='mokymu_detail'),

@@ -1,15 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Mokymų žurnalas{% endblock title %}
+{% load i18n %}
+{% block title %}{% trans "Mokymų žurnalas" %}{% endblock title %}
 {% block content %}
-    <h1>Mokymų žurnalas</h1>
+    <h1>{% trans "Mokymų žurnalas" %}</h1>
     <table class="nice-table">
         <tr>
-            <th>Mokymo pavadinimas</th>
-            <th>Peržiūrėti protokolą</th>
+            <th>{% trans "Mokymo pavadinimas" %}</th>
+            <th>{% trans "Peržiūrėti protokolą" %}</th>
         </tr>
         {% for mokymas in mokymai_list %}
         <tr>
             <td>{{ mokymas.pavadinimas }}</td>
-            <td><a href="{% url 'mokymu-pasirasymas-list' mokymas.uuid %}">Peržiūrėti</a></td>
+            <td><a href="{% url 'mokymu-pasirasymas-list' mokymas.uuid %}">{% trans "Peržiūrėti" %}</a></td>
         {% endfor %}
 {% endblock content %}

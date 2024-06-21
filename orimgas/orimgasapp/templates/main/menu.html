@@ -1,5 +1,10 @@
 {% extends "base.html" %}
-<title>{% block title %}Menu {{ block.super }}{% endblock title %}</title>
+{% load i18n %}
+
+{% block title %}
+    {% trans "Menu" %} {{ block.super }}
+{% endblock title %}
+
 {% block content %}
 <h1>{{ user.company }}</h1>
 
@@ -8,39 +13,39 @@
 <ul >
     {% if user.is_authenticated %}
     <li>
-        <a href= "{% url 'user_instructions' %}">Mano darbai</a>
+        <a href="{% url 'user_instructions' %}">{% trans "Mano darbai" %}</a>
     </li>
     <li>
-        <a href= "{% url 'user_edit' user.uuid %}">Redaguoti mano vartotoją</a>
+        <a href="{% url 'user_edit' user.uuid %}">{% trans "Redaguoti mano vartotoją" %}</a>
     </li>  
     {% endif %}
     {% if user.is_supervisor %}
-    <h2>Administratoriaus aplinka:</h2>
+    <h2>{% trans "Administratoriaus aplinka:" %}</h2>
     <li>
-        <a href= "{% url 'user_add' %}">Įtraukti naują darbuotoją</a>
+        <a href="{% url 'user_add' %}">{% trans "Įtraukti naują darbuotoją" %}</a>
     </li>
     <li>
-        <a href= "{% url 'my_company_users' %}">Įmonės darbuotojai</a>
+        <a href="{% url 'my_company_users' %}">{% trans "Įmonės darbuotojai" %}</a>
     </li>
     <li>
-        <a href= "{% url 'darbu_saugos_zurnalas' %}">Darbu saugos instruktavimo registras</a>
+        <a href="{% url 'darbu_saugos_zurnalas' %}">{% trans "Darbu saugos instruktavimo registras" %}</a>
     </li>
     <li>
-        <a href= "{% url 'priesgaisrinės_saugos_zurnalas' %}">Priesgaisrinės saugos žurnalas</a>
+        <a href="{% url 'priesgaisrinės_saugos_zurnalas' %}">{% trans "Priesgaisrinės saugos žurnalas" %}</a>
     </li>
     <li>
-        <a href= "{% url 'civiline_sauga_zurnalas' %}">Civilinės saugos žurnalas</a>
+        <a href="{% url 'civiline_sauga_zurnalas' %}">{% trans "Civilinės saugos žurnalas" %}</a>
     <li>
-        <a href= "{% url 'mokymu_zurnalas' %}">Neformalus mokymas</a>
+        <a href="{% url 'mokymu_zurnalas' %}">{% trans "Neformalus mokymas" %}</a>
     </li>
     <li>
-        <a href= "{% url 'kitu_doc_zurnalas' %}">Kiti dokumentai</a>
+        <a href="{% url 'kitu_doc_zurnalas' %}">{% trans "Kiti dokumentai" %}</a>
     </li>
     <li>
-        <a href= "{% url 'sveikatos_tikrinimo_grafikas' %}">Darbuotojų sveikatos tikrinimo grafikas</a>
+        <a href="{% url 'sveikatos_tikrinimo_grafikas' %}">{% trans "Darbuotojų sveikatos tikrinimo grafikas" %}</a>
     </li>
     <li>
-        <a href= "{% url 'dokumentai_list' %}">Įmonės dokumentai</a>
+        <a href="{% url 'dokumentai_list' %}">{% trans "Įmonės dokumentai" %}</a>
     </li>
     {% endif %}
     {% if user.is_superuser %}

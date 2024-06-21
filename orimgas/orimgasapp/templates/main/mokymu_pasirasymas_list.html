@@ -1,18 +1,20 @@
 {% extends "base.html" %}
-{% block title %}Mokymo protokolas{% endblock title %}
+{% load i18n %}
+{% block title %}{% trans "Mokymo protokolas" %}{% endblock title %}
 {% block content %}
-<h1>Atestavimo protokolas</h1>
+<h1>{% trans "Atestavimo protokolas" %}</h1>
 {% include "main/included/paginator_prev_next.html" %}
 <br><br>
 {% if object_list %}
+<a href="?generate_pdf=1">PDF</a>
     <table class="nice-table">
         <tr>
-            <th>Vardas ir Pavardė</th>
-            <th>Pareigos</th>
-            <th>Mokymo programa</th>
-            <th>Vertinimo rezultatas</th>
-            <th>Pasirašymo data</th>
-            <th>Sekančio pasirašymo data</th>
+            <th>{% trans "Vardas ir Pavardė" %}</th>
+            <th>{% trans "Pareigos" %}</th>
+            <th>{% trans "Mokymo programa" %}</th>
+            <th>{% trans "Vertinimo rezultatas" %}</th>
+            <th>{% trans "Pasirašymo data" %}</th>
+            <th>{% trans "Sekančio pasirašymo data" %}</th>
         </tr>
         {% for pasirasymas in object_list %}
             <tr>
@@ -24,18 +26,18 @@
                     <td>{{ pasirasymas.instruction.pavadinimas }}</td>
                 {% endif %}
                 <td>
-                    {% if pasirasymas.status == 0 %}Neįskaityta
-                    {% else %}Įskaityta
+                    {% if pasirasymas.status == 0 %}{% trans "Neįskaityta" %}
+                    {% else %}{% trans "Įskaityta" %}
                     {% endif %}
                 </td>
-                <td>{{ pasirasymas.date_signed|default:"Nepasirašyta" }}</td>
-                <td>{{ pasirasymas.next_sign|default:"Nepatikslinta" }}</td>
+                <td>{% if pasirasymas.date_signed == 'None' %}{% trans "Nepatikslinta" %}{% else %}{{ pasirasymas.date_signed }}{% endif %}</td>
+                <td>{% if pasirasymas.next_sign == 'None' %}{% trans "Nepatikslinta" %}{% else %}{{ pasirasymas.next_sign }}{% endif %}</td>
             </tr>
 
         {% endfor %}
 
 {% else %}
-    <p style="text-align: center;">Mokymų žurnale įrašų nerasta.</p>
+    <p style="text-align: center;">{% trans "Mokymų žurnale įrašų nerasta." %}</p>
 {% endif %}
 
 {% endblock content %}

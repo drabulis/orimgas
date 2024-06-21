@@ -1,19 +1,21 @@
 {% extends "base.html" %}
-{% block title %}Priešgaisrinės saugos žurnalas{% endblock title %}
+{% load i18n %}
+{% block title %}{% trans "Priešgaisrinės saugos žurnalas" %}{% endblock title %}
 {% block content %}
-<h1>GAISRINĖS SAUGOS INSTRUKTAŽŲ REGISTRACIJOS ŽURNALAS</h1>
+<h1>{% trans "GAISRINĖS SAUGOS INSTRUKTAŽŲ REGISTRACIJOS ŽURNALAS" %}</h1>
 {% include "main/included/paginator_prev_next.html" %}
 <br><br>
 {% if object_list %}
+<a href="{% url 'priesgaisrinės_saugos_zurnalas' %}?generate_pdf=true" class="btn btn-primary" target="_blank">PDF</a>
     <table class="nice-table">
         <tr>
-            <th>Instruktuojamojo vardas ir pavardė</th>
-            <th>Instruktuojamojo pareigos</th>
-            <th>Instrukcijos Nr.</th>
-            <th>Instruktažo pavadinimas</th>
-            <th>Instruktuojamojo parašas</th>
-            <th>Pasirašymo data</th>
-            <th>Sekančio pasirašymo data</th>
+            <th>{% trans "Instruktuojamojo vardas ir pavardė" %}</th>
+            <th>{% trans "Instruktuojamojo pareigos" %}</th>
+            <th>{% trans "Instrukcijos Nr." %}</th>
+            <th>{% trans "Instruktažo pavadinimas" %}</th>
+            <th>{% trans "Instruktuojamojo parašas" %}</th>
+            <th>{% trans "Pasirašymo data" %}</th>
+            <th>{% trans "Sekančio pasirašymo data" %}</th>
         </tr>
         {% for pasirasymas in object_list %}
             <tr>
@@ -24,8 +26,8 @@
                     {% else %}
                     <td>{{ pasirasymas.instruction.pavadinimas }}</td>
                 {% endif %}
-                <td>{% if pasirasymas.instruktavimo_tipas == 0 %}Įvadinis
-                    {% else %}Periodinis{% endif %}
+                <td>{% if pasirasymas.instruktavimo_tipas == 0 %}{% trans "Įvadinis" %} 
+                    {% else %}{% trans "Periodinis" %}{% endif %}
                 </td>
                 <td>{{ pasirasymas.get_status_display }}</td>
                 <td>{{ pasirasymas.date_signed|default:"Nepasirašyta" }}</td>
@@ -35,7 +37,7 @@
         {% endfor %}
 
 {% else %}
-    <p>Priešgaisrinės saugos žurnale įrašų nerasta.</p>
+    <p>{% trans "Priešgaisrinės saugos žurnale įrašų nerasta." %}</p>
 {% endif %}
 
 {% endblock content %}

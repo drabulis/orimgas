@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block title %}{{ instruction.name }} {{ block.super }}{% endblock title %}
 {% block content %}
 <head>
@@ -45,7 +46,7 @@
     <div class="form">{{ form.as_p }}</div>
     <div class="form-group">
         <input type="checkbox" id="agreeCheckbox" onchange="toggleSubmitButton()">
-        <label for="agreeCheckbox">Su instrukcija susipažinau.</label>
+        <label for="agreeCheckbox">{% trans "Su instrukcija susipažinau." %}</label>
     </div>
     <input class="button" type="submit" value="Pasirašyti" id="submitButton" disabled>
 </form>

@@ -1,15 +1,33 @@
-{% load static i18n %}
+<!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}Orimgas {% endblock title %}</title>
+    {% load static %}
+    {% load i18n %}
+    <title>{% block title %}{% trans "Orimgas" %}{% endblock title %}</title>
     <link rel="stylesheet" href="{% static "css/base_style.css" %}">
 </head>
 <body>
     <header>
         <ul class="nav">
-            <li><a href="{% url "menu" %}">Orimgas Meniu</a></li>
-            <li><a href="{% url "user_detail" user.uuid %}">Mano vartotojas</a></li>
-            <li class="right"><a href="{% url "logout" %}">Atsijungti</a></li>
+            <li><a href="{% url "menu" %}">{% trans "Orimgas Meniu" %}</a></li>
+            <li><a href="{% url "user_detail" user.uuid %}">{% trans "Mano vartotojas" %}</a></li>
+            <li class="right">
+                <form class="blank" action="{% url 'set_language' %}" method="post" id="language-form">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.path }}">
+                    <select name="language" id="language-select" onchange="this.form.submit()">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for lang in languages %}
+                            <option value="{{ lang.code }}" {% if lang.code == LANGUAGE_CODE %}selected{% endif %}>
+                                {{ lang.name_local }} ({{ lang.code }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </li>
+            <li class="right"><a href="{% url "logout" %}">{% trans "Atsijungti" %}</a></li>
         </ul>
     </header>
     
@@ -19,7 +37,7 @@
     </div>
 
     <footer>
-        <p>Orimgas</p>
+        <p>{% trans "Orimgas" %}</p>
     </footer>
 </body>
 </html>

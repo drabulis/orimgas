@@ -8,23 +8,23 @@ User = get_user_model()
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(_("pavadinimas"), max_length=100)
     company_id = models.CharField(max_length=50, unique=True, null=True, blank=True)
-    manager = models.CharField(max_length=100)
+    manager = models.CharField(_("Manager"),max_length=100)
 
     def __str__(self):
         return self.name
     
 
 class Testai(models.Model):
-    pavadinimas = models.CharField(max_length=100)
+    pavadinimas = models.CharField(_("pavadinimas"),max_length=100)
 
     def __str__(self):
         return self.pavadinimas
 
 
 class TestoKlausimas(models.Model):
-    klausimas = models.CharField(max_length=100)
+    klausimas = models.CharField(_("klausimas"),max_length=100)
     testas = models.ForeignKey(Testai,
                                verbose_name=_("test"),
                                on_delete=models.CASCADE,
@@ -35,7 +35,7 @@ class TestoKlausimas(models.Model):
         return f"{self.testas} - {self.klausimas}"
     
 class TestoAtsakymas(models.Model):
-    atsakymas = models.CharField(max_length=100)
+    atsakymas = models.CharField(_("atsakymas"),max_length=100)
     klausimas = models.ForeignKey(TestoKlausimas,
                                verbose_name=_("answer"),
                                on_delete=models.CASCADE,
@@ -53,7 +53,7 @@ class Mokymai(models.Model):
                               on_delete=models.CASCADE,
                               related_name='mokymai'
                               )
-    pavadinimas = models.CharField(max_length=100)
+    pavadinimas = models.CharField(_("pavadinimas"),max_length=100)
     periodiskumas = models.IntegerField(_("periodicity"),default=365, blank=True, null=True)
     pdf = models.FileField(upload_to='mokymai')
     testas = models.ForeignKey(Testai,
@@ -81,7 +81,7 @@ class PriesgiasrinesInstrukcijos(models.Model):
                               on_delete=models.CASCADE,
                               related_name='priesgiasrines_instrukcijos'
                               )
-    pavadinimas = models.CharField(max_length=100)
+    pavadinimas = models.CharField(_("pavadinimas"),max_length=100)
     periodiskumas = models.IntegerField(_("periodicity"),default=365, blank=True, null=True)
     pdf = models.FileField(upload_to='priesgaisrines_instrukcijos')
     testas = models.ForeignKey(Testai,
@@ -103,7 +103,7 @@ class KitiDokumentai(models.Model):
                               on_delete=models.CASCADE,
                               related_name='kiti_dokumentai'
                               )
-    pavadinimas = models.CharField(max_length=100)
+    pavadinimas = models.CharField(_("pavadinimas"),max_length=100)
     pdf = models.FileField(upload_to='kiti_dokumentai')
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
@@ -116,7 +116,7 @@ class CivilineSauga(models.Model):
                               on_delete=models.CASCADE,
                               related_name='civiline_sauga'
                               )
-    pavadinimas = models.CharField(max_length=100)
+    pavadinimas = models.CharField(_("pavadinimas"),max_length=100)
     periodiskumas = models.IntegerField(_("periodicity"),default=365, blank=True, null=True)
     pdf = models.FileField(upload_to='civiline_sauga')
     testas = models.ForeignKey(Testai,
@@ -137,7 +137,7 @@ class Instruction(models.Model):
                                 on_delete=models.CASCADE,
                                 related_name='instructions'
                                 )
-    name = models.CharField(max_length=100)
+    name = models.CharField(_("pavadinimas"),max_length=100)
     periodiskumas = models.IntegerField(_("periodicity"),default=365, blank=True, null=True)
     pdf = models.FileField(upload_to='instructions')
     testas = models.ForeignKey(Testai,
@@ -158,7 +158,7 @@ class Instruction(models.Model):
 
 
 class Position(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(_("pavadinimas"),max_length=100)
     company = models.ForeignKey(Company,
                                 verbose_name=_("company"), 
                                 on_delete=models.CASCADE,

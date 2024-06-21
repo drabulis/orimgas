@@ -1,67 +1,68 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
-<title>{% block title %}{{ user.get_full_name }} detail{% endblock title %}</title>
+<title>{% block title %}{{ user.get_full_name }}{% trans "informacija" %}{% endblock title %}</title>
 {% block content %}
-    <h1>Vartotojo informacija</h1>
+    <h1>{% trans "Vartotojo informacija" %}</h1>
     <table class="nice-table">
         <tr>
-            <th>Vardas</th>
+            <th>{% trans "Vardas" %}</th>
             <td>{{ user.first_name }}</td>
         </tr>
         <tr>
-            <th>Pavarde</th>
+            <th>{% trans "Pavarde" %}</th>
             <td>{{ user.last_name }}</td>
         </tr>
         <tr>
-            <th>Gymimo data</th>
+            <th>{% trans "Gymimo data" %}</th>
             <td>{{ user.date_of_birth }}</td>
         </tr>
         <tr>
-            <th>El. paštas</th>
+            <th>{% trans "El. paštas" %}</th>
             <td>{{ user.email }}</td>
         </tr>
         <tr>
-            <th>Kompanija</th>
+            <th>{% trans "Kompanija" %}</th>
             <td>{{ user.company }}</td>
         </tr>
         <tr>
-            <th>Pareigos</th>
+            <th>{% trans "Pareigos" %}</th>
             <td>{{ user.position }}</td>
         </tr>
         <tr>
-            <th>Darbų saugos instrukcijos</th>
+            <th>{% trans "Darbų saugos instrukcijos" %}</th>
             <td>{% for instruction in user.instructions.all %}
                 {{ instruction.name }}, <br>
                 {% endfor %}
             </td>
         </tr>
         <tr>
-            <th>Priešgaisrinės instrukcijos</th>
+            <th>{% trans "Priešgaisrinės instrukcijos" %}</th>
             <td>{% for instruction in user.priesgaisrines.all %}
                 {{ instruction.pavadinimas }}, <br>
                 {% endfor %}
             </td>
         </tr>
         <tr>
-            <th>Mokymai</th>
+            <th>{% trans "Mokymai" %}</th>
             <td>{% for mokymas in user.mokymai.all %}
                 {{ mokymas.pavadinimas }}, <br>
                 {% endfor %}
             </td>
         </tr>
         <tr>
-            <th>Kiti dokumentai</th>
+            <th>{% trans "Kiti dokumentai" %}</th>
             <td>{% for dok in user.kiti_dokumentai.all %}
                 {{ dok.pavadinimas }}, <br>
                 {% endfor %}
             </td>
         </tr>
         <tr>
-            <th>Medicininės patikros data</th>
+            <th>{% trans "Medicininės patikros data" %}</th>
             <td>{{ user.med_patikros_data }}</td>
         </tr>
         <tr>
-            <th>Medicininės patikros periodas</th>
+            <th>{% trans "Medicininės patikros periodas" %}</th>
             <td>{{ user.get_med_patikros_periodas_display }}</td>
         </tr>
     </table>

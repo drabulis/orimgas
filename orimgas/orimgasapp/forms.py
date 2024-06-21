@@ -257,7 +257,7 @@ class UserInstructionSignForm(forms.ModelForm):
                 embed_attributes = {
                     'src': f'data:application/pdf;base64,{pdf_content_base64}',
                     'type': 'application/pdf',
-                    'width': '550px',
+                    'width': '',
                     'height': '600px',
                     'zoom': '83',  # Set default zoom level to 83%
                     'pluginspage': 'http://www.adobe.com/products/acrobat/readstep2.html',

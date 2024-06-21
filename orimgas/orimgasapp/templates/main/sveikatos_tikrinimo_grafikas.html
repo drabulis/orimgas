@@ -1,18 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Sveikatos tikrinimo grafikas{% endblock title %}
+{% load i18n %}
+{% block title %}{% trans "Sveikatos tikrinimo grafikas" %}{% endblock title %}
 {% block content %}
 
-        <h1>Darbuotojų sveikatos tikrinimo grafikas</h1>
+        <h1>{% trans "Darbuotojų sveikatos tikrinimo grafikas" %}</h1>
         {% include "main/included/paginator_prev_next.html" %}
         <br><br>
         {% if object_list %}
             <table class="nice-table">
                 <tr>
-                    <th>Vardas ir Pavardė</th>
-                    <th>Darbuotojo pareigos</th>
-                    <th>Sveikatos patikrinimo data</th>
-                    <th>Sveikatos tikrinimo periodiškumas</th>
-                    <th>Sekanti sveikatos tikrinimo data</th>
+                    <th>{% trans "Vardas ir Pavardė" %}</th>
+                    <th>{% trans "Darbuotojo pareigos" %}</th>
+                    <th>{% trans "Sveikatos patikrinimo data" %}</th>
+                    <th>{% trans "Sveikatos tikrinimo periodiškumas" %}</th>
+                    <th>{% trans "Sekanti sveikatos tikrinimo data" %}</th>
                 </tr>
                 {% for vartotojas in object_list %}
                     <tr>
@@ -25,7 +26,7 @@
                 {% endfor %}
 
         {% else %}
-            <p style="text-align: center;">Darbų saugos žurnale įrašų nerasta.</p>
+            <p style="text-align: center;">{% trans "Sveikatos tikrinimo žurnale įrašų nerasta." %}</p>
         {% endif %}
 
 {% endblock content %}
