@@ -1,17 +1,19 @@
 {% load static %}
+{% load i18n %}
+
 <html>
     <head>
-        <title>Atsijungėt nuo Orimgas</title>
+        <title>{% trans "Atsijungėt nuo Orimgas" %}</title>
         <link rel="stylesheet" type="text/css" href="{% static 'css/logout_style.css' %}">
     </head>
     <body>
-        <h1>Orimgas</h1>
-        <p>Sėkmingai atsijungėte nuo Orimgas.</p>
+        <h1>{% trans "Orimgas" %}</h1>
+        <p>{% trans "Sėkmingai atsijungėte nuo Orimgas." %}</p>
         <div>
-            <a href="{% url 'login' %}">Prisijungti</a>
+            <a href="{% url 'login' %}">{% trans "Prisijungti" %}</a>
             <br>
             <br>
-            <a href="{% url 'password_reset' %}">Pamiršote slaptažodį?</a>
+            <a href="{% url 'password_reset' %}">{% trans "Pamiršote slaptažodį?" %}</a>
         </div>
     </body>
 </html>

@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans "Kompanijos vartotojai" %} {{ block.super }}{% endblock title %}
+{% block title %}{% trans "Įmonės darbuotojai" %} {{ block.super }}{% endblock title %}
 {% block content %}
-    <h1>{% trans "Kompanijos vartotojai" %}</h1>
+<br><br><br>
+    <h1>{% trans "Įmonės darbuotojai" %}</h1>
     {% include "main/included/paginator_prev_next.html" %}
     <br><br>
-    <a href="{% url 'my_company_users' %}?generate_pdf=true" class="btn btn-primary">PDF</a>
+        <a href="{% url 'my_company_users' %}?generate_pdf=true" class="pdf-button" target="_blank">{% trans "Generuoti PDF" %}</a>
     <table class="nice-table" id="table">
         <tr>
             <th>

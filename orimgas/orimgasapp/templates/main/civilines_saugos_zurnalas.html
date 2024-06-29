@@ -6,12 +6,20 @@
 {% endblock title %}
 
 {% block content %}
+<br><br><br>
   <h1>{% trans "Civilinės saugos instruktavimų registracijos žurnalas" %}</h1>
   {% include "main/included/paginator_prev_next.html" %}
-  <br><br>
-  <a href="{% url 'civiline_sauga_zurnalas' %}?generate_pdf=true" class="btn btn-primary">PDF</a>
-
+  <br>
   {% if object_list %}
+    <form method="GET" action="{% url 'civiline_sauga_zurnalas' %}" class="filter-form" style="padding-bottom: 5px;">
+      <label for="start_date">{% trans "Nuo:" %}</label>
+      <input type="date" id="start_date" name="start_date" value="{{ request.GET.start_date }}">
+      <label for="end_date">{% trans "Iki:" %}</label>
+      <input type="date" id="end_date" name="end_date" value="{{ request.GET.end_date }}">
+      <button type="submit" class="btn btn-primary">{% trans "Filtruoti" %}</button>
+      <a href="{% url 'civiline_sauga_zurnalas' %}" class="btn btn-secondary">{% trans "Nustatyti iš naujo" %}</a>
+      <a href="{% url 'civiline_sauga_zurnalas' %}?generate_pdf=true&start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" class="btn btn-success" target="_blank">{% trans "Generuoti PDF" %}</a>
+    </form>
     <table class="nice-table" id="pasirasymai-table">
       <thead>
         <tr>

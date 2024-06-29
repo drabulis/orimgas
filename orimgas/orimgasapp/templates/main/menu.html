@@ -6,8 +6,8 @@
 {% endblock title %}
 
 {% block content %}
+<br><br><br>
 <h1>{{ user.company }}</h1>
-
 <h2>{{ user.position }} - {{ user.get_full_name }}</h2>
 <div class="menu">
 <ul >
@@ -28,10 +28,10 @@
         <a href="{% url 'my_company_users' %}">{% trans "Įmonės darbuotojai" %}</a>
     </li>
     <li>
-        <a href="{% url 'darbu_saugos_zurnalas' %}">{% trans "Darbu saugos instruktavimo registras" %}</a>
+        <a href="{% url 'darbu_saugos_zurnalas' %}">{% trans "Darbų saugos instruktavimo registras" %}</a>
     </li>
     <li>
-        <a href="{% url 'priesgaisrinės_saugos_zurnalas' %}">{% trans "Priesgaisrinės saugos žurnalas" %}</a>
+        <a href="{% url 'priesgaisrinės_saugos_zurnalas' %}">{% trans "Priešgaisrinės saugos žurnalas" %}</a>
     </li>
     <li>
         <a href="{% url 'civiline_sauga_zurnalas' %}">{% trans "Civilinės saugos žurnalas" %}</a>
@@ -55,5 +55,4 @@
     {% endif %}
 </ul>
 </div>
-<br><br>
 {% endblock content %}

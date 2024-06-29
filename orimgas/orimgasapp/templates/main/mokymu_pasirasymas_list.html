@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans "Mokymo protokolas" %}{% endblock title %}
+{% block title %}{% trans "Atestavimo protokolas" %}{% endblock title %}
 {% block content %}
+<br><br><br>
 <h1>{% trans "Atestavimo protokolas" %}</h1>
-{% include "main/included/paginator_prev_next.html" %}
 <br><br>
 {% if object_list %}
-<a href="?generate_pdf=1">PDF</a>
+<a href="?generate_pdf=1" class="pdf-button" target="_blank">{% trans "Generuoti PDF" %}</a>
+
     <table class="nice-table">
         <tr>
             <th>{% trans "Vardas ir Pavardė" %}</th>
@@ -35,7 +36,7 @@
             </tr>
 
         {% endfor %}
-
+        </table>
 {% else %}
     <p style="text-align: center;">{% trans "Mokymų žurnale įrašų nerasta." %}</p>
 {% endif %}

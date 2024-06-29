@@ -17,6 +17,7 @@ from django.utils import translation
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import tempfile
+from django.utils.dateparse import parse_date
 
 class UserMeniuView(LoginRequiredMixin, generic.ListView):
     model = models.User
@@ -325,7 +326,7 @@ class MyCompanyUsersView(LoginRequiredMixin, generic.ListView):
             table_data.append(row)
 
         context = {
-            'title': 'Kompanijos Vartotojai',
+            'title': 'Įmonės Darbuotojai',
             'headers': table_headers,
             'data': table_data
         }
@@ -370,8 +371,8 @@ class DarbuSaugosZurnalas(LoginRequiredMixin, generic.ListView):
             queryset = queryset.filter(
                 Q(user__position__name__icontains=query) |
                 Q(user__email__icontains=query) |
-                Q(user__first_name__icontains(query)) |
-                Q(user__last_name__icontains(query))
+                Q(user__first_name__icontains=query) |
+                Q(user__last_name__icontains=query)
             )
 
         # Handle sorting
@@ -412,12 +413,12 @@ class DarbuSaugosZurnalas(LoginRequiredMixin, generic.ListView):
             table_data.append(row)
 
         context = {
-            'title': 'Darbu Saugos Žurnalas',
+            'title': 'Darbuotojų saugos ir sveikatos instruktavimų darbo vietoje registras',
             'headers': table_headers,
             'data': table_data
         }
 
-        # Render the PDF
+         # Render the PDF
         html_string = render_to_string('pdf_template.html', context)
         html = HTML(string=html_string)
 
@@ -425,8 +426,9 @@ class DarbuSaugosZurnalas(LoginRequiredMixin, generic.ListView):
             html.write_pdf(target=output.name)
             output.seek(0)
             response = HttpResponse(output.read(), content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename="darbu saugos zurnalas.pdf"'
+            response['Content-Disposition'] = 'attachment; filename="Įmonės darbuotojai.pdf"'
             return response
+
 
     def get(self, request, *args, **kwargs):
         if 'generate_pdf' in request.GET:
@@ -493,11 +495,12 @@ class CivilinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
             table_data.append(row)
 
         context = {
-            'title': 'Civilinės Saugos Žurnalas',
+            'title': 'Civilinės saugos instruktavimų registracijos žurnalas',
             'headers': table_headers,
             'data': table_data
         }
 
+        # Render the PDF
         html_string = render_to_string('pdf_template.html', context)
         html = HTML(string=html_string)
 
@@ -505,8 +508,9 @@ class CivilinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
             html.write_pdf(target=output.name)
             output.seek(0)
             response = HttpResponse(output.read(), content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename="civilines saugos zurnalas.pdf"'
+            response['Content-Disposition'] = 'attachment; filename="Įmonės darbuotojai.pdf"'
             return response
+
 
     def get(self, request, *args, **kwargs):
         if 'generate_pdf' in request.GET:
@@ -570,21 +574,22 @@ class MokymuPasirasymasList(generic.ListView):
             table_data.append(row)
 
         context = {
-        'title': 'Mokymų Žurnalas',
+        'title': 'Atestavimo protokolas',
         'headers': table_headers,
         'data': table_data,
     }
 
+        # Render the PDF
         html_string = render_to_string('pdf_template.html', context)
         html = HTML(string=html_string)
 
         with tempfile.NamedTemporaryFile(delete=True) as output:
             html.write_pdf(target=output.name)
-            pdf_content = output.read()
-        response = HttpResponse(pdf_content, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="Mokymu_zurnalas.pdf"'
-        response['Content-Length'] = len(pdf_content)
-        return response
+            output.seek(0)
+            response = HttpResponse(output.read(), content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="Įmonės darbuotojai.pdf"'
+            return response
+
 
     def get(self, request, *args, **kwargs):
         if 'generate_pdf' in request.GET:
@@ -593,7 +598,7 @@ class MokymuPasirasymasList(generic.ListView):
 
 
 class KituDocZurnalas(LoginRequiredMixin, generic.ListView):
-    model = models.KituDocPasirasymas
+    model = models.KitiDokumentai
     template_name ='main/kitu_doc_zurnalas.html'
     paginate_by = 10
 
@@ -610,24 +615,32 @@ class KituDocZurnalas(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         company = self.request.user.company
-        queryset = queryset.filter(user__company=company)
-        
-        query = self.request.GET.get('query')
-        if query:
-            queryset = queryset.filter(
-                Q(user__position__name__icontains=query) |
-                Q(user__email__icontains=query) |
-                Q(user__first_name__icontains=query) |
-                Q(user__last_name__icontains=query)
-            )
-        print("Queryset:", queryset)  
+        queryset = queryset.filter(imone=company)
+        return queryset
+
+class KituDocPasirasymuZurnalas(LoginRequiredMixin, generic.ListView):
+    model = models.KituDocPasirasymas
+    template_name = 'main/kitu_doc_pasirasymu_zurnalas.html'
+    paginate_by = 10
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_supervisor:
+            raise PermissionDenied("You do not have permission to access this view.")
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['uuid'] = self.kwargs['uuid']
+        return context
+    
+    def get_queryset(self):
+        uuid = self.kwargs['uuid']
+        queryset = models.KituDocPasirasymas.objects.filter(instruction__uuid=uuid)    
         return queryset
 
     def generate_pdf(self, request):
-        # Get the filtered queryset
         queryset = self.get_queryset()
 
-        # Define the table structure
         table_headers = [
             'Vardas ir pavardė',
             'Pareigos',
@@ -648,11 +661,10 @@ class KituDocZurnalas(LoginRequiredMixin, generic.ListView):
             table_data.append(row)
 
         context = {
-            'title': 'Kitų Dokumentų Žurnalas',
+            'title': 'Kitų dokumentų protokolas',
             'headers': table_headers,
             'data': table_data
         }
-
         # Render the PDF
         html_string = render_to_string('pdf_template.html', context)
         html = HTML(string=html_string)
@@ -661,14 +673,15 @@ class KituDocZurnalas(LoginRequiredMixin, generic.ListView):
             html.write_pdf(target=output.name)
             output.seek(0)
             response = HttpResponse(output.read(), content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename="kitų dokumentų zurnalas.pdf"'
+            response['Content-Disposition'] = 'attachment; filename="Kitų dokumentų protokolas.pdf"'
             return response
 
     def get(self, request, *args, **kwargs):
         if 'generate_pdf' in request.GET:
             return self.generate_pdf(request)
         return super().get(request, *args, **kwargs) 
-    
+
+
 
 class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
     model = models.PriesgaisriniuPasirasymas
@@ -698,6 +711,14 @@ class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
                 Q(user__first_name__icontains=query) |
                 Q(user__last_name__icontains=query)
             )
+        
+        start_date = self.request.GET.get('start_date')
+        end_date = self.request.GET.get('end_date')
+        if start_date:
+            queryset = queryset.filter(date_signed__gte=parse_date(start_date))
+        if end_date:
+            queryset = queryset.filter(date_signed__lte=parse_date(end_date))
+        
         return queryset
 
     def generate_pdf(self, request):
@@ -721,7 +742,7 @@ class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
                 sign.user.get_full_name(),
                 sign.user.position.name if sign.user.position else 'N/A',
                 sign.instruction.pavadinimas if sign.instruction else 'N/A',
-                'Pirminis' if sign.instruktavimo_tipas==0 else 'Periodinis',
+                'Įvadinis' if sign.instruktavimo_tipas==0 else 'Periodinis',
                 'Pasirašyta' if sign.status == 1 else 'Nepasirašyta',
                 sign.date_signed if sign.date_signed else 'N/A',
                 sign.next_sign if sign.next_sign else 'N/A',
@@ -729,11 +750,10 @@ class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
             table_data.append(row)
 
         context = {
-            'title': 'Priešgaisrinės Saugos Žurnalas',
+            'title': 'Gaisrinės saugos instruktažų registracijos žurnalas',
             'headers': table_headers,
             'data': table_data
         }
-
         # Render the PDF
         html_string = render_to_string('pdf_template.html', context)
         html = HTML(string=html_string)
@@ -742,14 +762,13 @@ class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
             html.write_pdf(target=output.name)
             output.seek(0)
             response = HttpResponse(output.read(), content_type='application/pdf')
-            response['Content-Disposition'] = 'attachment; filename="priešgaisrinės saugos zurnalas.pdf"'
+            response['Content-Disposition'] = 'attachment; filename="Gaisrinės saugos.pdf"'
             return response
 
     def get(self, request, *args, **kwargs):
         if 'generate_pdf' in request.GET:
             return self.generate_pdf(request)
-        return super().get(request, *args, **kwargs) 
-    
+        return super().get(request, *args, **kwargs)
 
 class SveikatosTikrinimoGrafikas(LoginRequiredMixin, generic.ListView):
     model = models.User
@@ -882,7 +901,7 @@ class DokumentuListView(LoginRequiredMixin, generic.ListView):
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['dokumetai'] = models.Instruction.objects.filter(imone=self.request.user.company)
+        context['dokumetai'] = models.Instruction.objects.filter(company=self.request.user.company)
         context['priesrines_instrukcijos'] = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
         context['mokymo_instrukcijos'] = models.Mokymai.objects.filter(imone=self.request.user.company)
         context['kitu_doc'] = models.KitiDokumentai.objects.filter(imone=self.request.user.company)

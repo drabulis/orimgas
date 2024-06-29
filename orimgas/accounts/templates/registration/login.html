@@ -1,32 +1,73 @@
 {% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Prisijungti prie Orimgas</title>
-        <link rel="stylesheet" type="text/css" href="{% static 'css/login_style.css' %}">
-    </head>
-    
-    {% if form.errors %}
-    <ul class="errors">
-        {% for error in form.errors %}
-            <li>
-                {{ error }}
-            </li>
-            {% endfor %}
-    </ul>
-    {% endif %}
-    
+<head>
+    <title>{% trans "Prisijungti prie Orimgas" %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login_style.css' %}">
+    <style>
+        .alert {
+            padding: 20px;
+            background-color: #f44336; /* Red */
+            color: white;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        
+        .alert ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+        
+        .alert li {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
     <div class="form-container">
-        <h1>Orimgas</h1>
-        <h3>Prisijungti</h3>
+        <h1>{% trans "Orimgas" %}</h1>
+        <h3>{% trans "Prisijungti" %}</h3>
+        
+        {% if form.errors %}
+            <div class="alert">
+                <ul>
+                    {% for field in form %}
+                        {% if field.errors %}
+                            <li>
+                                {{ field.label }}:
+                                <ul>
+                                    {% for error in field.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                        <li>
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+        
         <form method="post" action="{% url "login" %}">
             {% csrf_token %}
-                <label for="username">El. paštas:</label>
-                <input type="username" id="username" name="username" required>
-                <br>
-                <label for="password">Slaptažodis:</label>
-                <input type="password" id="password" name="password" required>
-                <br>
-                <button class="button" type="submit">Prisijungti</button>
-                <p><a href="{% url "password_reset" %}">Pamiršote slaptažodį?</a></p>
+            <label for="username">{% trans "El. paštas:" %}</label>
+            <input type="text" id="username" name="username" required>
+            <br>
+            <label for="password">{% trans "Slaptažodis:" %}</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <button class="button" type="submit">{% trans "Prisijungti" %}</button>
+            <p><a href="{% url "password_reset" %}">{% trans "Pamiršote slaptažodį?" %}</a></p>
         </form>
     </div>
+</body>
+</html>

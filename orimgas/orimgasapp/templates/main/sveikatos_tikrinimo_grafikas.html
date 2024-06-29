@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{% trans "Sveikatos tikrinimo grafikas" %}{% endblock title %}
 {% block content %}
-
+<br><br><br>
         <h1>{% trans "Darbuotojų sveikatos tikrinimo grafikas" %}</h1>
         {% include "main/included/paginator_prev_next.html" %}
         <br><br>
@@ -24,7 +24,7 @@
                         <td>{{ vartotojas.sekanti_med_patikros_data }}</td>
                     </tr>
                 {% endfor %}
-
+                </table>
         {% else %}
             <p style="text-align: center;">{% trans "Sveikatos tikrinimo žurnale įrašų nerasta." %}</p>
         {% endif %}

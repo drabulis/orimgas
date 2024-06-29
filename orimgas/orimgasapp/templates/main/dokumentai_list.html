@@ -2,6 +2,7 @@
 {% load i18n %}
 {% block title %}{% trans "Dokumetai" %} {{ block.super }}{% endblock title %}
 {% block content %}
+<br><br><br>
     <h1>{% trans "Darbų saugos instrukcijos" %}</h1>
     {% if dokumentai %}
         <table class="nice-table">
@@ -12,7 +13,7 @@
             {% for instruction in dokumentai %}
                 <tr>
                     <td>{{ instruction.name }}</td>
-                    <td><a href="{% url 'darbu_sagos_detail' instruction.uuid %}">{% trans "Skaityti/Pasirašyti" %}</a></td>
+                    <td><a href="{% url 'darbu_sagos_detail' instruction.uuid %}">{% trans "Skaityti" %}</a></td>
                 </tr>
             {% endfor %}
         </table>
@@ -30,14 +31,14 @@
             {% for priesgaisrine in priesrines_instrukcijos %}
                 <tr>
                     <td>{{ priesgaisrine.pavadinimas }}</td>
-                    <td><a href="{% url 'priesgaisrinio_detail' priesgaisrine.uuid %}">{% trans "Skaityti/Pasirašyti" %}</a></td>
+                    <td><a href="{% url 'priesgaisrinio_detail' priesgaisrine.uuid %}">{% trans "Skaityti" %}</a></td>
                 </tr>
             {% endfor %}
         </table>
     {% else %}
         <p style="text-align: center;">{% trans "Šiuo metu priešgaisrinės instrukcijos neturite." %}</p>
     {% endif %}
-    <h1>{% trans "Civilinės saugos intrukcijos" %}</h1>
+    <h1>{% trans "Civilinės saugos instrukcijos" %}</h1>
     {% if civiline_sauga %}
         <table class="nice-table">
             <tr>
@@ -47,7 +48,7 @@
             {% for instruction in civiline_sauga %}
                 <tr>
                     <td>{{ instruction.pavadinimas }}</td>
-                    <td><a href="{% url 'civiline_sauga_detail' instruction.uuid %}">{% trans "Skaityti/Pasirašyti" %}</a></td>
+                    <td><a href="{% url 'civiline_sauga_detail' instruction.uuid %}">{% trans "Skaityti" %}</a></td>
                 </tr>
             {% endfor %}
         </table>
@@ -64,7 +65,7 @@
             {% for mokymas in mokymo_instrukcijos %}
                 <tr>
                     <td>{{ mokymas.pavadinimas }}</td>
-                    <td><a href="{% url 'mokymu_detail' mokymas.uuid %}">{% trans "Skaityti/Pasirašyti" %}</a></td>
+                    <td><a href="{% url 'mokymu_detail' mokymas.uuid %}">{% trans "Skaityti" %}</a></td>
                 </tr>
             {% endfor %}
         </table>
@@ -82,7 +83,7 @@
             {% for kito_dokumento_pasirasymas in kitu_doc %}
                 <tr>
                     <td>{{ kito_dokumento_pasirasymas.pavadinimas }}</td>
-                    <td><a href="{% url 'kiti_dokumentai_detail' kito_dokumento_pasirasymas.uuid %}">{% trans "Skaityti/Pasirašyti" %}</a></td>
+                    <td><a href="{% url 'kiti_dokumentai_detail' kito_dokumento_pasirasymas.uuid %}">{% trans "Skaityti" %}</a></td>
                 </tr>
             {% endfor %}
         </table>

@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="pager">
     {% if page_obj.has_previous %}
         <a href="{{ request.path }}?query={{ request.GET.query }}&page=1">&laquo;</a>
@@ -15,10 +16,10 @@
 </div>
 <div>
     {% if search %}
-        <form method="GET" action="{{ request.path }}">
-            <input type="text" name="query" value="{{ request.GET.query }}" placeholder="Ieškoti">
+        <form method="GET" style="padding-bottom: 5px; margin-bottom: 0.7rem;" action="{{ request.path }}" class="filter-form">
+            <input type="text" name="query" value="{{ request.GET.query }}" placeholder={% trans "Ieškoti" %}>
             <button type="submit">&#128269;</button>
-            <a href="{{ request.path }}">reset</a>
+            <a href="{{ request.path }}" class="btn btn-secondary">{% trans "Nustatyti iš naujo" %}</a>
         </form>
     {% endif %}
 </div>

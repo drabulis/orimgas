@@ -45,7 +45,7 @@ class CustomUserManager(UserManager):
     
 MED_PATIKROS_PERIODAS = (
     (12, _("12 Mėnesių")),
-    (24, _("24 Mėnesių")),
+    (24, _("24 Mėnesiai")),
 
 )
 

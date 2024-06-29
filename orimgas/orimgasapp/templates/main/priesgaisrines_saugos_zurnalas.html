@@ -2,11 +2,20 @@
 {% load i18n %}
 {% block title %}{% trans "Priešgaisrinės saugos žurnalas" %}{% endblock title %}
 {% block content %}
-<h1>{% trans "GAISRINĖS SAUGOS INSTRUKTAŽŲ REGISTRACIJOS ŽURNALAS" %}</h1>
+<br><br><br>
+<h1>{% trans "Gaisrinės saugos instruktažų registracijos žurnalas" %}</h1>
 {% include "main/included/paginator_prev_next.html" %}
-<br><br>
+<br>
 {% if object_list %}
-<a href="{% url 'priesgaisrinės_saugos_zurnalas' %}?generate_pdf=true" class="btn btn-primary" target="_blank">PDF</a>
+    <form method="GET" action="{% url 'priesgaisrinės_saugos_zurnalas' %}" class="filter-form" style="padding-bottom: 5px;">
+        <label for="start_date">{% trans "Nuo:" %}</label>
+        <input type="date" id="start_date" name="start_date" value="{{ request.GET.start_date }}">
+        <label for="end_date">{% trans "Iki:" %}</label>
+        <input type="date" id="end_date" name="end_date" value="{{ request.GET.end_date }}">
+        <button type="submit" class="btn btn-primary">{% trans "Filtruoti" %}</button>
+        <a href="{% url 'priesgaisrinės_saugos_zurnalas' %}" class="btn btn-secondary">{% trans "Nustatyti iš naujo" %}</a>
+        <a href="{% url 'priesgaisrinės_saugos_zurnalas' %}?generate_pdf=true&start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" class="btn btn-success" target="_blank">{% trans "Generuoti PDF" %}</a>
+    </form>
     <table class="nice-table">
         <tr>
             <th>{% trans "Instruktuojamojo vardas ir pavardė" %}</th>
@@ -33,9 +42,8 @@
                 <td>{{ pasirasymas.date_signed|default:"Nepasirašyta" }}</td>
                 <td>{{ pasirasymas.next_sign|default:"Nepatikslinta" }}</td>
             </tr>
-
         {% endfor %}
-
+    </table>
 {% else %}
     <p>{% trans "Priešgaisrinės saugos žurnale įrašų nerasta." %}</p>
 {% endif %}

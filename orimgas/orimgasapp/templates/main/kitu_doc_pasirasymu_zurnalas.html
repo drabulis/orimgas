@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Kitų dokumentų registras" %}{% endblock title %}
+{% block content %}
+<br><br><br>
+<h1>{% trans "Kitų dokumentų registras" %}</h1>
+{% include "main/included/paginator_prev_next.html" %}
+<br><br>
+{% if object_list %}
+<a href="{% url 'kitu-doc-pasirasymas-list' uuid=uuid %}?generate_pdf=true" class="pdf-button" target="_blank">{% trans "Generuoti PDF" %}</a>
+<table class="nice-table">
+        <tr>
+            <th>{% trans "Vardas ir Pavardė" %}</th>
+            <th>{% trans "Darbuotojo pareigos" %}</th>
+            <th>{% trans "Dokumento pavadinimas" %}</th>
+            <th>{% trans "Pasirašymas" %}</th>
+            <th>{% trans "Supažindinimo data" %}</th>
+        </tr>
+        {% for pasirasymas in object_list %}
+            <tr>
+                <td>{{ pasirasymas.user.get_full_name }}</td>
+                <td>{{ pasirasymas.user.position }}</td>
+                {% if pasirasymas.instruction.name %}
+                    <td>{{ pasirasymas.instruction.name }}</td>
+                    {% else %}
+                    <td>{{ pasirasymas.instruction.pavadinimas }}</td>
+                {% endif %}
+                <td>{{ pasirasymas.get_status_display }}</td>
+                <td>{{ pasirasymas.date_signed|default:"Nepasirašyta" }}</td>
+            </tr>
+
+        {% endfor %}
+        </table>
+{% else %}
+    <p style="text-align: center;">{% trans "Kitų dokumentų žurnale įrašų nerasta." %}</p>
+{% endif %}
+
+{% endblock content %}

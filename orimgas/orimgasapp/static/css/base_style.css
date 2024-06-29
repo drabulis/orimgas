@@ -1,10 +1,18 @@
-body{
-    background-color: #f5f5f5;
+html {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
     padding: 0;
     margin: 0;
+}
+
+body {
+    background-color: #f5f5f5;
     height: 100vh;
     display: flex;
     flex-direction: column;
+    margin: 0;
+    padding: 0;
 }
 .blank {
     border: none;
@@ -38,10 +46,16 @@ h2{
 }
 
 header{
+    position: fixed;
+    margin-bottom: 3rem;
+    left: 0;
+    top: 0;
+    width: 100%;
     padding: 0;
-    margin: 0;
+    margin-bottom: 1rem;
     background-color: #01017a;
     color: white;
+    text-align: center;
     text-shadow: #252525;
     box-shadow: 1px 1px 10px #25252588;
     align-items: center;
@@ -49,20 +63,23 @@ header{
     text-align: center;
     border-radius: 0 0 10px 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 1);
-
 }
 
+.content {
+    min-height: auto;
+    flex-grow: 1;
+    flex-direction: column;
+    flex: 1;
+    display: flex;
+}
 
 footer{
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
+    float: bottom;
+    margin-top: 10rem;
     padding: 0;
-    margin-top: 1rem;
+    margin: 0;
     background-color: #01017a;
     color: white;
-    text-align: center;
     text-shadow: #252525;
     box-shadow: 1px 1px 10px #25252588;
     align-items: center;
@@ -109,7 +126,7 @@ header a{
     font-family: sans-serif;
 }
 header a:hover{
-    color: rgb(61, 61, 61);
+    color: rgb(179, 179, 179);
 }
 
 ul.list{
@@ -133,6 +150,7 @@ ul.list li{
 }
 ul.list li a{
     color: black;
+    display: block;
     text-decoration: none;
     font-size: 1rem;
     font-family: sans-serif;
@@ -174,7 +192,7 @@ div.form input{
 
 .nice-table{
     list-style-type: none;
-    margin: auto;
+    margin: 1rem auto;
     max-width: fit-content;
     border: 1px solid #0000aa;
     border-radius: 10px;
@@ -228,7 +246,7 @@ ul.nav li.right {
   
   form {
     width: fit-content;
-    margin: auto auto;
+    margin: 1rem auto;
     text-align: center;
     padding: 20px;
     border: 1px solid #0000aa;
@@ -283,6 +301,8 @@ ul.nav li.right {
 }
 
 .menu li {
+    position: relative;
+
     font-size: 18px;
     font-weight: bold;
     text-transform: uppercase;
@@ -301,6 +321,9 @@ ul.nav li.right {
 }
 
 .menu a {
+    display: block;
+    height: 100%;
+    width: 100%;
     text-decoration: none;
     color: #007bff;
     font-weight: bold;
@@ -360,4 +383,88 @@ ul.nav li.right {
 }
 div.collumn {
     margin: 0.5rem;
+}
+
+.filter-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-form label {
+    margin-right: 5px;
+}
+
+.filter-form input[type="date"] {
+    padding: 5px;
+    font-size: 14px;
+}
+
+.filter-form .btn {
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+.filter-form .btn-secondary {
+    background-color: #f8f9fa;
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.filter-form .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: #fff;
+}
+
+.pdf-button {
+    align-self: center;
+    align-items: center;
+    background-color: #28a745;
+    border-color: #28a745;
+    color: #fff;
+    display: flex;
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+/* Pager Container */
+.pager {
+    display: flex;
+    justify-content: center; /* Center align the pager */
+    padding: 10px 0; /* Add padding for spacing */
+    list-style: none; /* Remove default list styling */
+    margin: 10px 0; /* Add margin for spacing */
+}
+
+/* Individual Page Item */
+.pager li {
+    margin: 0 5px; /* Add horizontal spacing between items */
+}
+
+.pager li a {
+    display: block; /* Make the link block-level */
+    padding: 8px 16px; /* Add padding for clickable area */
+    border: 1px solid #007bff; /* Border color */
+    border-radius: 5px; /* Rounded corners */
+    color: #007bff; /* Text color */
+    text-decoration: none; /* Remove underline */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+}
+
+/* Active Page Item */
+.pager li.active a {
+    background-color: #007bff; /* Active background color */
+    color: #fff; /* Active text color */
+    border-color: #007bff; /* Active border color */
+}
+
+/* Hover Effect */
+.pager li a:hover {
+    background-color: #0056b3; /* Hover background color */
+    color: #fff; /* Hover text color */
+    border-color: #0056b3; /* Hover border color */
 }

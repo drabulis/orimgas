@@ -2,6 +2,7 @@
 {% load i18n %}
 {% block title %}{{ block.super }}{% trans "Pridėti vartotoją" %}{% endblock title %}
 {% block content %}
+<br><br><br>
     <h1>{% trans "Pridėti naują vartotoją" %}</h1>
     <form method="POST" action="{% url 'user_add' %}">
         {% csrf_token %}
@@ -11,9 +12,9 @@
                 {{ form.first_name }}
                 <label for="id_last_name">{% trans "Pavardė" %}:</label>
                 {{ form.last_name }}
-                <label for="id_email">{% trans "El. Paštas" %}:</label>
+                <label for="id_email">{% trans "El. paštas" %}:</label>
                 {{ form.email }}
-                <label for="id_date_of_birth">{% trans "Gimimo Data" %}:</label>
+                <label for="id_date_of_birth">{% trans "Gimimo data" %}:</label>
                 {{ form.date_of_birth }}
                 <label for="id_position">{% trans "Pareigos" %}:</label>
                 {{ form.position }}
@@ -22,11 +23,11 @@
                 {{ form.password }}
             </div>
             <div class="collumn">
-                <label for="id_instructions">{% trans "Darbų Saugos Instrukcijos" %}:</label>
+                <label for="id_instructions">{% trans "Darbų saugos instrukcijos" %}:</label>
                 {{ form.instructions }}
-                <label for="id_priesgaisrines">{% trans "Priešgaisrinės Instrukcijos" %}:</label>
+                <label for="id_priesgaisrines">{% trans "Priešgaisrinės instrukcijos" %}:</label>
                 {{ form.priesgaisrines }}
-                <label for="id_civiline_sauga">{% trans "Civiline Saugos Instrukcijos" %}:</label>
+                <label for="id_civiline_sauga">{% trans "Civilinės saugos instrukcijos" %}:</label>
                 {{ form.civiline_sauga }}
             </div>
             <div class="collumn">
@@ -34,13 +35,13 @@
                 {{ form.mokymai }}
             </div>
             <div class="collumn">
-                <label for="id_kiti_dokumentai">{% trans "Kiti Dokumentai" %}:</label>
+                <label for="id_kiti_dokumentai">{% trans "Kiti dokumentai" %}:</label>
                 {{ form.kiti_dokumentai }}
             </div>
             <div class="collumn">
-                <label for="id_med_patikros_data">{% trans "Med Patikros Data" %}:</label>
+                <label for="id_med_patikros_data">{% trans "Med patikros data" %}:</label>
                 {{ form.med_patikros_data }}
-                <label for="id_med_patikros_periodas">{% trans "Med Patikros Periodas" %}:</label>
+                <label for="id_med_patikros_periodas">{% trans "Med patikros periodas" %}:</label>
                 {{ form.med_patikros_periodas }}
             </div>
         </div>

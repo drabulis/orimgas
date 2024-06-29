@@ -2,6 +2,7 @@
 {% load i18n %}
 {% block title %}{{ object.name }} {{ block.super }}{% endblock title %}
 {% block content %}
+<br><br><br>
 <h1>{{ object.name }}</h1>
 <form method="post" id="userInstructionForm">
     {{ form.render_pdf }}

@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'orimgasapp',
     'accounts',
     'django_cron',
-    'rangefilter',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -162,8 +161,9 @@ MEDIA_ROOT = BASE_DIR.joinpath(MEDIA_URL)
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = local_settings.EMAIL_HOST
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

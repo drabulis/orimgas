@@ -21,6 +21,7 @@ urlpatterns = [
     path('main/supervisor_edit_user/<uuid:uuid>/', views.SupervisorEditUserView.as_view(), name='supervisor_edit_user'),
     path('main/darbu_saugos_zurnalas', views.DarbuSaugosZurnalas.as_view(), name='darbu_saugos_zurnalas'),
     path('main/priesgaisrinės_saugos_zurnalas', views.PriesgaisrinesSaugosZurnalas.as_view(), name='priesgaisrinės_saugos_zurnalas'),
+    path('main/kitu_doc_zurnalas/<uuid:uuid>/', views.KituDocPasirasymuZurnalas.as_view(), name='kitu-doc-pasirasymas-list'),
     path('main/civiline_saugos_zurnalas', views.CivilinesSaugosZurnalas.as_view(), name='civiline_sauga_zurnalas'),
     path('main/mokymu_zurnalas', views.MokymuZurnalas.as_view(), name='mokymu_zurnalas'),
     path('mokymai/<uuid:uuid>/pasirasymai/', views.MokymuPasirasymasList.as_view(), name='mokymu-pasirasymas-list'),

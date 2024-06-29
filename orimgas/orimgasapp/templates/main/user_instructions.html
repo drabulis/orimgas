@@ -2,6 +2,7 @@
 {% load i18n %}
 {% block title %}{% trans "Vartotojo instrukcijos" %} {{ block.super }}{% endblock title %}
 {% block content %}
+<br><br><br>
     <h1>{%  trans "Darbų saugos instrukcijos" %}</h1>
     {% if userinstructionsign_list %}
         <table class="nice-table">
@@ -37,7 +38,7 @@
     {% else %}
         <p style="text-align: center;">{%  trans "Šiuo metu priešgaisrinės instrukcijos neturite." %}</p>
     {% endif %}
-    <h1>{%  trans "Civilinės saugos intrukcijos" %}</h1>
+    <h1>{%  trans "Civilinės saugos instrukcijos" %}</h1>
     {% if civiline_sauga %}
         <table class="nice-table">
             <tr>
