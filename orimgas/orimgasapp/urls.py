@@ -2,6 +2,7 @@ from django.urls import path
 from django.contrib.auth.views import LoginView
 from django.views.i18n import set_language
 from . import views
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -34,4 +35,5 @@ urlpatterns = [
     path('main/mokymai/<uuid:uuid>/', views.MokymuReviewView.as_view(), name='mokymu_detail'),
     path('main/kiti_dokumentai/<uuid:uuid>/', views.KituDocReviewView.as_view(), name='kiti_dokumentai_detail'),
     path('login/', LoginView.as_view(), name='login'),
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
