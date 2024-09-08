@@ -36,7 +36,7 @@
             {% endfor %}
         </table>
     {% else %}
-        <p style="text-align: center;">{%  trans "Šiuo metu priešgaisrinės instrukcijos neturite." %}</p>
+        <p style="text-align: center;">{%  trans "Šiuo metu priešgaisrinės instrukcijų neturite." %}</p>
     {% endif %}
     <h1>{%  trans "Civilinės saugos instrukcijos" %}</h1>
     {% if civiline_sauga %}
@@ -88,7 +88,24 @@
             {% endfor %}
         </table>
     {% else %}
-        <p style="text-align: center;">{%  trans "Šiuo metu kiti dokumentai neturite." %}</p>
+        <p style="text-align: center;">{%  trans "Šiuo metu kitų dokumentų neturite." %}</p>
+    {% endif %}
+    <h1>{%  trans "Asmeninės apsaugos priemonės" %}</h1>
+    {% if asmenines_apsaugos_priemones %}
+        <table class="nice-table">
+            <tr>
+                <th>{%  trans "AAP pavadinimas" %}</th>
+                <th>{%  trans "Peržiūrėti" %}</th>
+            </tr>
+            {% for AAP in asmenines_apsaugos_priemones %}
+                <tr>
+                    <td>{{ AAP.AAP.pavadinimas }}</td>
+                    <td><a href="{% url 'AAP_sign' AAP.uuid %}">{%  trans "Susipažinti" %}</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p style="text-align: center;">{%  trans "Šiuo metu AAP neturite." %}</p>
     {% endif %}
     <br><br><br><br>
 {% endblock content %}

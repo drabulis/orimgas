@@ -20,7 +20,8 @@ class Command(BaseCommand):
 
         for user in users_with_status_0:
             subject = 'Priminimas: Turite neužbaigtų darbų'
-            message = f"""Gerbiamas(-a) {user.first_name}, 
+            message = f"""
+        Gerbiamas(-a) {user.first_name}, 
 
         Kviečiame prisijungti prie jūsų profilio, susipažinti su instrukcijomis.
         Prie profilio prisijungti galite čia: https://orimgas.online 

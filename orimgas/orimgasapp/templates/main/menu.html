@@ -47,6 +47,9 @@
     <li>
         <a href="{% url 'dokumentai_list' %}">{% trans "Įmonės dokumentai" %}</a>
     </li>
+    <li>
+        <a href="{% url 'AAP_zurnalas' %}">{% trans "AAP žurnalas" %}</a>
+    </li>
     {% endif %}
     {% if user.is_superuser %}
     <li>

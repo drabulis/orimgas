@@ -50,6 +50,14 @@ class KitiDokumentaiAdmin(admin.ModelAdmin):
         'imone',
     )
 
+class AsmeninesApsaugosPriemonesAdmin(admin.ModelAdmin):
+    list_display = ('pavadinimas', 'periodiskumas')
+    search_fields = ('pavadinimas', 'periodiskumas')
+    list_filter = (
+        'periodiskumas',
+        'pavadinimas',
+    )
+
 class UserInstructionSignAdmin(admin.ModelAdmin):
     list_display = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
     search_fields = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
@@ -114,6 +122,16 @@ class TestoAtsakymasAdmin(admin.ModelAdmin):
         'klausimas',
     )
 
+class AAPPasirasymasAdmin(admin.ModelAdmin):
+    list_display = ('user', 'AAP', 'status', 'date_signed', 'next_sign')
+    search_fields = ('user', 'AAP', 'status', 'date_signed', 'next_sign')
+    list_filter = (
+        'status',
+        ('user__company', admin.RelatedOnlyFieldListFilter),
+        ('date_signed', DateRangeFilter),
+)
+
+
 admin.site.register(models.Company, CompanyAdmin)
 admin.site.register(models.Position, PositionAdmin)
 admin.site.register(models.Instruction, InstructionAdmin)
@@ -129,4 +147,6 @@ admin.site.register(models.UserInstructionSign, UserInstructionSignAdmin)
 admin.site.register(models.Testai, TestAdmin)
 admin.site.register(models.TestoKlausimas, TestoKlausimaiAdmin)
 admin.site.register(models.TestoAtsakymas, TestoAtsakymasAdmin)
+admin.site.register(models.AAPPasirasymas, AAPPasirasymasAdmin)
+admin.site.register(models.AsmeninesApsaugosPriemones, AsmeninesApsaugosPriemonesAdmin)
 

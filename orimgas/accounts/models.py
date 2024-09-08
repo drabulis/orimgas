@@ -89,6 +89,11 @@ class User(AbstractBaseUser, PermissionsMixin):
                                 related_name="users",
                                 blank=True,
                                 default=None)
+    AsmeninesApsaugosPriemones = models.ManyToManyField("orimgasapp.AsmeninesApsaugosPriemones",
+                                verbose_name=_("AsmeninesApsaugosPriemones"),
+                                related_name="users",
+                                blank=True,
+                                default=None)
     date_of_birth = models.DateField(blank=True, null=True)
     med_patikros_data = models.DateField(blank=True, null=True)
     med_patikros_periodas = models.SmallIntegerField(

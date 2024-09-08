@@ -43,10 +43,40 @@
                 {{ form.med_patikros_data }}
                 <label for="id_med_patikros_periodas">{% trans "Med patikros periodas" %}:</label>
                 {{ form.med_patikros_periodas }}
+                <br>
+                <label for="id_AsmeninesApsaugosPriemones">{% trans "Asmenines apsaugos priemones" %}:</label>
+                {{ form.AsmeninesApsaugosPriemones }}
             </div>
         </div>
         <button class="button" type="POST">{% trans "Patvirtinti" %}</button>
         <a class="button" href="{% url "menu" %}">{% trans "Atgal" %}</a>
     </form>
-    <br><br><br><br>
-{% endblock content %}
+    <br>
+    {% endblock content %}
+    
+    {% block extrahead %}
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    {% endblock extrahead %}
+    
+    {% block extrajs %}
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/lt.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                console.log("Initializing flatpickr...");
+    
+                var dateInput = document.querySelector("#id_date_of_birth");
+    
+                if (dateInput) {
+                    console.log("Date input found:", dateInput);
+    
+                    flatpickr(dateInput, {
+                        dateFormat: "Y-m-d",
+                        locale: "lt"
+                    });
+                } else {
+                    console.error("Date input not found");
+                }
+            });
+        </script>
+    {% endblock extrajs %}

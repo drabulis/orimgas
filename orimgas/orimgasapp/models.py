@@ -6,11 +6,44 @@ from datetime import datetime, timedelta
 
 User = get_user_model()
 
+AAP_LAIKAS = (
+    (6, _("6 mėnesiai")),
+    (12, _("12 mėnesių")),
+    (24, _("24 mėnesiai")),
+    (36, _("36 mėnesiai")),
+
+)
+
+MATO_VNT = (
+    (1, _("Vnt.")),
+    (2, _("Pora")),
+    (3, _("Kompl.")),
+
+)
+class AsmeninesApsaugosPriemones(models.Model):
+    pavadinimas = models.CharField(_("pavadinimas"),max_length=100)
+    periodiskumas = models.SmallIntegerField(_("periodicity"), choices=AAP_LAIKAS, default=6)
+    mato_vnt = models.SmallIntegerField(_("mato vnt."), choices=MATO_VNT, default=1)
+    pdf = models.FileField(_("pdf"), upload_to="aap_priemones", null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.pavadinimas} - {self.periodiskumas} mėn."
+
+    def get_full_name(self):
+        return f"{self.pavadinimas} - {self.periodiskumas} mėn."
+
+    def get_mato_vnt(self):
+        return {1: "Vnt.", 2: "Pora", 3: "Kompl."}[self.mato_vnt]
+
 
 class Company(models.Model):
     name = models.CharField(_("pavadinimas"), max_length=100)
     company_id = models.CharField(max_length=50, unique=True, null=True, blank=True)
     manager = models.CharField(_("Manager"),max_length=100)
+    AAP = models.ManyToManyField(AsmeninesApsaugosPriemones,
+                                blank=True, 
+                                default=None,
+                                related_name='AAP',)
 
     def __str__(self):
         return self.name
@@ -74,6 +107,7 @@ INSTRUKTAVIMO_TIPAS = (
     (1, _("Periodinis")),
 
 )
+
 
 class PriesgiasrinesInstrukcijos(models.Model):
     imone = models.ForeignKey(Company,
@@ -397,6 +431,41 @@ class KituDocPasirasymas(models.Model):
         recreated_sign = KituDocPasirasymas.objects.create(
             user=self.user,
             instruction=self.instruction,
+            status=0,
+            date_signed=None,
+            next_sign=None,
+        )
+        return recreated_sign
+
+
+class AAPPasirasymas(models.Model):
+    user  = models.ForeignKey(User,
+                            verbose_name=_("user"),
+                            on_delete=models.CASCADE
+                            )
+    AAP = models.ForeignKey(AsmeninesApsaugosPriemones,
+                            verbose_name=_("instruction"),
+                            on_delete=models.CASCADE
+                            )
+    status = models.PositiveSmallIntegerField(
+        _("status"), choices=SIGNATURE_STATUS, default=0
+    )
+    date_signed = models.DateField(_("date signed"), 
+                                   default=None, blank=True, null=True)
+    next_sign = models.DateField(_("next sign"),
+                                 default=None, blank=True, null=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    
+
+    def display_instructions(self):
+        return ', '.join([instruction.pavadinimas for instruction in self.instruction.all()])
+    display_instructions.short_description = _('instructions')
+
+    def recreate_if_needed(self):
+        # Recreate KituDocPasirasymas instance
+        recreated_sign = AsmeninesApsaugosPriemones.objects.create(
+            user=self.user,
+            AAP=self.AAP,
             status=0,
             date_signed=None,
             next_sign=None,

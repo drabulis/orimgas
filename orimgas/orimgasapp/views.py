@@ -42,20 +42,19 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
     success_url = reverse_lazy('my_company_users')
 
     def dispatch(self, request, *args, **kwargs):
-        print("You got this far")
         if not self.request.user.is_supervisor:
             raise PermissionDenied("Tau čia negalima!")
         return super().dispatch(request, *args, **kwargs)
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        print("You got this far get_form")
         form.fields['position'].queryset = models.Position.objects.filter(company=self.request.user.company)
         form.fields['instructions'].queryset = models.Instruction.objects.filter(company=self.request.user.company)
         form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
         form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=self.request.user.company)
         form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
         form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=self.request.user.company)
+        form.fields['AsmeninesApsaugosPriemones'].queryset = self.request.user.company.AAP
         return form
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -64,7 +63,6 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
         return context
     
     def form_valid(self, form):
-        print("You got this far")
         form.instance.company = self.request.user.company
         med_patikros_data = form.cleaned_data.get('med_patikros_data')
         med_patikros_periodas = form.cleaned_data.get('med_patikros_periodas')
@@ -95,6 +93,7 @@ class UserInstructionSignView(LoginRequiredMixin, generic.ListView):
         context['mokymo_instrukcijos'] = models.MokymuPasirasymas.objects.filter(user=self.request.user, status=0)
         context['kitu_doc'] = models.KituDocPasirasymas.objects.filter(user=self.request.user, status=0)
         context['civiline_sauga'] = models.CivilineSaugaPasirasymas.objects.filter(user=self.request.user, status=0)
+        context['asmenines_apsaugos_priemones'] = models.AAPPasirasymas.objects.filter(user=self.request.user, status=0)
         return context
 
 
@@ -375,6 +374,13 @@ class DarbuSaugosZurnalas(LoginRequiredMixin, generic.ListView):
                 Q(user__last_name__icontains=query)
             )
 
+        start_date = self.request.GET.get('start_date')
+        end_date = self.request.GET.get('end_date')
+        if start_date:
+            queryset = queryset.filter(date_signed__gte=parse_date(start_date))
+        if end_date:
+            queryset = queryset.filter(date_signed__lte=parse_date(end_date))
+        
         # Handle sorting
         sort_by = self.request.GET.get('sort_by', 'user__first_name')
         sort_order = self.request.GET.get('sort_order', 'asc')
@@ -458,6 +464,10 @@ class CivilinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
         queryset = queryset.filter(user__company=company)
         
         query = self.request.GET.get('query')
+        start_date = self.request.GET.get('start_date')
+        end_date = self.request.GET.get('end_date')
+
+    # Apply filtering by name or other fields
         if query:
             queryset = queryset.filter(
                 Q(user__position__name__icontains=query) |
@@ -465,7 +475,14 @@ class CivilinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
                 Q(user__first_name__icontains=query) |
                 Q(user__last_name__icontains=query) 
             )
-        print("Queryset:", queryset)  
+            return queryset
+
+        # Apply date filtering
+        if start_date:
+            queryset = queryset.filter(date_signed__gte=parse_date(start_date))
+        if end_date:
+            queryset = queryset.filter(date_signed__lte=parse_date(end_date))
+        
         return queryset
 
     def generate_pdf(self, request):
@@ -789,6 +806,8 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
         form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
         form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=self.request.user.company)
+        form.fields['AsmeninesApsaugosPriemones'].queryset = self.request.user.company.AAP
+
         return form
 
     def get_object(self, queryset=None):
@@ -819,11 +838,13 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         kitidokumentai = form.cleaned_data.get('kiti_dokumentai')
         med_patikros_data = form.cleaned_data.get('med_patikros_data')
         med_patikros_periodas = form.cleaned_data.get('med_patikros_periodas')
+        AAP = form.cleaned_data.get('AsmeninesApsaugosPriemones')
         priesgaisrinesinstrukcijospasirasymai = models.PriesgaisriniuPasirasymas.objects.filter(user=user)
         civilinesaugapasirasymai = models.CivilineSaugaPasirasymas.objects.filter(user=user)
         mokymaipasirasymai = models.MokymuPasirasymas.objects.filter(user=user)
         kitidokumentaipasirasymai = models.KituDocPasirasymas.objects.filter(user=user)      
         existing_signs = models.UserInstructionSign.objects.filter(user=user)
+        AAPPasirasymai = models.AAPPasirasymas.objects.filter(user=user)
 
         if password:
             user.set_password(password)
@@ -884,6 +905,16 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
                 models.KituDocPasirasymas.objects.create(
                     user=user,
                     instruction=instruction,
+                )
+
+        for AAP in AAP:
+            existing_sign = AAPPasirasymai.filter(AAP=AAP).first()
+            if existing_sign:
+                existing_sign.save()
+            else:
+                models.AAPPasirasymas.objects.create(
+                    user=user,
+                    AAP=AAP,
                 )
 
         return super().form_valid(form)
@@ -982,3 +1013,117 @@ class KituDocReviewView(LoginRequiredMixin, generic.UpdateView):
         context = super().get_context_data(**kwargs)
         context['instruction'] = self.object
         return context
+
+
+class AAPSignView(LoginRequiredMixin, generic.UpdateView):
+    model = models.AAPPasirasymas
+    form_class = forms.UserInstructionSignForm
+    template_name = 'main/AAP_sign.html'
+
+    def get_object(self, queryset=None):
+        uuid = self.kwargs.get('uuid')
+        return get_object_or_404(models.AAPPasirasymas, uuid=uuid)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['instruction'] = self.object.AAP
+        context['pdf_url'] = self.object.AAP.pdf  # Correctly set the PDF URL
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.status = 1
+        form.instance.date_signed = datetime.now()
+        form.instance.next_sign = datetime.now() + timedelta(int(self.object.AAP.periodiskumas * 30))
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('user_instructions')
+
+
+class AAPZurnalas(LoginRequiredMixin, generic.ListView):
+    model = models.AAPPasirasymas
+    template_name ='main/AAP_zurnalas.html'
+    paginate_by = 10
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_supervisor:
+            raise PermissionDenied("You do not have permission to access this view.")
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search"] = True
+        return context
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        company = self.request.user.company
+        queryset = queryset.filter(user__company=company)
+        
+        query = self.request.GET.get('query')
+        if query:
+            queryset = queryset.filter(
+                Q(user__position__name__icontains=query) |
+                Q(user__email__icontains=query) |
+                Q(user__first_name__icontains=query) |
+                Q(user__last_name__icontains=query)
+            )
+        
+        start_date = self.request.GET.get('start_date')
+        end_date = self.request.GET.get('end_date')
+        if start_date:
+            queryset = queryset.filter(date_signed__gte=parse_date(start_date))
+        if end_date:
+            queryset = queryset.filter(date_signed__lte=parse_date(end_date))
+        
+        return queryset
+
+    def generate_pdf(self, request):
+        # Get the filtered queryset
+        queryset = self.get_queryset()
+
+        # Define the table structure
+        table_headers = [
+            'Vardas ir pavardė',
+            'AAP pavadinimas',
+            'Mato vnt.',
+            'Kiekis',
+            'Parašas',
+            'Pasirašymo data',
+            'Sekančio pasirašymo data',
+        ]
+        table_data = []
+
+        for sign in queryset:
+            row = [
+                sign.user.get_full_name(),
+                sign.AAP.get_full_name if sign.AAP.pavadinimas else 'N/A',
+                sign.AAP.get_mato_vnt if sign.AAP.mato_vnt else 'N/A',
+                1,
+                'Pasirašyta' if sign.status == 1 else 'Nepasirašyta',
+                sign.date_signed if sign.date_signed else 'N/A',
+                sign.next_sign if sign.next_sign else 'N/A',
+            ]
+            table_data.append(row)
+
+        context = {
+            'title': 'ASMENINIŲ APSAUGOS PRIEMONIŲ IŠDAVIMO ŽINIARAŠTIS',
+            'headers': table_headers,
+            'data': table_data
+        }
+        # Render the PDF
+        html_string = render_to_string('pdf_template.html', context)
+        html = HTML(string=html_string)
+
+        with tempfile.NamedTemporaryFile(delete=True) as output:
+            html.write_pdf(target=output.name)
+            output.seek(0)
+            response = HttpResponse(output.read(), content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="AAP žiniaraštis.pdf"'
+            return response
+
+    def get(self, request, *args, **kwargs):
+        if 'generate_pdf' in request.GET:
+            return self.generate_pdf(request)
+        return super().get(request, *args, **kwargs)

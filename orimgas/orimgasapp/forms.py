@@ -4,6 +4,7 @@ from accounts.models import MED_PATIKROS_PERIODAS
 from django.forms import ValidationError
 from django.utils.safestring import mark_safe
 import base64
+from django.utils.translation import gettext_lazy as _
 
 
 
@@ -32,7 +33,8 @@ class AddUserForm(forms.ModelForm):
     date_of_birth = forms.DateField(
         label="Gimimo data",
         required=True,
-        widget=forms.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd'})
+        widget=forms.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd'}),
+        input_formats=['%Y-%m-%d']
     )
     position = forms.ModelChoiceField(
         label="Pareigos",
@@ -81,9 +83,14 @@ class AddUserForm(forms.ModelForm):
         required=True,
         widget=forms.Select(attrs={'required': 'true'})
     )
+    AsmeninesApsaugosPriemones = forms.ModelChoiceField(
+        label="Asmenines apsaugos priemone",
+        queryset=models.AsmeninesApsaugosPriemones.objects.none(),
+        widget=forms.SelectMultiple(attrs={'size': '8', 'class': 'scrollable-select'}),
+    )
     class Meta:
         model = models.User
-        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data', 'med_patikros_periodas', 'password']
+        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data', 'med_patikros_periodas', 'password', 'AsmeninesApsaugosPriemones',]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -93,9 +100,9 @@ class AddUserForm(forms.ModelForm):
         self.fields['mokymai'].queryset = models.Mokymai.objects.none()
         self.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.none()
         self.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.none()
-        
+        self.fields['AsmeninesApsaugosPriemones'].queryset = models.AsmeninesApsaugosPriemones.objects.none()
+
     def save(self, commit=True):
-        print("You got this far form_save")
 
         user = super().save(commit)
         user.set_password(self.cleaned_data["password"])
@@ -107,6 +114,7 @@ class AddUserForm(forms.ModelForm):
         civiline_sauga = self.cleaned_data.get('civiline_sauga', [])
         mokymai = self.cleaned_data.get('mokymai', [])
         kiti_dokumentai = self.cleaned_data.get('kiti_dokumentai', [])
+        asmenines_apsaugos_priemones = self.cleaned_data.get('AsmeninesApsaugosPriemones', [])
 
         for instruction in priesgaisrines:
             models.PriesgaisriniuPasirasymas.objects.create(user=user, instruction=instruction, status=0,)
@@ -118,6 +126,8 @@ class AddUserForm(forms.ModelForm):
             models.UserInstructionSign.objects.create(user=user, instruction=instruction, status=0)
         for instruction in civiline_sauga:
             models.CivilineSaugaPasirasymas.objects.create(user=user, instruction=instruction, status=0)
+        for instruction in asmenines_apsaugos_priemones:
+            models.AAPPasirasymas.objects.create(user=user, AAP=instruction, status=0)
         return user
 
 
@@ -141,7 +151,7 @@ class SupervisorEditUserForm(forms.ModelForm):
         label="Slaptažodis",
         strip=False,
         required=False,
-        widget=forms.PasswordInput(attrs={'placeholder': 'Nekeičiant, palikti tuščia.'}),
+        widget=forms.PasswordInput(attrs={'placeholder': _('Nekeičiant, palikti tuščia.')}),
     )
     date_of_birth = forms.DateField(
         label="Gimimo data",
@@ -202,7 +212,7 @@ class SupervisorEditUserForm(forms.ModelForm):
         )
     class Meta:
         model = models.User
-        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data','med_patikros_periodas', 'password','is_active']
+        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data','med_patikros_periodas', 'password','is_active', 'AsmeninesApsaugosPriemones']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -221,7 +231,10 @@ from django.utils.safestring import mark_safe
 class UserInstructionSignForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        instruction = self.instance.instruction
+        if hasattr(self.instance, 'AAP'):
+            instruction = self.instance.AAP
+        else:
+            instruction = self.instance.instruction
         test = instruction.testas if hasattr(instruction, 'testas') else None
         if test:
             self.test_data = {}
@@ -244,20 +257,23 @@ class UserInstructionSignForm(forms.ModelForm):
                     klausimas_id = int(field_name.split('_')[1])
                     if field_value:
                         if int(field_value) not in self.test_data[klausimas_id]:
-                            raise ValidationError("Selected test answer is incorrect.")
+                            raise ValidationError(_("Selected test answer is incorrect."))
                     else:
-                        raise ValidationError("All questions must be answered.")
+                        raise ValidationError(_("All questions must be answered."))
         return cleaned_data
 
     def render_pdf(self):
-        instruction = self.instance.instruction
+        if hasattr(self.instance, 'AAP'):
+            instruction = self.instance.AAP
+        else:
+            instruction = self.instance.instruction
         if instruction.pdf:
             with open(instruction.pdf.path, 'rb') as f:
                 pdf_content_base64 = base64.b64encode(f.read()).decode('utf-8')
                 embed_attributes = {
                     'src': f'data:application/pdf;base64,{pdf_content_base64}',
                     'type': 'application/pdf',
-                    'width': '800px',
+                    'width': '100%',
                     'height': '600px',
                     'zoom': '83',  # Set default zoom level to 83%
                     'pluginspage': 'http://www.adobe.com/products/acrobat/readstep2.html',
@@ -312,14 +328,14 @@ class RenderPDFForm(forms.Form):
 
 
 class UserEditForm(forms.ModelForm):
-    email = forms.EmailField(label="El. paštas")
-    first_name = forms.CharField(label="Vardas")
-    last_name = forms.CharField(label="Pavardė")
+    email = forms.EmailField(label=_("El. paštas"))
+    first_name = forms.CharField(label=_("Vardas"))
+    last_name = forms.CharField(label=_("Pavardė"))
     password = forms.CharField(
-        label="Slaptažodis",
+        label=_("Slaptažodis"),
         strip=False,
         required=False,
-        widget=forms.PasswordInput(attrs={'placeholder': 'Palikti tuščia, jeigu slaptažodis nekeičiamas.'}),
+        widget=forms.PasswordInput(attrs={'placeholder': _('Palikti tuščia, jeigu slaptažodis nekeičiamas.')}),
     )
 
     class Meta:

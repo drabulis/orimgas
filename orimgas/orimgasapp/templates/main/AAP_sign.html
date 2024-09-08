@@ -34,13 +34,13 @@
     </style>
 </head>
 <h1>{% if instruction.name %}{{ instruction.name }}{% else %}{{ instruction.pavadinimas }}{% endif %}</h1>
-<form method="post" id="userInstructionForm" style="max-width: 70%; min-width:70%;">
+<form method="post" id="userInstructionForm" style="max-width: 70%;">
     {{ form.render_pdf }}
     {% csrf_token %}
     <div class="form">{{ form.as_p }}</div>
     <div class="form-group">
         <input type="checkbox" id="agreeCheckbox" onchange="toggleSubmitButton()">
-        <label for="agreeCheckbox">{% trans "Su instrukcija susipažinau." %}</label>
+        <label for="agreeCheckbox">{% trans "Su man darbdavio išduodamų asmeninių apsaugos priemonių naudojimo instrukcijomis esu susipažinęs, pasižadu laikytis bendrovėje nustatytos asmeninių apsaugos priemonių naudojimo tvarkos, man išduotas priemones saugoti." %}</label>
     </div>
     <input class="button" type="submit" value="Pasirašyti" id="submitButton" disabled>
 </form>

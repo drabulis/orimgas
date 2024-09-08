@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = local_settings.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [*local_settings.ALLOWED_HOSTS,]
 CSRF_TRUSTED_ORIGINS= [*local_settings.CSRF_TRUSTED_ORIGINS,]
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'accounts',
     'django_cron',
     'crispy_forms',
+    'rangefilter',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -161,9 +162,9 @@ MEDIA_ROOT = BASE_DIR.joinpath(MEDIA_URL)
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = local_settings.EMAIL_HOST
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

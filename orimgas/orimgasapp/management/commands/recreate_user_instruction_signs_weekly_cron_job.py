@@ -72,8 +72,6 @@ class Command(BaseCommand):
                     if recreated_sign:
                         self.stdout.write(self.style.SUCCESS(f'Recreated {sign_to_recreate.instruction.name} for user {sign_to_recreate.user}'))
 
-            self.stdout.write(self.style.SUCCESS('Scanning and recreating PriesgaisriniuPasirasymas instances...'))
-
             completed_priesgaisrines_signs = PriesgaisriniuPasirasymas.objects.filter(
                 user=user, status=1,).order_by('instruction__pavadinimas', '-next_sign')
             incomplete_priesgaisrines_signs = PriesgaisriniuPasirasymas.objects.filter(
@@ -123,8 +121,6 @@ class Command(BaseCommand):
 
                     if recreated_sign:
                         self.stdout.write(self.style.SUCCESS(f'Recreated {sign_to_recreate.instruction.pavadinimas} for user {sign_to_recreate.user}'))
-
-            self.stdout.write(self.style.SUCCESS('Scanning and recreating MokymuPasirasymas instances...'))
 
             completed_mokymu_signs = MokymuPasirasymas.objects.filter(
                 user=user, status=1,).order_by('instruction__pavadinimas', '-next_sign')
