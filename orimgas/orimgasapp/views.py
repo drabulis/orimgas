@@ -397,6 +397,7 @@ class DarbuSaugosZurnalas(LoginRequiredMixin, generic.ListView):
         # Define the table structure
         table_headers = [
             'Instruktuojamojo vardas ir pavardė',
+            'Instruktuojamojo gimimo data',
             'Instruktuojamojo pareigos',
             'Instrukcijos Nr.',
             'Instruktavimo pavadinimas',
@@ -409,6 +410,7 @@ class DarbuSaugosZurnalas(LoginRequiredMixin, generic.ListView):
         for sign in queryset:
             row = [
                 sign.user.get_full_name(),
+                sign.user.date_of_birth,
                 sign.user.position.name if sign.user.position else 'N/A',
                 sign.instruction.name if sign.instruction else 'N/A',
                 'Pirminis' if sign.instruktavimo_tipas==0 else 'Periodinis',
@@ -490,6 +492,7 @@ class CivilinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
 
         table_headers = [
             'Instruktuojamojo vardas ir pavardė',
+            'Instruktuojamojo gimimo data',
             'Instruktuojamojo pareigos',
             'Instrukcijos Nr.',
             'Instruktavimo pavadinimas',
@@ -502,6 +505,7 @@ class CivilinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
         for sign in queryset:
             row = [
                 sign.user.get_full_name(),
+                sign.user.date_of_birth,
                 sign.user.position.name if sign.user.position else 'N/A',
                 sign.instruction.pavadinimas if sign.instruction else 'N/A',
                 'Pirminis' if sign.instruktavimo_tipas==0 else 'Periodinis',
@@ -571,6 +575,7 @@ class MokymuPasirasymasList(generic.ListView):
 
         table_headers = [
             'Vardas ir pavardė',
+            'Gimimo data',
             'Pareigos',
             'Mokymo programa',
             'Vertinimo rezultatas',
@@ -582,6 +587,7 @@ class MokymuPasirasymasList(generic.ListView):
         for sign in queryset:
             row = [
                 sign.user.get_full_name(),
+                sign.user.date_of_birth,
                 sign.user.position.name if sign.user.position else 'N/A',
                 sign.instruction.pavadinimas if sign.instruction else 'N/A',
                 'Neįskaityta' if sign.status == 0 else 'Įskaityta',
@@ -660,6 +666,7 @@ class KituDocPasirasymuZurnalas(LoginRequiredMixin, generic.ListView):
 
         table_headers = [
             'Vardas ir pavardė',
+            'Gimimo data',
             'Pareigos',
             'Dokumento pavadinimas',
             'Instruktuojamojo parašas',
@@ -670,6 +677,7 @@ class KituDocPasirasymuZurnalas(LoginRequiredMixin, generic.ListView):
         for sign in queryset:
             row = [
                 sign.user.get_full_name(),
+                sign.user.date_of_birth,
                 sign.user.position.name if sign.user.position else 'N/A',
                 sign.instruction.pavadinimas if sign.instruction else 'N/A',
                 'Pasirašyta' if sign.status == 1 else 'Ne Pasirašyta',
@@ -745,6 +753,7 @@ class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
         # Define the table structure
         table_headers = [
             'Instruktuojamojo vardas ir pavardė',
+            'Instruktuojamojo gimimo data',
             'Instruktuojamojo pareigos',
             'Instrukcijos Nr.',
             'Instruktavimo pavadinimas',
@@ -757,6 +766,7 @@ class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
         for sign in queryset:
             row = [
                 sign.user.get_full_name(),
+                sign.user.date_of_birth,
                 sign.user.position.name if sign.user.position else 'N/A',
                 sign.instruction.pavadinimas if sign.instruction else 'N/A',
                 'Įvadinis' if sign.instruktavimo_tipas==0 else 'Periodinis',
@@ -1069,6 +1079,7 @@ class AAPZurnalas(LoginRequiredMixin, generic.ListView):
                 Q(user__first_name__icontains=query) |
                 Q(user__last_name__icontains=query)
             )
+            return queryset
         
         start_date = self.request.GET.get('start_date')
         end_date = self.request.GET.get('end_date')
@@ -1086,6 +1097,7 @@ class AAPZurnalas(LoginRequiredMixin, generic.ListView):
         # Define the table structure
         table_headers = [
             'Vardas ir pavardė',
+            'Gimimo data',
             'AAP pavadinimas',
             'Mato vnt.',
             'Kiekis',
@@ -1098,6 +1110,7 @@ class AAPZurnalas(LoginRequiredMixin, generic.ListView):
         for sign in queryset:
             row = [
                 sign.user.get_full_name(),
+                sign.user.date_of_birth,
                 sign.AAP.get_full_name if sign.AAP.pavadinimas else 'N/A',
                 sign.AAP.get_mato_vnt if sign.AAP.mato_vnt else 'N/A',
                 1,

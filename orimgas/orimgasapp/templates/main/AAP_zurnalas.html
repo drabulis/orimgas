@@ -18,7 +18,7 @@
       <input type="date" id="end_date" name="end_date" value="{{ request.GET.end_date }}">
       <button type="submit" class="btn btn-primary">{% trans "Filtruoti" %}</button>
       <a href="{% url 'AAP_zurnalas' %}" class="btn btn-secondary">{% trans "Nustatyti iš naujo" %}</a>
-      <a href="{% url 'AAP_zurnalas' %}?generate_pdf=true&start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" class="btn btn-success" target="_blank">{% trans "Generuoti PDF" %}</a>
+      <a href="{% url 'AAP_zurnalas' %}?generate_pdf=true&query={{ request.GET.query }}&start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" class="btn btn-success" target="_blank">{% trans "Generuoti PDF" %}</a>
     </form>
     <table class="nice-table">
       <tr>
@@ -29,6 +29,13 @@
               <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
             {% endif %}
           </a>
+        </th>
+        <th>
+          <a href="?sort_by=user__date_of_birth&sort_order={% if sort_by == 'user__date_of_birth' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+            {% trans "Gimimo data" %}
+            {% if sort_by == 'user__date_of_birth' %}
+              <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
+            {% endif %}
         </th>
         <th>
           <a href="?sort_by=AAP__pavadinimas&sort_order={% if sort_by == 'user__position__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
@@ -82,6 +89,7 @@
       {% for pasirasymas in object_list %}
         <tr>
           <td>{{ pasirasymas.user.get_full_name }}</td>
+          <td>{{ pasirasymas.user.date_of_birth }}</td>
           <td>{% if pasirasymas.AAP.pavadinimas %}{{ pasirasymas.AAP.get_full_name }}{% else %}"N/A"{% endif %}</td>
           <td>{% if pasirasymas.AAP.mato_vnt %}{{pasirasymas.AAP.get_mato_vnt}}{% else %}"N/A"{% endif %}</td>
           <td>1</td>

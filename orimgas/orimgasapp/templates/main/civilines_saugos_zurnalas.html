@@ -18,14 +18,15 @@
       <input type="date" id="end_date" name="end_date" value="{{ request.GET.end_date }}">
       <button type="submit" class="btn btn-primary">{% trans "Filtruoti" %}</button>
       <a href="{% url 'civiline_sauga_zurnalas' %}" class="btn btn-secondary">{% trans "Nustatyti iš naujo" %}</a>
-      <a href="{% url 'civiline_sauga_zurnalas' %}?generate_pdf=true&start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" class="btn btn-success" target="_blank">{% trans "Generuoti PDF" %}</a>
+      <a href="{% url 'civiline_sauga_zurnalas' %}?generate_pdf=true&query={{ request.GET.query }}&start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" class="btn btn-success" target="_blank">{% trans "Generuoti PDF" %}</a>
     </form>
     <table class="nice-table" id="pasirasymai-table">
       <thead>
         <tr>
-          <th id="sort-name">{% trans "Instruktuojamojo vardas ir pavardė" %}</th>
-          <th id="sort-position">{% trans "Instruktuojamojo pareigos" %}</th>
-          <th id="sort-instruction">{% trans "Instrukcijos Nr." %}</th>
+          <th>{% trans "Instruktuojamojo vardas ir pavardė" %}</th>
+          <th>{% trans "Instruktuojamojo gimimo data" %}</th>
+          <th>{% trans "Instruktuojamojo pareigos" %}</th>
+          <th>{% trans "Instrukcijos Nr." %}</th>
           <th>{% trans "Instruktavimo pavadinimas" %}</th>
           <th>{% trans "Pasirašymo data" %}</th>
           <th>{% trans "Sekančio pasirašymo data" %}</th>
@@ -35,6 +36,7 @@
         {% for pasirasymas in object_list %}
           <tr>
             <td>{{ pasirasymas.user.get_full_name }}</td>
+            <td>{{ pasirasymas.user.date_of_birth }}</td>
             <td>{{ pasirasymas.user.position }}</td>
             {% if pasirasymas.instruction.name %}
               <td>{{ pasirasymas.instruction.name }}</td>
@@ -58,78 +60,4 @@
     <p>{% trans "Darbų saugos žurnale įrašų nerasta." %}</p>
   {% endif %}
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      // Initialize sorting variables
-      var sorting = {
-        name: 'asc',
-        position: 'asc',
-        instruction: 'asc',
-        date_signed: 'asc',
-        next_sign: 'asc'
-      };
-
-      function sortTable(column) {
-        var table, rows, switching, i, x, y, shouldSwitch;
-        table = document.getElementById("pasirasymai-table");
-        switching = true;
-
-        while (switching) {
-          switching = false;
-          rows = table.rows;
-
-          for (i = 1; i < (rows.length - 1); i++) {
-            shouldSwitch = false;
-            x = rows[i].getElementsByTagName("TD")[column];
-            y = rows[i + 1].getElementsByTagName("TD")[column];
-
-            if (sorting[column] === 'asc') {
-              if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                shouldSwitch = true;
-                break;
-              }
-            } else {
-              if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                shouldSwitch = true;
-                break;
-              }
-            }
-          }
-
-          if (shouldSwitch) {
-            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-            switching = true;
-
-            // Switch sorting direction
-            if (sorting[column] === 'asc') {
-              sorting[column] = 'desc';
-            } else {
-              sorting[column] = 'asc';
-            }
-          }
-        }
-      }
-
-      $("#sort-name").click(function() {
-        sortTable(0); // Column index for name
-      });
-
-      $("#sort-position").click(function() {
-        sortTable(1); // Column index for position
-      });
-
-      $("#sort-instruction").click(function() {
-        sortTable(2); // Column index for instruction
-      });
-
-      $("#sort-date-signed").click(function() {
-        sortTable(4); // Column index for date_signed
-      });
-
-      $("#sort-next-sign").click(function() {
-        sortTable(5); // Column index for next_sign
-      });
-    });
-  </script>
 {% endblock content %}

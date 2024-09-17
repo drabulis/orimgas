@@ -10,6 +10,7 @@
             <table class="nice-table">
                 <tr>
                     <th>{% trans "Vardas ir Pavardė" %}</th>
+                    <th>{% trans "Gimimo data" %}</th>
                     <th>{% trans "Darbuotojo pareigos" %}</th>
                     <th>{% trans "Sveikatos patikrinimo data" %}</th>
                     <th>{% trans "Sveikatos tikrinimo periodiškumas" %}</th>
@@ -18,6 +19,7 @@
                 {% for vartotojas in object_list %}
                     <tr>
                         <td>{{ vartotojas.get_full_name }}</td>
+                        <td>{{ vartotojas.date_of_birth }}</td>
                         <td>{{ vartotojas.position }}</td>
                         <td>{{ vartotojas.med_patikros_data }}</td>
                         <td>{{ vartotojas.get_med_patikros_periodas_display }}</td>

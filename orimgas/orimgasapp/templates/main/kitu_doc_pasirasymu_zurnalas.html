@@ -11,6 +11,7 @@
 <table class="nice-table">
         <tr>
             <th>{% trans "Vardas ir Pavardė" %}</th>
+            <th>{% trans "Gimimo data" %}</th>
             <th>{% trans "Darbuotojo pareigos" %}</th>
             <th>{% trans "Dokumento pavadinimas" %}</th>
             <th>{% trans "Pasirašymas" %}</th>
@@ -19,6 +20,7 @@
         {% for pasirasymas in object_list %}
             <tr>
                 <td>{{ pasirasymas.user.get_full_name }}</td>
+                <td>{{ pasirasymas.user.date_of_birth }}</td>
                 <td>{{ pasirasymas.user.position }}</td>
                 {% if pasirasymas.instruction.name %}
                     <td>{{ pasirasymas.instruction.name }}</td>
