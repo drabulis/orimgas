@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from datetime import datetime, timedelta
 
-from orimgasapp.models import User, UserInstructionSign, MokymuPasirasymas, PriesgaisriniuPasirasymas, KituDocPasirasymas
+from orimgasapp.models import User, UserInstructionSign, MokymuPasirasymas, PriesgaisriniuPasirasymas, KituDocPasirasymas, AAPPasirasymas
 
 class Command(BaseCommand):
     help = 'Send reminder emails to users and supervisors.'
@@ -16,7 +16,7 @@ class Command(BaseCommand):
         self.send_supervisor_reminder_emails()
 
     def send_user_reminder_emails(self):
-        users_with_status_0 = User.objects.filter(Q(userinstructionsign__status=0) | Q(mokymupasirasymas__status=0) | Q(priesgaisriniupasirasymas__status=0) | Q(kitudocpasirasymas__status=0) | Q(civilinesaugapasirasymas__status=0)).distinct()
+        users_with_status_0 = User.objects.filter(Q(userinstructionsign__status=0) | Q(mokymupasirasymas__status=0) | Q(priesgaisriniupasirasymas__status=0) | Q(kitudocpasirasymas__status=0) | Q(civilinesaugapasirasymas__status=0) | Q(aappasirasymas__status=0)).distinct()
 
         for user in users_with_status_0:
             subject = 'Priminimas: Turite neužbaigtų darbų'
@@ -64,7 +64,7 @@ class Command(BaseCommand):
 
             # Get the users under the supervision with status=0
             supervised_users = User.objects.filter(
-                Q(userinstructionsign__status=0) | Q(mokymupasirasymas__status=0) | Q(priesgaisriniupasirasymas__status=0) | Q(kitudocpasirasymas__status=0) | Q(civilinesaugapasirasymas__status=0),
+                Q(userinstructionsign__status=0) | Q(mokymupasirasymas__status=0) | Q(priesgaisriniupasirasymas__status=0) | Q(kitudocpasirasymas__status=0) | Q(civilinesaugapasirasymas__status=0) | Q(aappasirasymas__status=0),
                 company=supervisor.company,
             ).distinct()
 

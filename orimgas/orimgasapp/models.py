@@ -463,7 +463,7 @@ class AAPPasirasymas(models.Model):
 
     def recreate_if_needed(self):
         # Recreate KituDocPasirasymas instance
-        recreated_sign = AsmeninesApsaugosPriemones.objects.create(
+        recreated_sign = AAPPasirasymas.objects.create(
             user=self.user,
             AAP=self.AAP,
             status=0,

@@ -42,7 +42,7 @@
         <input type="checkbox" id="agreeCheckbox" onchange="toggleSubmitButton()">
         <label for="agreeCheckbox">{% trans "Su man darbdavio išduodamų asmeninių apsaugos priemonių naudojimo instrukcijomis esu susipažinęs, pasižadu laikytis bendrovėje nustatytos asmeninių apsaugos priemonių naudojimo tvarkos, man išduotas priemones saugoti." %}</label>
     </div>
-    <input class="button" type="submit" value="Pasirašyti" id="submitButton" disabled>
+    <input class="button" type="submit" value="{% trans "Pasirašyti" %}" id="submitButton" disabled>
 </form>
 <script>
     function toggleSubmitButton() {
