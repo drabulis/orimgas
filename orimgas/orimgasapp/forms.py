@@ -83,8 +83,9 @@ class AddUserForm(forms.ModelForm):
         required=True,
         widget=forms.Select(attrs={'required': 'true'})
     )
-    AsmeninesApsaugosPriemones = forms.ModelChoiceField(
+    AsmeninesApsaugosPriemones = forms.ModelMultipleChoiceField(
         label="Asmenines apsaugos priemone",
+        required=False,
         queryset=models.AsmeninesApsaugosPriemones.objects.none(),
         widget=forms.SelectMultiple(attrs={'size': '8', 'class': 'scrollable-select'}),
     )
