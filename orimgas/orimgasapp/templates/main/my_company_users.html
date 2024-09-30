@@ -52,19 +52,17 @@
             <th>{% trans "Peržiūrėti" %}</th>
             <th>{% trans "Redaguoti" %}</th>
         </tr>
-        {% for user_list_obj in paginator.object_list %}
+        {% for user_list_obj in page_obj %}
             <tr>
                 <td>{{ user_list_obj.get_full_name }}</td>
                 <td>{{ user_list_obj.date_of_birth }}</td>
                 <td>{{ user_list_obj.email }}</td>
                 <td>{{ user_list_obj.position.name }}</td>
-                <td>{% if user_list_obj.is_active %}{% trans "Aktyvus" %}
-                    {% else %}{% trans "Neaktyvus" %}
-                    {% endif %}
-                </td>
+                <td>{% if user_list_obj.is_active %}{% trans "Aktyvus" %}{% else %}{% trans "Neaktyvus" %}{% endif %}</td>
                 <td><a href="{% url 'user_detail' user_list_obj.uuid %}">{% trans "Peržiūrėti vartotoja" %}</a></td>
                 <td><a href="{% url 'supervisor_edit_user' user_list_obj.uuid %}">{% trans "Redaguoti" %}</a></td>
             </tr>
         {% endfor %}
+
     </table>
 {% endblock content %}

@@ -275,29 +275,40 @@ class MyCompanyUsersView(LoginRequiredMixin, generic.ListView):
         # Add sorting context
         context["sort_by"] = self.request.GET.get('sort_by', 'first_name')
         context["sort_order"] = self.request.GET.get('sort_order', 'asc')
-        
+
+        # Keep the query in the context to persist the search
+        context["query"] = self.request.GET.get('query', '')
+
         return context
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        query = self.request.GET.get('query')
+        query = self.request.GET.get('query', '')
         company = self.request.user.company
+
+        # Apply the initial company filter
         queryset = queryset.filter(company=company)
+
+        # Debugging: Print the queryset count to check pagination handling
+        print(f"Queryset count before filtering: {queryset.count()}")
 
         if query:
             queryset = queryset.filter(
                 Q(position__name__icontains=query)
                 | Q(email__icontains=query)
                 | Q(first_name__icontains=query)
-                | Q(last_name__icontains=query)
+                | Q(last_name__icontains(query))
             )
 
-        # Sorting
+        # Sorting logic
         sort_by = self.request.GET.get('sort_by', 'first_name')
         sort_order = self.request.GET.get('sort_order', 'asc')
         if sort_order == 'desc':
             sort_by = f'-{sort_by}'
         queryset = queryset.order_by(sort_by)
+
+        # Debugging: Print the final queryset count after filtering
+        print(f"Queryset count after filtering: {queryset.count()}")
 
         return queryset
 
@@ -305,7 +316,7 @@ class MyCompanyUsersView(LoginRequiredMixin, generic.ListView):
         if 'generate_pdf' in request.GET:
             return self.generate_pdf(request)
         return super().get(request, *args, **kwargs)
-    
+
     def generate_pdf(self, request):
         # Get the filtered queryset
         queryset = self.get_queryset()
