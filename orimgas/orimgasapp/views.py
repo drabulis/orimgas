@@ -297,7 +297,7 @@ class MyCompanyUsersView(LoginRequiredMixin, generic.ListView):
                 Q(position__name__icontains=query)
                 | Q(email__icontains=query)
                 | Q(first_name__icontains=query)
-                | Q(last_name__icontains(query))
+                | Q(last_name__icontains=query)
             )
 
         # Sorting logic
@@ -811,6 +811,97 @@ class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
 class SveikatosTikrinimoGrafikas(LoginRequiredMixin, generic.ListView):
     model = models.User
     template_name ='main/sveikatos_tikrinimo_grafikas.html'
+    paginate_by = 10
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_supervisor:
+            raise PermissionDenied("You do not have permission to access this view.")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search"] = True
+
+        # Add sorting context
+        context["sort_by"] = self.request.GET.get('sort_by', 'first_name')
+        context["sort_order"] = self.request.GET.get('sort_order', 'asc')
+
+        # Keep the query in the context to persist the search
+        context["query"] = self.request.GET.get('query', '')
+
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('query', '')
+        company = self.request.user.company
+
+        # Apply the initial company filter
+        queryset = queryset.filter(company=company)
+
+        # Debugging: Print the queryset count to check pagination handling
+        print(f"Queryset count before filtering: {queryset.count()}")
+
+        if query:
+            queryset = queryset.filter(
+                Q(position__name__icontains=query)
+                | Q(email__icontains=query)
+                | Q(first_name__icontains=query)
+                | Q(last_name__icontains=query)
+            )
+
+        # Sorting logic
+        sort_by = self.request.GET.get('sort_by', 'first_name')
+        sort_order = self.request.GET.get('sort_order', 'asc')
+        if sort_order == 'desc':
+            sort_by = f'-{sort_by}'
+        queryset = queryset.order_by(sort_by)
+
+        # Debugging: Print the final queryset count after filtering
+        print(f"Queryset count after filtering: {queryset.count()}")
+
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        if 'generate_pdf' in request.GET:
+            return self.generate_pdf(request)
+        return super().get(request, *args, **kwargs)
+
+    def generate_pdf(self, request):
+        # Get the filtered queryset
+        queryset = self.get_queryset()
+
+        # Define the table structure
+        table_headers = ['Vardas Pavardė', 'Gimimo metai', 'El. paštas', 'Pareigos', 'Aktyvus']
+        table_data = []
+
+        for user in queryset:
+            row = [
+                user.get_full_name(),
+                user.date_of_birth,
+                user.email,
+                user.position.name if user.position else 'N/A',
+                'Aktyvus' if user.is_active else 'Neaktyvus',
+            ]
+            table_data.append(row)
+
+        context = {
+            'title': 'Įmonės Darbuotojai',
+            'headers': table_headers,
+            'data': table_data
+        }
+
+        # Render the PDF
+        html_string = render_to_string('pdf_template.html', context)
+        html = HTML(string=html_string)
+
+        with tempfile.NamedTemporaryFile(delete=True) as output:
+            html.write_pdf(target=output.name)
+            output.seek(0)
+            response = HttpResponse(output.read(), content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="Įmonės darbuotojai.pdf"'
+            return response
+
 
 
 class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):

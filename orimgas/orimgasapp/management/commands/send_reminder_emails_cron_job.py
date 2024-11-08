@@ -27,7 +27,7 @@ class Command(BaseCommand):
         Prie profilio prisijungti galite čia: https://orimgas.online 
         Primename, kad prisijungimo vardas jūsų elektroninis paštas.
         Slaptažodis yra jūsų gimimo data.
-        Slaptažodio formatas: Metai-Mėnuo-Diena (Skaičiais)
+        Slaptažodžio formatas: Metai-Mėnuo-Diena (Skaičiais)
 
         Pagarbiai,
         „Orimgas“ komanda
