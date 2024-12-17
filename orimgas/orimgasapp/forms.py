@@ -5,6 +5,7 @@ from django.forms import ValidationError
 from django.utils.safestring import mark_safe
 import base64
 from django.utils.translation import gettext_lazy as _
+from django.urls import reverse
 
 
 
@@ -268,25 +269,51 @@ class UserInstructionSignForm(forms.ModelForm):
             instruction = self.instance.AAP
         else:
             instruction = self.instance.instruction
+
         if instruction.pdf:
-            with open(instruction.pdf.path, 'rb') as f:
-                pdf_content_base64 = base64.b64encode(f.read()).decode('utf-8')
-                embed_attributes = {
-                    'src': f'data:application/pdf;base64,{pdf_content_base64}',
-                    'type': 'application/pdf',
-                    'width': '100%',
-                    'height': '600px',
-                    'zoom': '83',  # Set default zoom level to 83%
-                    'pluginspage': 'http://www.adobe.com/products/acrobat/readstep2.html',
-                    'menu': 'false',  # Disable the upper menu
-                    'contextmenu': 'false',  # Disable the right-click context menu
-                    'download': 'false',  # Disable the download option
-                    'readonly': 'true',  # Make the PDF readonly
-                }
-                embed_tag = '<embed ' + ' '.join([f'{attr}="{value}"' for attr, value in embed_attributes.items()]) + '>'
-                return mark_safe(embed_tag)
+            # URL to fetch the PDF file
+            pdf_url = instruction.pdf.url
+
+            # JavaScript to fetch the PDF and create an object URL dynamically
+            script = f"""
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {{
+                    const pdfViewer = document.getElementById('pdfViewer');
+
+                    // Fetch the PDF file from the server
+                    fetch("{pdf_url}")
+                        .then(response => {{
+                            if (!response.ok) {{
+                                throw new Error('Network response was not ok');
+                            }}
+                            return response.blob();
+                        }})
+                        .then(blob => {{
+                            // Create an object URL for the PDF
+                            const objectUrl = URL.createObjectURL(blob);
+                            pdfViewer.src = objectUrl;
+
+                            // Revoke the object URL after the PDF is loaded
+                            pdfViewer.onload = function () {{
+                                URL.revokeObjectURL(objectUrl);
+                            }};
+                        }})
+                        .catch(error => {{
+                            console.error('There was a problem with the fetch operation:', error);
+                        }});
+                }});
+            </script>
+            """
+
+            # HTML for the iframe to display the PDF
+            html = f"""
+            {script}
+            <iframe id="pdfViewer" width="90%" height="80%" type="application/pdf"></iframe>
+            """
+            return mark_safe(html)
         else:
             return ''
+
 
     class Meta:
         model = models.UserInstructionSign
@@ -303,27 +330,43 @@ class RenderPDFForm(forms.Form):
         self.instance = instance
 
     def render_pdf(self):
-        if self.instance:
-            instruction = self.instance
-            if instruction.pdf:
-                with open(instruction.pdf.path, 'rb') as f:
-                    pdf_content_base64 = base64.b64encode(f.read()).decode('utf-8')
-                    embed_attributes = {
-                        'src': f'data:application/pdf;base64,{pdf_content_base64}',
-                        'type': 'application/pdf',
-                        'width': '550px',
-                        'height': '600px',
-                        'zoom': '83',  # Set default zoom level to 83%
-                        'pluginspage': 'http://www.adobe.com/products/acrobat/readstep2.html',
-                        'menu': 'false',  # Disable the upper menu
-                        'contextmenu': 'false',  # Disable the right-click context menu
-                        'download': 'false',  # Disable the download option
-                        'readonly': 'true',  # Make the PDF readonly
-                    }
-                    embed_tag = '<embed ' + ' '.join([f'{attr}="{value}"' for attr, value in embed_attributes.items()]) + '>'
-                    return mark_safe(embed_tag)
-            else:
-                return ''
+        if hasattr(self.instance, 'AAP'):
+            instruction = self.instance.AAP
+        else:
+            instruction = self.instance.instruction
+
+        if instruction.pdf:
+            # Get the file path or URL of the PDF file
+            pdf_path = instruction.pdf.url  # Assuming instruction.pdf is a FileField or equivalent
+
+            # Use JavaScript to handle object URL creation
+            script = f"""
+            <script>
+                function loadPdf() {{
+                    const input = document.getElementById('pdfInput');
+                    const pdfCard = document.getElementById('pdfCard');
+                    
+                    if (input.files.length <= 0) return;
+
+                    const file = input.files[0];
+                    const objectUrl = URL.createObjectURL(file);
+                    pdfCard.src = objectUrl;
+
+                    // Ensure we clean up the object URL after the PDF is unloaded
+                    pdfCard.onload = () => {{
+                        URL.revokeObjectURL(objectUrl);
+                    }};
+                }}
+            </script>
+            """
+
+            # Embed an input field and iframe for rendering the PDF
+            html = f"""
+            {script}
+            <input id="pdfInput" type="file" accept="application/pdf" onchange="loadPdf()" />
+            <iframe id="pdfCard" width="550px" height="600px" type="application/pdf" readonly></iframe>
+            """
+            return mark_safe(html)
         else:
             return ''
 

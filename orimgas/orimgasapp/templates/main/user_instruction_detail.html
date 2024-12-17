@@ -2,48 +2,89 @@
 {% load i18n %}
 {% block title %}{{ instruction.name }} {{ block.super }}{% endblock title %}
 {% block content %}
-<br><br><br>
 <head>
     <style>
+        html, body {
+            height: 100%; /* Ensure the page takes up full height */
+            margin: 0;
+            padding: 0;
+        }
+        .Form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh; /* Form takes at least full viewport height */
+            padding: 20px;
+            border: 1px solid #0000aa; /* Optional border for visibility */
+            border-radius: 20px;
+            background-color: #f9f9f9;
+            width: 70%; /* Centered form with a fixed width */
+            margin: 0 auto; /* Center the form horizontally */
+        }
+        iframe {
+            display: block;
+            width: 100%; /* Full width of the form */
+            height: 70vh; /* Takes 70% of the viewport height */
+            border: 1px solid #ddd; /* Optional border for styling */
+            margin-bottom: 20px; /* Space below the iframe */
+        }
         .form-group {
-          display: flex;
-          flex-direction: row;
-          justify-content: center;
-          align-items: center;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px; /* Space above the checkbox */
         }
         label {
             padding-left: 5px;
-          }
+        }
         .button {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 5px;
-        transition: background-color 0.3s ease-in-out;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        font-weight: bold;
-        font-size: 16px;
-        border: none;
-        cursor: pointer;
-        margin-bottom: 10px;
-        color: #333;
-        background-color: #f5f5f5;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f9f9f9;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease-in-out;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px; /* Space above the button */
         }
     </style>
 </head>
-<h1>{% if instruction.name %}{{ instruction.name }}{% else %}{{ instruction.pavadinimas }}{% endif %}</h1>
-<form method="post" id="userInstructionForm" style="max-width: 70%; min-width:70%;">
-    {{ form.render_pdf }}
+<body>
+<h1>
+    {% if instruction.name %}
+        {{ instruction.name }}
+    {% else %}
+        {{ instruction.pavadinimas }}
+    {% endif %}
+</h1>
+<form method="post" id="userInstructionForm" class="Form">
     {% csrf_token %}
-    <div class="form">{{ form.as_p }}</div>
+    <!-- PDF Viewer -->
+    {{ form.render_pdf }}
+    
+    <!-- Other Form Fields -->
+    <div class="form">
+        {{ form.as_p }}
+    </div>
+    
+    <!-- Checkbox and Submit Button -->
     <div class="form-group">
         <input type="checkbox" id="agreeCheckbox" onchange="toggleSubmitButton()">
         <label for="agreeCheckbox">{% trans "Su instrukcija susipažinau." %}</label>
     </div>
-    <input class="button" type="submit" value="{% trans "Pasirašyti" %}" id="submitButton" disabled>
+    <button class="button" type="submit" id="submitButton" disabled>
+        {% trans "Pasirašyti" %}
+    </button>
 </form>
+<br>
+
 <script>
     function toggleSubmitButton() {
         var checkbox = document.getElementById('agreeCheckbox');
@@ -51,4 +92,5 @@
         submitButton.disabled = !checkbox.checked;
     }
 </script>
+</body>
 {% endblock %}
