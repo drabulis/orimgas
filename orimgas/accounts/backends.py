@@ -20,10 +20,9 @@ def log_user_activity(username, ip_address, action):
 
 class CustomAuthBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
-        ip_address = request.META.get('REMOTE_ADDR')
+        # Get the user's real IP address
+        ip_address = self.get_client_ip(request)
         
-        # Print statement for debugging
-
         user = super().authenticate(request, username=username, password=password, **kwargs)
         
         if user is not None:
@@ -35,3 +34,12 @@ class CustomAuthBackend(ModelBackend):
             log_user_activity(username, ip_address, "failed to log in")
             return None
 
+    def get_client_ip(self, request):
+        """Get client IP address from request."""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]  # Take the first IP in case of multiple proxies
+        else:
+            ip = request.META.get('REMOTE_ADDR')  # Fallback to REMOTE_ADDR
+        
+        return ip

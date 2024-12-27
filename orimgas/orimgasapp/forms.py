@@ -135,7 +135,7 @@ class AddUserForm(forms.ModelForm):
         company = user.company.name
         company_id = user.company.id
         supervisor_list = User.objects.filter(is_supervisor=True, company=company_id)
-        subject = 'Priminimas: Turite neužbaigtų darbų'
+        subject = f'Prisijungimas prie EIS. {company}'
         message = f"""
 Gerbiamas(-a) {user.first_name},
 
