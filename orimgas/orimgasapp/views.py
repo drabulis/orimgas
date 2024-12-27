@@ -18,6 +18,23 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 import tempfile
 from django.utils.dateparse import parse_date
+import os
+from django.utils import timezone
+
+
+def log_user_instruction_activity(user, instruction_name, ip_address):
+    # Define the path for the log file
+    log_file_path = os.path.join(settings.BASE_DIR, 'user_instruction_log.log')
+    
+    # Create a log message with timestamp
+    log_message = (
+        f"{timezone.now()} - Vartotojas {user.first_name} {user.last_name} "
+        f"({user.email}) susipažino/pasirašė '{instruction_name}' iš IP: {ip_address}\n"
+    )
+    
+    # Append the log message to the file
+    with open(log_file_path, 'a') as log_file:
+        log_file.write(log_message)
 
 class UserMeniuView(LoginRequiredMixin, generic.ListView):
     model = models.User
@@ -117,7 +134,20 @@ class UserInstructionSignUpdateView(LoginRequiredMixin, generic.UpdateView):
         form.instance.status = 1
         form.instance.date_signed = datetime.now()
         form.instance.next_sign = datetime.now() + timedelta(int(self.object.instruction.periodiskumas))
+        ip_address = self.get_client_ip(self.request)
+        log_user_instruction_activity(self.request.user, self.object.instruction.name, ip_address)
+        
         return super().form_valid(form)
+
+    def get_client_ip(self, request):
+        """Get client IP address from request."""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]  # Take the first IP in case of multiple proxies
+        else:
+            ip = request.META.get('REMOTE_ADDR')  # Fallback to REMOTE_ADDR
+        
+        return ip
 
     def get_success_url(self):
         return reverse_lazy('user_instructions')
@@ -142,7 +172,21 @@ class CivilineSaugaSignView(LoginRequiredMixin, generic.UpdateView):
         form.instance.status = 1
         form.instance.date_signed = datetime.now()
         form.instance.next_sign = datetime.now() + timedelta(int(self.object.instruction.periodiskumas))
+        
+        ip_address = self.get_client_ip(self.request)
+        log_user_instruction_activity(self.request.user, self.object.instruction.pavadinimas, ip_address)
+        
         return super().form_valid(form)
+
+    def get_client_ip(self, request):
+        """Get client IP address from request."""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]  # Take the first IP in case of multiple proxies
+        else:
+            ip = request.META.get('REMOTE_ADDR')  # Fallback to REMOTE_ADDR
+        
+        return ip
 
     def get_success_url(self):
         return reverse_lazy('user_instructions')
@@ -167,7 +211,21 @@ class PriesgaisrinioSignView(LoginRequiredMixin, generic.UpdateView):
         form.instance.status = 1
         form.instance.date_signed = datetime.now()
         form.instance.next_sign = datetime.now() + timedelta(int(self.object.instruction.periodiskumas))
+        
+        ip_address = self.get_client_ip(self.request)
+        log_user_instruction_activity(self.request.user, self.object.instruction.pavadinimas, ip_address)
+        
         return super().form_valid(form)
+
+    def get_client_ip(self, request):
+        """Get client IP address from request."""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]  # Take the first IP in case of multiple proxies
+        else:
+            ip = request.META.get('REMOTE_ADDR')  # Fallback to REMOTE_ADDR
+        
+        return ip
 
     def get_success_url(self):
         return reverse_lazy('user_instructions')
@@ -193,7 +251,20 @@ class MokymuSignView(LoginRequiredMixin, generic.UpdateView):
         form.instance.status = 1
         form.instance.date_signed = datetime.now()
         form.instance.next_sign = datetime.now() + timedelta(int(self.object.instruction.periodiskumas))
+        ip_address = self.get_client_ip(self.request)
+        log_user_instruction_activity(self.request.user, self.object.instruction.pavadinimas, ip_address)
+        
         return super().form_valid(form)
+
+    def get_client_ip(self, request):
+        """Get client IP address from request."""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]  # Take the first IP in case of multiple proxies
+        else:
+            ip = request.META.get('REMOTE_ADDR')  # Fallback to REMOTE_ADDR
+        
+        return ip
 
     def get_success_url(self):
         return reverse_lazy('user_instructions')
@@ -217,7 +288,20 @@ class KituDocSignView(LoginRequiredMixin, generic.UpdateView):
         form.instance.user = self.request.user
         form.instance.status = 1
         form.instance.date_signed = datetime.now()
+        ip_address = self.get_client_ip(self.request)
+        log_user_instruction_activity(self.request.user, self.object.instruction.pavadinimas, ip_address)
+        
         return super().form_valid(form)
+
+    def get_client_ip(self, request):
+        """Get client IP address from request."""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]  # Take the first IP in case of multiple proxies
+        else:
+            ip = request.META.get('REMOTE_ADDR')  # Fallback to REMOTE_ADDR
+        
+        return ip
 
     def get_success_url(self):
         return reverse_lazy('user_instructions')
@@ -1147,7 +1231,20 @@ class AAPSignView(LoginRequiredMixin, generic.UpdateView):
         form.instance.status = 1
         form.instance.date_signed = datetime.now()
         form.instance.next_sign = datetime.now() + timedelta(int(self.object.AAP.periodiskumas * 30))
+        ip_address = self.get_client_ip(self.request)
+        log_user_instruction_activity(self.request.user, self.object.AAP.pavadinimas, ip_address)
+        
         return super().form_valid(form)
+
+    def get_client_ip(self, request):
+        """Get client IP address from request."""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]  # Take the first IP in case of multiple proxies
+        else:
+            ip = request.META.get('REMOTE_ADDR')  # Fallback to REMOTE_ADDR
+        
+        return ip
 
     def get_success_url(self):
         return reverse_lazy('user_instructions')

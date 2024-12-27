@@ -12,7 +12,7 @@ def log_user_activity(username, ip_address, action):
     log_file_path = os.path.join(os.path.dirname(__file__), 'user_login.log')
     
     # Create a log message with timestamp
-    log_message = f"{timezone.now()} - User {username} {action} from IP: {ip_address}\n"
+    log_message = f"{timezone.now()} - Vartotojas {username} {action} prisijungė iš IP: {ip_address}\n"
     
     # Append the log message to the file
     with open(log_file_path, 'a') as log_file:
