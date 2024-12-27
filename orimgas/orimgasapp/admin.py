@@ -1,6 +1,8 @@
 from django.contrib import admin
 from rangefilter.filters import DateRangeFilter
 from . import models
+from .models import UserInstructionSign, Instruction
+from django.utils.translation import gettext_lazy as _
 
 
 class CompanyAdmin(admin.ModelAdmin):
@@ -60,16 +62,17 @@ class AsmeninesApsaugosPriemonesAdmin(admin.ModelAdmin):
 
 class UserInstructionSignAdmin(admin.ModelAdmin):
     list_display = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
-    search_fields = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
+    search_fields = ('user__email','user__first_name','user__last_name', 'instruction__name', 'status')  # Assuming user has an email field
     list_filter = (
         'status',
         ('user__company', admin.RelatedOnlyFieldListFilter),
-        ('date_signed', DateRangeFilter),
+        ('date_signed', admin.DateFieldListFilter),  # Use built-in filter for date fields
     )
+
 
 class KituDocPasirasymasAdmin(admin.ModelAdmin):
     list_display = ('user', 'instruction', 'status', 'date_signed', 'next_sign',)
-    search_fields = ('user', 'instruction', 'status', 'date_signed', 'next_sign',)
+    search_fields = ('user__email','user__first_name','user__last_name', 'instruction__pavadinimas', 'status', 'date_signed', 'next_sign',)
     list_filter = (
         'status',
         ('user__company', admin.RelatedOnlyFieldListFilter),
@@ -78,7 +81,7 @@ class KituDocPasirasymasAdmin(admin.ModelAdmin):
 
 class PriesgaisriniuPasirasymasAdmin(admin.ModelAdmin):
     list_display = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
-    search_fields = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
+    search_fields = ('user__email','user__first_name','user__last_name', 'instruction__pavadinimas', 'status', 'date_signed', 'next_sign')
     list_filter = (
         'status',
         ('user__company', admin.RelatedOnlyFieldListFilter),
@@ -88,7 +91,7 @@ class PriesgaisriniuPasirasymasAdmin(admin.ModelAdmin):
 
 class CivilineSaugaPasirasymasAdmin(admin.ModelAdmin):
     list_display = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
-    search_fields = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
+    search_fields = ('user__email','user__first_name','user__last_name', 'instruction__pavadinimas', 'status', 'date_signed', 'next_sign')
     list_filter = (
         'status',
         ('user__company', admin.RelatedOnlyFieldListFilter),
@@ -97,7 +100,7 @@ class CivilineSaugaPasirasymasAdmin(admin.ModelAdmin):
 
 class MokymuPasirasymasAdmin(admin.ModelAdmin):
     list_display = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
-    search_fields = ('user', 'instruction', 'status', 'date_signed', 'next_sign')
+    search_fields = ('user__email','user__first_name','user__last_name', 'instruction__pavadinimas', 'status', 'date_signed', 'next_sign')
     list_filter = (
         'status',
         ('user__company', admin.RelatedOnlyFieldListFilter),
@@ -124,7 +127,7 @@ class TestoAtsakymasAdmin(admin.ModelAdmin):
 
 class AAPPasirasymasAdmin(admin.ModelAdmin):
     list_display = ('user', 'AAP', 'status', 'date_signed', 'next_sign')
-    search_fields = ('user', 'AAP', 'status', 'date_signed', 'next_sign')
+    search_fields = ('user__email','AAP__pavadinimas', 'status', 'date_signed', 'next_sign')
     list_filter = (
         'status',
         ('user__company', admin.RelatedOnlyFieldListFilter),

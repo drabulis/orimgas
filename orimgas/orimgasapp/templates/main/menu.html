@@ -4,7 +4,58 @@
 {% block title %}
     {% trans "Menu" %} {{ block.super }}
 {% endblock title %}
-
+{% block head_style %}
+    @media screen and (max-width: 1000px) and (min-width: 501px){
+        .menu a {
+            font-size: 25px;
+        }
+        h1 {
+            font-size: 4rem;
+        }
+        h2 {
+            font-size: 2.5rem;
+        }
+        header a {
+            font-size: 1.5rem;
+        }
+        .blank {
+            font-size: 1.5rem;
+            width: 10rem;
+        }
+    }
+    @media screen and (max-width: 500px) and (min-width: 300px){
+        .menu a {
+            font-size: 25px;
+        }
+        h1 {
+            font-size: 4rem;
+        }
+        h2 {
+            font-size: 2.5rem;
+        }
+        header a {
+            font-size: 2.3rem;
+        } 
+        .blank {
+            font-size: 1.5rem;
+            width: 10rem;
+        }
+        ul.nav li {
+            font-size: 1rem;
+            margin-left: 1rem;
+            margin-bottom: 1rem;
+            margin-top: 1rem;
+            padding: 0.2rem;
+        }
+        ul.nav a {
+            font-size: 1rem;
+        }
+        ul.nav li.right {
+            margin-right: 1rem;
+            margin-left: -15px;
+        }
+    } 
+{% endblock head_style %}
 {% block content %}
 <br><br><br>
 <h1>{{ user.company }}</h1>

@@ -3,6 +3,8 @@ from django.contrib.auth.views import LoginView
 from django.views.i18n import set_language
 from . import views
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -36,6 +38,7 @@ urlpatterns = [
     path('main/kiti_dokumentai/<uuid:uuid>/', views.KituDocReviewView.as_view(), name='kiti_dokumentai_detail'),
     path('main/AAP/<uuid:uuid>/', views.AAPSignView.as_view(), name='AAP_sign'),
     path('main/AAP_zurnalas', views.AAPZurnalas.as_view(), name='AAP_zurnalas'),
-    path('login/', LoginView.as_view(), name='login'),
+    #path('login/', views.CustomLoginView.as_view(), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

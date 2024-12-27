@@ -129,6 +129,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             self.mokymupasirasymas_set.filter(status=0).delete()
             # Delete KitiDocPasirasymas instances with status=0
             self.kitudocpasirasymas_set.filter(status=0).delete()
+            self.aappasirasymas_set.filter(status=0).delete()
+            self.civilinesaugapasirasymas_set.filter(status=0).delete()
 
 
         super().save(*args, **kwargs)

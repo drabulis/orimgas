@@ -6,7 +6,8 @@ from django.utils.safestring import mark_safe
 import base64
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
-
+from django.core.mail import send_mail
+from accounts.models import User
 
 
 class AddUserForm(forms.ModelForm):
@@ -130,6 +131,59 @@ class AddUserForm(forms.ModelForm):
             models.CivilineSaugaPasirasymas.objects.create(user=user, instruction=instruction, status=0)
         for instruction in asmenines_apsaugos_priemones:
             models.AAPPasirasymas.objects.create(user=user, AAP=instruction, status=0)
+
+        company = user.company.name
+        company_id = user.company.id
+        supervisor_list = User.objects.filter(is_supervisor=True, company=company_id)
+        subject = 'Priminimas: Turite neužbaigtų darbų'
+        message = f"""
+Gerbiamas(-a) {user.first_name},
+
+Jūs prijungti prie elektroninės instruktavimo sistemos (EIS).
+Kviečiame prisijungti prie jūsų profilio, susipažinti su instrukcijomis.
+Prisijungti galite čia: https://orimgas.online
+Informuojame, kad prisijungimo vardas yra jūsų elektroninis paštas.
+Slaptažodis yra jūsų gimimo data.
+Slaptažodžio formatas: Metai-Mėnuo-Diena (Skaičiais).
+Iškilus klausimams kreipkitės į savo administratorių.\n"""
+        for supervisor in supervisor_list:
+            message += f'- {supervisor.first_name} {supervisor.last_name} - {supervisor.email}\n'
+        message += f"""
+Pagarbiai,
+"Orimgas" komanda
+
+Dear {user.first_name},
+
+You have been connected to the electronic information system (EIS).
+We invite you to log in to your profile and familiarize yourself with the instructions.
+You can log in to your profile here: https://orimgas.online
+Please note that your login username is your email address.
+Your password is your date of birth.
+Password format: Year-Month-Day (Numbers)
+If you have any questions, please contact your supervisor.\n"""
+        for supervisor in supervisor_list:
+            message += f'- {supervisor.first_name} {supervisor.last_name} - {supervisor.email}\n'
+        message += f"""
+
+Best regards,
+The „Orimgas“ Team
+
+
+Уважаемый(-ая) {user.first_name},
+      
+Вы подключены к электронной  информационной системе (ЕИС), вас подключил администратор Варденис Паварденис. 
+Приглашаем вас подключиться к своему профилю и ознакомиться с инструкциями.
+Вы можете подключиться к профилю здесь: https://orimgas.online          
+Обратите внимание, что логином является ваш адрес электронной почты. Пароль – год вашего рождения.
+Формат пароля: Год-Месяц-День (цифры)
+Если у вас есть вопросы, обратитесь к администратору.\n"""
+        for supervisor in supervisor_list:
+            message += f'- {supervisor.first_name} {supervisor.last_name} - {supervisor.email}\n'
+        message += f"""
+С уважением,
+Команда „Orimgas“
+"""
+        send_mail(subject, message, 'info@orimgas.online', [user.email])
         return user
 
 

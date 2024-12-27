@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = local_settings.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = local_settings.DEBUG
 
 ALLOWED_HOSTS = [*local_settings.ALLOWED_HOSTS,]
 CSRF_TRUSTED_ORIGINS= [*local_settings.CSRF_TRUSTED_ORIGINS,]
@@ -57,6 +57,7 @@ CRON_CLASSES = [
 AUTH_USER_MODEL = 'accounts.User'
 
 AUTHENTICATION_BACKENDS = [
+    'accounts.backends.CustomAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -69,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'accounts.middleware.LogoutLoggingMiddleware',
 ]
 
 
@@ -153,8 +155,8 @@ LOCALE_PATHS = [
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR.joinpath(STATIC_URL)
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR.joinpath(MEDIA_URL)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

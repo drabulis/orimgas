@@ -5,6 +5,22 @@
     {% load i18n %}
     <title>{% block title %}{% trans "Orimgas" %}{% endblock title %}</title>
     <link rel="stylesheet" href="{% static "css/base_style.css" %}">
+    <style>
+        @media screen and (max-width: 1000px) and (min-width: 501px){
+
+        }
+        @media screen and (max-width: 500px) and (min-width: 300px){
+            ul.nav a {
+                font-size: 1rem;
+            }
+            ul.nav li.right {
+                margin-right: 1rem;
+                margin-left: -15px;
+            }
+        }
+        {% block head_style %}
+        {% endblock head_style %}
+    </style>
 </head>
 <body>
     <header>
