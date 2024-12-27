@@ -9,7 +9,7 @@ class LogoutLoggingMiddleware(MiddlewareMixin):
         # Check if the user is logged out
         if request.path == '/accounts/logout/' and request.method == 'POST':
             username = request.user.email if request.user.is_authenticated else 'Unknown'
-            ip_address = request.META.get('REMOTE_ADDR')
+            ip_address = self.get_client_ip(request)
             self.log_user_logout(username, ip_address)
 
     def log_user_logout(self, username, ip_address):
@@ -22,3 +22,13 @@ class LogoutLoggingMiddleware(MiddlewareMixin):
         # Append the log message to the file
         with open(log_file_path, 'a') as log_file:
             log_file.write(log_message)
+
+    def get_client_ip(self, request):
+        """Get client IP address from request."""
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]  # Take the first IP in case of multiple proxies
+        else:
+            ip = request.META.get('REMOTE_ADDR')  # Fallback to REMOTE_ADDR
+        
+        return ip
