@@ -404,42 +404,52 @@ class RenderPDFForm(forms.Form):
         if hasattr(self.instance, 'AAP'):
             instruction = self.instance.AAP
         else:
-            instruction = self.instance.instruction
+            instruction = self.instance
 
         if instruction.pdf:
-            # Get the file path or URL of the PDF file
-            pdf_path = instruction.pdf.url  # Assuming instruction.pdf is a FileField or equivalent
+            # URL to fetch the PDF file
+            pdf_url = instruction.pdf.url
 
-            # Use JavaScript to handle object URL creation
+            # JavaScript to fetch the PDF and create an object URL dynamically
             script = f"""
             <script>
-                function loadPdf() {{
-                    const input = document.getElementById('pdfInput');
-                    const pdfCard = document.getElementById('pdfCard');
-                    
-                    if (input.files.length <= 0) return;
+                document.addEventListener('DOMContentLoaded', function () {{
+                    const pdfViewer = document.getElementById('pdfViewer');
 
-                    const file = input.files[0];
-                    const objectUrl = URL.createObjectURL(file);
-                    pdfCard.src = objectUrl;
+                    // Fetch the PDF file from the server
+                    fetch("{pdf_url}")
+                        .then(response => {{
+                            if (!response.ok) {{
+                                throw new Error('Network response was not ok');
+                            }}
+                            return response.blob();
+                        }})
+                        .then(blob => {{
+                            // Create an object URL for the PDF
+                            const objectUrl = URL.createObjectURL(blob);
+                            pdfViewer.src = objectUrl;
 
-                    // Ensure we clean up the object URL after the PDF is unloaded
-                    pdfCard.onload = () => {{
-                        URL.revokeObjectURL(objectUrl);
-                    }};
-                }}
+                            // Revoke the object URL after the PDF is loaded
+                            pdfViewer.onload = function () {{
+                                URL.revokeObjectURL(objectUrl);
+                            }};
+                        }})
+                        .catch(error => {{
+                            console.error('There was a problem with the fetch operation:', error);
+                        }});
+                }});
             </script>
             """
 
-            # Embed an input field and iframe for rendering the PDF
+            # HTML for the iframe to display the PDF
             html = f"""
             {script}
-            <input id="pdfInput" type="file" accept="application/pdf" onchange="loadPdf()" />
-            <iframe id="pdfCard" width="550px" height="600px" type="application/pdf" readonly></iframe>
+            <iframe id="pdfViewer" width="90%" height="80%" type="application/pdf"></iframe>
             """
             return mark_safe(html)
         else:
             return ''
+
 
 
 class UserEditForm(forms.ModelForm):

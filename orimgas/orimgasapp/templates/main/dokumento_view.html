@@ -2,9 +2,74 @@
 {% load i18n %}
 {% block title %}{{ object.name }} {{ block.super }}{% endblock title %}
 {% block content %}
+<head>
+    <style>
+        html, body {
+            height: 100%; /* Ensure the page takes up full height */
+            margin: 0;
+            padding: 0;
+        }
+        .Form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh; /* Form takes at least full viewport height */
+            padding: 20px;
+            border: 1px solid #0000aa; /* Optional border for visibility */
+            border-radius: 20px;
+            background-color: #f9f9f9;
+            width: 70% !important; /* Centered form with a fixed width */
+            margin: 0 auto; /* Center the form horizontally */
+        }
+        iframe {
+            display: block;
+            width: 100%; /* Full width of the form */
+            height: 70vh; /* Takes 70% of the viewport height */
+            border: 1px solid #ddd; /* Optional border for styling */
+            margin-bottom: 20px; /* Space below the iframe */
+        }
+        .form-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px; /* Space above the checkbox */
+        }
+        label {
+            padding-left: 5px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #f9f9f9;
+            color: #333;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease-in-out;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px; /* Space above the button */
+        }
+        @media screen and (max-width: 1000px) and (min-width: 450px){
+            .Form {
+                width: 90%;
+            }
+            div.form label {
+                font-size: 20px;
+            }
+            form label {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
 <br><br><br>
 <h1>{{ object.name }}</h1>
-<form method="post" id="userInstructionForm">
+<form method="post" id="userInstructionForm"  class="Form">
     {{ form.render_pdf }}
     {% csrf_token %}
     <br><br>
