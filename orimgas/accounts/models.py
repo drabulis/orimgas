@@ -108,6 +108,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    skyrius = models.ForeignKey("orimgasapp.Skyrius",
+                                verbose_name=_("Skyrius"),
+                                related_name="users",
+                                on_delete=models.CASCADE,
+                                blank=True, null=True)
 
     objects = CustomUserManager()
 

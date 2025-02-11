@@ -91,9 +91,15 @@ class AddUserForm(forms.ModelForm):
         queryset=models.AsmeninesApsaugosPriemones.objects.none(),
         widget=forms.SelectMultiple(attrs={'size': '8', 'class': 'scrollable-select'}),
     )
+    skyrius = forms.ModelChoiceField(
+        label=("Skyrius"),
+        queryset=models.Skyrius.objects.none(),
+        required=False,
+    )
+
     class Meta:
         model = models.User
-        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data', 'med_patikros_periodas', 'password', 'AsmeninesApsaugosPriemones',]
+        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data', 'med_patikros_periodas', 'password', 'AsmeninesApsaugosPriemones','skyrius',]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -104,11 +110,14 @@ class AddUserForm(forms.ModelForm):
         self.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.none()
         self.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.none()
         self.fields['AsmeninesApsaugosPriemones'].queryset = models.AsmeninesApsaugosPriemones.objects.none()
-
+        self.fields['skyrius'].queryset = models.Skyrius.objects.none()
+        # self.fields['skyrius'].empty_label = "None" 
+        
     def save(self, commit=True):
 
         user = super().save(commit)
         user.set_password(self.cleaned_data["password"])
+        user.skyrius = self.cleaned_data["skyrius"]
         
         user.save()
 
@@ -266,12 +275,20 @@ class SupervisorEditUserForm(forms.ModelForm):
         required=False,
         initial=True
         )
+    skyrius = forms.ModelChoiceField(
+        label=("Skyrius"),
+        queryset=models.Skyrius.objects.none(),
+        required=False,
+    )
+
     class Meta:
         model = models.User
-        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data','med_patikros_periodas', 'password','is_active', 'AsmeninesApsaugosPriemones']
+        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data','med_patikros_periodas', 'password','is_active', 'AsmeninesApsaugosPriemones','skyrius',]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['AsmeninesApsaugosPriemones'].initial = models.AsmeninesApsaugosPriemones.objects.none()
+
 
     def clean_password(self):
         # If the password is not provided, return the original password

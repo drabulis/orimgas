@@ -72,6 +72,7 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
         form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
         form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=self.request.user.company)
         form.fields['AsmeninesApsaugosPriemones'].queryset = self.request.user.company.AAP
+        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=self.request.user.company)
         return form
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -369,9 +370,13 @@ class MyCompanyUsersView(LoginRequiredMixin, generic.ListView):
         queryset = super().get_queryset()
         query = self.request.GET.get('query', '')
         company = self.request.user.company
+        skyrius = self.request.user.skyrius
 
         # Apply the initial company filter
-        queryset = queryset.filter(company=company)
+        if self.request.user.skyrius is not None:
+            queryset = queryset.filter(company=company, skyrius=skyrius)
+        else:
+            queryset = queryset.filter(company=company)
 
         # Debugging: Print the queryset count to check pagination handling
         print(f"Queryset count before filtering: {queryset.count()}")
@@ -1003,7 +1008,8 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
         form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=self.request.user.company)
         form.fields['AsmeninesApsaugosPriemones'].queryset = self.request.user.company.AAP
-
+        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=self.request.user.company)
+        form.fields['AsmeninesApsaugosPriemones'].initial = []
         return form
 
     def get_object(self, queryset=None):
@@ -1035,13 +1041,15 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         med_patikros_data = form.cleaned_data.get('med_patikros_data')
         med_patikros_periodas = form.cleaned_data.get('med_patikros_periodas')
         AAP = form.cleaned_data.get('AsmeninesApsaugosPriemones')
+        skyrius = form.cleaned_data.get('skyrius')
         priesgaisrinesinstrukcijospasirasymai = models.PriesgaisriniuPasirasymas.objects.filter(user=user)
         civilinesaugapasirasymai = models.CivilineSaugaPasirasymas.objects.filter(user=user)
         mokymaipasirasymai = models.MokymuPasirasymas.objects.filter(user=user)
         kitidokumentaipasirasymai = models.KituDocPasirasymas.objects.filter(user=user)      
         existing_signs = models.UserInstructionSign.objects.filter(user=user)
         AAPPasirasymai = models.AAPPasirasymas.objects.filter(user=user)
-
+        
+        user.skyrius = skyrius
         if password:
             user.set_password(password)
 
@@ -1106,7 +1114,15 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         for AAP in AAP:
             existing_sign = AAPPasirasymai.filter(AAP=AAP).first()
             if existing_sign:
-                existing_sign.save()
+                if existing_sign.date_signed is not None:
+                    existing_sign.next_sign = None
+                    existing_sign.save()
+                    models.AAPPasirasymas.objects.create(
+                        user=user,
+                        AAP=AAP,
+                    )
+                elif existing_sign.date_signed is None:
+                    existing_sign.save()
             else:
                 models.AAPPasirasymas.objects.create(
                     user=user,

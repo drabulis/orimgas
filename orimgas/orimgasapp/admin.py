@@ -6,8 +6,15 @@ from django.utils.translation import gettext_lazy as _
 
 
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'company_id', 'manager')
+    list_display = ('name', 'company_id', 'manager',)
     search_fields = ('name', 'company_id', 'manager')
+
+class SkyriusAdmin(admin.ModelAdmin):
+    list_display = ('pavadinimas', 'company')
+    search_fields = ('pavadinimas', 'company')
+    list_filter = (
+        'company',
+    )
 
 class PositionAdmin(admin.ModelAdmin):
     list_display = ('name', 'company')
@@ -152,4 +159,4 @@ admin.site.register(models.TestoKlausimas, TestoKlausimaiAdmin)
 admin.site.register(models.TestoAtsakymas, TestoAtsakymasAdmin)
 admin.site.register(models.AAPPasirasymas, AAPPasirasymasAdmin)
 admin.site.register(models.AsmeninesApsaugosPriemones, AsmeninesApsaugosPriemonesAdmin)
-
+admin.site.register(models.Skyrius, SkyriusAdmin)

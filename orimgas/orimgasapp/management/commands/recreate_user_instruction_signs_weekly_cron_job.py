@@ -233,6 +233,8 @@ class Command(BaseCommand):
 
             # Iterate over completed signs
             for completed_sign in completed_AAP_signs:
+                if completed_sign.next_sign is None:
+                    continue
                 key = (completed_sign.AAP.pavadinimas, completed_sign.AAP)
                 if key not in latest_instances or completed_sign.next_sign > latest_instances[key].next_sign:
                     latest_instances[key] = completed_sign

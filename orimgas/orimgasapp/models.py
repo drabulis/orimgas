@@ -21,6 +21,8 @@ MATO_VNT = (
     (3, _("Kompl.")),
 
 )
+
+
 class AsmeninesApsaugosPriemones(models.Model):
     pavadinimas = models.CharField(_("pavadinimas"),max_length=10000)
     periodiskumas = models.SmallIntegerField(_("periodicity"), choices=AAP_LAIKAS, default=6)
@@ -46,9 +48,20 @@ class Company(models.Model):
                                 default=None,
                                 related_name='AAP',)
 
+
     def __str__(self):
         return self.name
     
+class Skyrius(models.Model):
+    pavadinimas = models.CharField(_("pavadinimas"),max_length=10000)
+    company = models.ForeignKey(Company,
+                                     blank=True, 
+                                     default=None,
+                                     related_name='skyrius',
+                                     on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.pavadinimas
 
 class Testai(models.Model):
     pavadinimas = models.CharField(_("pavadinimas"),max_length=10000)

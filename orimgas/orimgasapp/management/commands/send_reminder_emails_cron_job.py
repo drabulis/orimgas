@@ -68,7 +68,7 @@ The „Orimgas“ Team
 Приглашаем вас подключиться к своему профилю и ознакомиться с инструкциями.
 Вы можете подключиться к профилю здесь: https://orimgas.online
 Напоминаем, что логином является ваш адрес электронной почты.
-Пароль – год вашего рождения.
+Пароль – дата вашего рождения.
 Формат пароля: Год-Месяц-День (цифры)
 
 С уважением,
@@ -88,16 +88,23 @@ The „Orimgas“ Team
                         one_month_from_now = datetime.now() + timedelta(days=30)
 
                 # Get the users under the supervision with status=0
-                        supervised_users = User.objects.filter(
-                                Q(userinstructionsign__status=0) | Q(mokymupasirasymas__status=0) | Q(priesgaisriniupasirasymas__status=0) | Q(kitudocpasirasymas__status=0) | Q(civilinesaugapasirasymas__status=0) | Q(aappasirasymas__status=0),
-                                company=supervisor.company,
-                                ).distinct()
+                        if supervisor.skyrius is not None:
+                                supervised_users = User.objects.filter(
+                                        Q(userinstructionsign__status=0) | Q(mokymupasirasymas__status=0) | Q(priesgaisriniupasirasymas__status=0) | Q(kitudocpasirasymas__status=0) | Q(civilinesaugapasirasymas__status=0) | Q(aappasirasymas__status=0),
+                                        company=supervisor.company, skyrius=supervisor.skyrius,
+                                        ).distinct()
+                        else:
+                                supervised_users = User.objects.filter(
+                                        Q(userinstructionsign__status=0) | Q(mokymupasirasymas__status=0) | Q(priesgaisriniupasirasymas__status=0) | Q(kitudocpasirasymas__status=0) | Q(civilinesaugapasirasymas__status=0) | Q(aappasirasymas__status=0),
+                                        company=supervisor.company,
+                                        ).distinct()
 
                 # Get the users under the supervision with sekanti_med_patikros_data < one month from now
                         upcoming_medical_users = User.objects.filter(
                         company=supervisor.company,
                         sekanti_med_patikros_data__lt=one_month_from_now,
-                        sekanti_med_patikros_data__isnull=False
+                        sekanti_med_patikros_data__isnull=False,
+                        is_active=True
                         ).distinct()
 
                         if supervised_users or upcoming_medical_users:

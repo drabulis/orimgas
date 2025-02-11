@@ -19,6 +19,9 @@
                 <label for="id_position">{% trans "Pareigos:" %}</label>
                 {{ form.position }}
                 <br><br>
+                <label for="id_skyrius">{% trans "Skyrius:" %}</label>
+                {{ form.skyrius }}
+                <br><br>
                 <label for="id_password">{% trans "Slaptažodis:" %}</label>
                 {{ form.password }}
                 <label for="is_active">{% trans "Aktyvus:" %}</label>
@@ -53,4 +56,13 @@
         <button class="button" type="post">{% trans "Patvirtinti" %}</button>
         <a class="button" href="{% url "my_company_users" %}">{% trans "Atgal" %}</a>
     </form><br><br><br><br>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Deselect all options in the ModelMultipleChoiceField
+        const selectElement = document.getElementById('id_AsmeninesApsaugosPriemones');
+        if (selectElement) {
+            selectElement.selectedIndex = -1;  // Deselect all options
+        }
+    });
+    </script>
 {% endblock content %}
