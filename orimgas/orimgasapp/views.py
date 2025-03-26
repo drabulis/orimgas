@@ -1144,7 +1144,7 @@ class DokumentuListView(LoginRequiredMixin, generic.ListView):
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['dokumetai'] = models.Instruction.objects.filter(company=self.request.user.company)
+        context['dokumentai'] = models.Instruction.objects.filter(company=self.request.user.company)
         context['priesrines_instrukcijos'] = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
         context['mokymo_instrukcijos'] = models.Mokymai.objects.filter(imone=self.request.user.company)
         context['kitu_doc'] = models.KitiDokumentai.objects.filter(imone=self.request.user.company)

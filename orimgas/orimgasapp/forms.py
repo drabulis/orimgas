@@ -53,13 +53,13 @@ class AddUserForm(forms.ModelForm):
     priesgaisrines = forms.ModelMultipleChoiceField(
         label="Priesgiasrinės instrukcijos",
         queryset=models.PriesgiasrinesInstrukcijos.objects.none(),
-        widget=forms.SelectMultiple(attrs={'class': 'scrollable-select'}),
+        widget=forms.SelectMultiple(attrs={'size': '8', 'class': 'scrollable-select'}),
         required=True
     )
     civiline_sauga = forms.ModelMultipleChoiceField(
         label="Civiline sauga",
         queryset=models.CivilineSauga.objects.none(),
-        widget=forms.SelectMultiple(attrs={'class': 'scrollable-select'}),
+        widget=forms.SelectMultiple(attrs={'size': '8', 'class': 'scrollable-select'}),
         required=False
     )
     mokymai = forms.ModelMultipleChoiceField(
@@ -238,13 +238,13 @@ class SupervisorEditUserForm(forms.ModelForm):
     priesgaisrines = forms.ModelMultipleChoiceField(
         label="Priesgiasrinės instrukcijos",
         queryset=models.PriesgiasrinesInstrukcijos.objects.none(),
-        widget=forms.SelectMultiple(attrs={'class': 'scrollable-select'}),
+        widget=forms.SelectMultiple(attrs={'size': '8', 'class': 'scrollable-select'}),
         required=True
     )
     civiline_sauga = forms.ModelMultipleChoiceField(
         label="Civiline sauga",
         queryset=models.CivilineSauga.objects.none(),
-        widget=forms.SelectMultiple(attrs={'class': 'scrollable-select'}),
+        widget=forms.SelectMultiple(attrs={'size': '8', 'class': 'scrollable-select'}),
         required=False
     )
     mokymai = forms.ModelMultipleChoiceField(
@@ -275,6 +275,12 @@ class SupervisorEditUserForm(forms.ModelForm):
         required=False,
         initial=True
         )
+    AsmeninesApsaugosPriemones = forms.ModelMultipleChoiceField(
+        label="Asmenines apsaugos priemones",
+        queryset=models.AsmeninesApsaugosPriemones.objects.none(),
+        widget=forms.SelectMultiple(attrs={'size': '8', 'class': 'scrollable-select'}),
+        required=False 
+    )
     skyrius = forms.ModelChoiceField(
         label=("Skyrius"),
         queryset=models.Skyrius.objects.none(),
@@ -287,7 +293,7 @@ class SupervisorEditUserForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['AsmeninesApsaugosPriemones'].initial = models.AsmeninesApsaugosPriemones.objects.none()
+        
 
 
     def clean_password(self):

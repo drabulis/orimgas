@@ -110,22 +110,22 @@ The „Orimgas“ Team
                         if supervised_users or upcoming_medical_users:
                 # Send reminder email to the supervisor
                                 subject = 'Priminimas: Įmonės darbuotojai, nesusipažinę su instrukcijomis'
-                                message = f'Gerbiamas {supervisor.first_name},\n\nŠie jūsų įmonės darbuotojai, nesusipažinę su instrukcijom:\n'
+                                message = f'Gerbiamas(-a) {supervisor.first_name},\n\nŠie jūsų įmonės darbuotojai, nesusipažinę su instrukcijom:\n'
 
-                        for user in supervised_users:
-                                message += f'- {user.first_name} {user.last_name}\n'
+                                for user in supervised_users:
+                                        message += f'- {user.first_name} {user.last_name}\n'
 
-                        if upcoming_medical_users:
-                                message += '\nŠiems darbuotojams artėja medicininė patikra:\n'
-                                for user in upcoming_medical_users:
-                                        message += f'- {user.first_name} {user.last_name} (Patikros data: {user.sekanti_med_patikros_data.strftime("%Y-%m-%d")})\n'
+                                if upcoming_medical_users:
+                                        message += '\nŠiems darbuotojams artėja medicininė patikra:\n'
+                                        for medical_user in upcoming_medical_users:
+                                                message += f'- {medical_user.first_name} {medical_user.last_name} (Patikros data: {medical_user.sekanti_med_patikros_data.strftime("%Y-%m-%d")})\n'
 
                                         message += '\nUžtikrinkite, kad darbuotojai susipažintu su instrukcijom ir  atliktų medicininę patikrą laiku.'
-                        message += '\nPrie profilio prisijungit galite čia: https://orimgas.online/\n\nPagarbiai,\n"Orimgas" komanda'
-                        send_mail(subject, message, 'info@orimgas.online', [supervisor.email])
+                                message += '\nPrie profilio prisijungit galite čia: https://orimgas.online/\n\nPagarbiai,\n"Orimgas" komanda'
+                                send_mail(subject, message, 'info@orimgas.online', [supervisor.email])
 
                         supervisor_emails_sent += 1
-
+                        
                         if supervisor_emails_sent % 20 == 0:
                                 time.sleep(30)
 
