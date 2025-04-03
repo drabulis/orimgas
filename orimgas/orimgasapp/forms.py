@@ -1,6 +1,6 @@
 from django import forms
 from . import models
-from accounts.models import MED_PATIKROS_PERIODAS
+from accounts.models import MED_PATIKROS_PERIODAS, KALBA
 from django.forms import ValidationError
 from django.utils.safestring import mark_safe
 import base64
@@ -96,10 +96,16 @@ class AddUserForm(forms.ModelForm):
         queryset=models.Skyrius.objects.none(),
         required=False,
     )
+    kalba = forms.ChoiceField(
+        label=("Kalba"),
+        choices=KALBA,
+        required=True,
+        widget=forms.Select(attrs={'required': 'true'})
+    )
 
     class Meta:
         model = models.User
-        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data', 'med_patikros_periodas', 'password', 'AsmeninesApsaugosPriemones','skyrius',]
+        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data', 'med_patikros_periodas', 'password', 'AsmeninesApsaugosPriemones','skyrius','kalba',]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -118,6 +124,7 @@ class AddUserForm(forms.ModelForm):
         user = super().save(commit)
         user.set_password(self.cleaned_data["password"])
         user.skyrius = self.cleaned_data["skyrius"]
+        user.kalba = self.cleaned_data["kalba"]
         
         user.save()
 
@@ -286,10 +293,16 @@ class SupervisorEditUserForm(forms.ModelForm):
         queryset=models.Skyrius.objects.none(),
         required=False,
     )
+    kalba = forms.ChoiceField(
+        label=("Kalba"),
+        choices=KALBA,
+        required=True,
+        widget=forms.Select(attrs={'required': 'true'})
+    )
 
     class Meta:
         model = models.User
-        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data','med_patikros_periodas', 'password','is_active', 'AsmeninesApsaugosPriemones','skyrius',]
+        fields = ['first_name', 'last_name', 'date_of_birth', 'email', 'position', 'instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai', 'med_patikros_data','med_patikros_periodas', 'password','is_active', 'AsmeninesApsaugosPriemones','skyrius','kalba',]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

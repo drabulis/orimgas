@@ -48,6 +48,11 @@ MED_PATIKROS_PERIODAS = (
     (24, _("24 Mėnesiai")),
 
 )
+KALBA = (
+    (1, _("LT")),
+    (2, _("RU")),
+    (3, _("EN")),
+)
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
@@ -114,6 +119,8 @@ class User(AbstractBaseUser, PermissionsMixin):
                                 on_delete=models.CASCADE,
                                 blank=True, null=True)
 
+    kalba = models.SmallIntegerField(
+        _('kalba'), choices=KALBA, default=1)
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'

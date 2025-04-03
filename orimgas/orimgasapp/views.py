@@ -1042,6 +1042,7 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         med_patikros_periodas = form.cleaned_data.get('med_patikros_periodas')
         AAP = form.cleaned_data.get('AsmeninesApsaugosPriemones')
         skyrius = form.cleaned_data.get('skyrius')
+        kalba = form.cleaned_data.get('kalba')
         priesgaisrinesinstrukcijospasirasymai = models.PriesgaisriniuPasirasymas.objects.filter(user=user)
         civilinesaugapasirasymai = models.CivilineSaugaPasirasymas.objects.filter(user=user)
         mokymaipasirasymai = models.MokymuPasirasymas.objects.filter(user=user)
@@ -1050,6 +1051,7 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         AAPPasirasymai = models.AAPPasirasymas.objects.filter(user=user)
         
         user.skyrius = skyrius
+        user.kalba = kalba
         if password:
             user.set_password(password)
 
