@@ -59,6 +59,13 @@ class KitiDokumentaiAdmin(admin.ModelAdmin):
         'imone',
     )
 
+class AdminPriminimasAdmin(admin.ModelAdmin):
+    list_display = ('pavadinimas', 'imone')
+    search_fields = ('pavadinimas', 'imone')
+    list_filter = (
+        'imone',
+    )
+
 class AsmeninesApsaugosPriemonesAdmin(admin.ModelAdmin):
     list_display = ('pavadinimas', 'periodiskumas')
     search_fields = ('pavadinimas', 'periodiskumas')
@@ -160,3 +167,4 @@ admin.site.register(models.TestoAtsakymas, TestoAtsakymasAdmin)
 admin.site.register(models.AAPPasirasymas, AAPPasirasymasAdmin)
 admin.site.register(models.AsmeninesApsaugosPriemones, AsmeninesApsaugosPriemonesAdmin)
 admin.site.register(models.Skyrius, SkyriusAdmin)
+admin.site.register(models.AdminPriminimas, AdminPriminimasAdmin)

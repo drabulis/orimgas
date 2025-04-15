@@ -20,6 +20,7 @@ import tempfile
 from django.utils.dateparse import parse_date
 import os
 from django.utils import timezone
+from django.db import transaction
 
 
 def log_user_instruction_activity(user, instruction_name, ip_address):
@@ -1357,3 +1358,137 @@ class AAPZurnalas(LoginRequiredMixin, generic.ListView):
         if 'generate_pdf' in request.GET:
             return self.generate_pdf(request)
         return super().get(request, *args, **kwargs)
+
+class InstructionAddAll(LoginRequiredMixin, generic.FormView):
+    model = models.User
+    form_class = forms.InstructionAddAllForm
+    template_name = "main/InstructionAddAll.html"  
+    success_url = reverse_lazy('my_company_users')
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['company'] = self.request.user.company
+        return context
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.user = self.request.user
+        form.fields['instructions'].queryset = models.Instruction.objects.filter(company=self.request.user.company)
+        form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=self.request.user.company)
+        form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
+        form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
+        form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=self.request.user.company)
+        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=self.request.user.company)
+        return form
+
+    def filter_instructions(self, form, user):
+        """Helper method to get filtered instructions for a user"""
+        return {
+            'instructions': form.cleaned_data.get('instructions'),
+            'priesgaisrines': form.cleaned_data.get('priesgaisrines'),
+            'civiline_sauga': form.cleaned_data.get('civiline_sauga'),
+            'mokymai': form.cleaned_data.get('mokymai'),
+            'kitidokumentai': form.cleaned_data.get('kiti_dokumentai'),
+            'priesgaisrinesinstrukcijospasirasymai': models.PriesgaisriniuPasirasymas.objects.filter(user=user),
+            'civilinesaugapasirasymai': models.CivilineSaugaPasirasymas.objects.filter(user=user),
+            'mokymaipasirasymai': models.MokymuPasirasymas.objects.filter(user=user),
+            'kitidokumentaipasirasymai': models.KituDocPasirasymas.objects.filter(user=user),
+            'existing_signs': models.UserInstructionSign.objects.filter(user=user),
+        }
+
+    def create_instructions(self, form, user):
+        """Create instructions for a specific user"""
+        filtered_data = self.filter_instructions(form, user)
+        
+        # Unpack all the filtered data
+        instructions = filtered_data['instructions']
+        priesgaisrines = filtered_data['priesgaisrines']
+        civiline_sauga = filtered_data['civiline_sauga']
+        mokymai = filtered_data['mokymai']
+        kitidokumentai = filtered_data['kitidokumentai']
+        priesgaisrinesinstrukcijospasirasymai = filtered_data['priesgaisrinesinstrukcijospasirasymai']
+        civilinesaugapasirasymai = filtered_data['civilinesaugapasirasymai']
+        mokymaipasirasymai = filtered_data['mokymaipasirasymai']
+        kitidokumentaipasirasymai = filtered_data['kitidokumentaipasirasymai']
+        existing_signs = filtered_data['existing_signs']
+
+        if instructions:
+            for instruction in instructions:
+                existing_sign = existing_signs.filter(instruction=instruction).first()
+                if existing_sign:
+                    existing_sign.save()
+                else:
+                    models.UserInstructionSign.objects.create(
+                        user=user,
+                        instruction=instruction,
+                    )
+
+        if priesgaisrines:
+            for instruction in priesgaisrines:
+                existing_sign = priesgaisrinesinstrukcijospasirasymai.filter(instruction=instruction).first()
+                if existing_sign:
+                    existing_sign.save()
+                else:
+                    models.PriesgaisriniuPasirasymas.objects.create(
+                        user=user,
+                        instruction=instruction,
+                    )
+        
+        if civiline_sauga:
+            for instruction in civiline_sauga:
+                existing_sign = civilinesaugapasirasymai.filter(instruction=instruction).first()
+                if existing_sign:
+                    existing_sign.save()
+                else:
+                    models.CivilineSaugaPasirasymas.objects.create(
+                        user=user,
+                        instruction=instruction,
+                    )
+
+        if mokymai:
+            for instruction in mokymai:
+                existing_sign = mokymaipasirasymai.filter(instruction=instruction).first()
+                if existing_sign:
+                    existing_sign.save()
+                else:
+                    models.MokymuPasirasymas.objects.create(
+                        user=user,
+                        instruction=instruction,
+                    )
+
+        if kitidokumentai:
+            for instruction in kitidokumentai:
+                existing_sign = kitidokumentaipasirasymai.filter(instruction=instruction).first()
+                if existing_sign:
+                    existing_sign.save()
+                else:
+                    models.KituDocPasirasymas.objects.create(
+                        user=user,
+                        instruction=instruction,
+                    )
+
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            kalba = form.cleaned_data.get('kalba')
+            skyrius = self.request.user.skyrius
+            
+            if skyrius is not None:
+                user_list = models.User.objects.filter(skyrius=skyrius, company=self.request.user.company, kalba=kalba, is_active=True)
+            else:
+                user_list = models.User.objects.filter(company=self.request.user.company, kalba=kalba, is_active=True)
+            
+            for user in user_list:
+                self.create_instructions(form, user)
+        return super().form_valid(form)
+
+
+class AdminPriminimaiView(LoginRequiredMixin, generic.ListView):
+    model = models.AdminPriminimas
+    template_name = 'main/administracijos_priminimai.html'
+    paginate_by = 10
+    context_object_name = 'admin_priminimai'  # Add this line
+
+    def get_queryset(self):
+        return models.AdminPriminimas.objects.filter(imone=self.request.user.company)
+    

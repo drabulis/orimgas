@@ -1,34 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{{ block.super }}{% trans "Redaguoti" %} {{ user.get_full_name }}{% endblock title %}
+{% block title %}{{ block.super }}{% trans "Pridėti instrukciją" %}{% endblock title %}
 {% block content %}
 <br><br><br>
-    <h1>{% trans "Redaguoti vartotoją" %}</h1>
+    <h1>{% trans "Pridėti instrukciją/ -as vartotojams" %}</h1>
     <form method="POST">
         {% csrf_token %}
         <div class="row-container">
             <div class="collumn">
-                <label for="id_first_name">{% trans "Vardas:" %}</label>
-                {{ form.first_name }}
-                <label for="id_last_name">{% trans "Pavardė:" %}</label>
-                {{ form.last_name }}
-                <label for="id_email">{% trans "El. paštas:" %}</label>
-                {{ form.email }}
-                <label for="id_date_of_birth">{% trans "Gimimo data:" %}</label>
-                {{ form.date_of_birth }}
-                <label for="id_position">{% trans "Pareigos:" %}</label>
-                {{ form.position }}
-                <br><br>
-                <label for="id_skyrius">{% trans "Skyrius:" %}</label>
-                {{ form.skyrius }}
-                <br><br>
                 <label for="id_kalba">{% trans "Daruotojui suprantama kalba:" %}</label>
                 {{ form.kalba }}
-                <br><br>
-                <label for="id_password">{% trans "Slaptažodis:" %}</label>
-                {{ form.password }}
-                <label for="is_active">{% trans "Aktyvus:" %}</label>
-                {{ form.is_active }}
             </div>
             <div class="collumn">
                 <label for="id_instructions">{% trans "Darbų saugos instrukcijos:" %}</label>
@@ -45,15 +26,6 @@
             <div class="collumn">
                 <label for="id_kiti_dokumentai">{% trans "Kiti dokumentai:" %}</label>
                 {{ form.kiti_dokumentai }}
-            </div>
-            <div class="collumn">
-                <label for="id_med_patikros_data">{% trans "Med patikros data:" %}</label>
-                {{ form.med_patikros_data }}
-                <label for="id_med_patikros_periodas">{% trans "Med patikros periodas:" %}</label>
-                {{ form.med_patikros_periodas }}
-                <br>
-                <label for="id_AsmeninesApsaugosPriemones">{% trans "Asmenines apsaugos priemones" %}:</label>
-                {{ form.AsmeninesApsaugosPriemones }}
             </div>
         </div>
         <button class="button" type="post">{% trans "Patvirtinti" %}</button>

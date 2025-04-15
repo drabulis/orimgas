@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Priminimas administracijai" %} {{ block.super }}{% endblock title %}
+{% block content %}
+{% block head_style %}
+    <style>
+        .menu {
+            min-width: 30rem;
+            max-width: 30rem;
+            
+        }
+        @media screen and (max-width: 1000px) and (min-width: 501px){
+            .menu a {
+                font-size: 25px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            header a {
+                font-size: 1.5rem;
+            }
+            .blank {
+                font-size: 1.5rem;
+                width: 10rem;
+            }
+        }
+        @media screen and (max-width: 500px) and (min-width: 300px){
+            .menu ul li {
+                max-width: 121px;
+            }
+            .menu {
+                min-width: 284px;
+                max-width: 284px;
+            }
+            
+        }
+    </style>
+{% endblock head_style %}
+<br><br><br>
+    <h1>{%  trans "Priminimai" %}</h1>
+    {% if admin_priminimai %}
+        
+        <div class="menu">
+        <table>
+            {% for priminimas in admin_priminimai %}
+                    <ul>
+                        <li><a href="{{ priminimas.pdf.url }}" target="_blank">{{ priminimas.pavadinimas }}</a></li>
+                        </ul>
+            {% endfor %}
+        </table>
+        </div>
+    {% else %}
+        <p style="text-align: center;">{% trans "Priminimų nėra" %}</p>
+{% endif %}
+{% endblock content %}

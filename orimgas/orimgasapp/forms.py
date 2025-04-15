@@ -495,3 +495,48 @@ class UserEditForm(forms.ModelForm):
     def clean_password(self):
         # If the password is not provided, return the original password
         return self.cleaned_data.get('password') or self.instance.password
+
+
+class InstructionAddAllForm(forms.ModelForm):
+    instructions = forms.ModelMultipleChoiceField(
+        label="Darbų saugos instrukcijos",
+        queryset=models.Instruction.objects.none(),
+        widget=forms.SelectMultiple(attrs={'size': '8', 'class': 'scrollable-select'}),
+        required=False
+    )
+    priesgaisrines = forms.ModelMultipleChoiceField(
+        label="Priesgiasrinės instrukcijos",
+        queryset=models.PriesgiasrinesInstrukcijos.objects.none(),
+        widget=forms.SelectMultiple(attrs={'size': '8', 'class': 'scrollable-select'}),
+        required=False
+    )
+    civiline_sauga = forms.ModelMultipleChoiceField(
+        label="Civiline sauga",
+        queryset=models.CivilineSauga.objects.none(),
+        widget=forms.SelectMultiple(attrs={'size': '8', 'class': 'scrollable-select'}),
+        required=False
+    )
+    mokymai = forms.ModelMultipleChoiceField(
+        label="Mokymai",
+        queryset=models.Mokymai.objects.none(),
+        widget=forms.SelectMultiple(attrs={'class': 'scrollable-select'}),
+        required=False
+    )
+    kiti_dokumentai = forms.ModelMultipleChoiceField(
+        label="Kiti dokumentai",
+        queryset=models.KitiDokumentai.objects.none(),
+        widget=forms.SelectMultiple(attrs={'class': 'scrollable-select'}),
+        required=False
+    )
+    skyrius = forms.ModelChoiceField(
+        label=("Skyrius"),
+        queryset=models.Skyrius.objects.none(),
+        required=False,
+    )
+
+    class Meta:
+        model = models.User
+        fields = ['instructions', 'priesgaisrines','civiline_sauga', 'mokymai', 'kiti_dokumentai','kalba',]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)

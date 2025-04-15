@@ -73,6 +73,9 @@
     {% if user.is_supervisor %}
     <h2>{% trans "Administratoriaus aplinka:" %}</h2>
     <li>
+        <a href="{% url 'priminimai_administracijai' %}">{% trans "Administratoriaus atmintinė" %}</a>
+    </li>
+    <li>
         <a href="{% url 'user_add' %}">{% trans "Įtraukti naują darbuotoją" %}</a>
     </li>
     <li>

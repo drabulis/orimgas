@@ -205,6 +205,24 @@ class Instruction(models.Model):
     display_instuctions.short_description = _('instructions')
 
 
+class AdminPriminimas(models.Model):
+    imone = models.ForeignKey(Company, 
+                                verbose_name=_("imone"), 
+                                on_delete=models.CASCADE,
+                                related_name='adminpriminimas'
+                                )
+    pavadinimas = models.CharField(_("pavadinimas"),max_length=10000)
+    pdf = models.FileField(upload_to='adminpriminimas')
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+
+    def __str__(self):
+        return f"{self.pavadinimas}"
+    
+    def display_instuctions(self):
+        return ', '.join([instruction.name for instruction in self.instructions.all()])
+    display_instuctions.short_description = _('instructions')
+
+
 class Position(models.Model):
     name = models.CharField(_("pavadinimas"),max_length=10000)
     company = models.ForeignKey(Company,
@@ -278,6 +296,7 @@ class UserInstructionSign(models.Model):
         # Recreate PriesgaisriniuPasirasymas instance
             return recreated_sign
     
+
 
 class CivilineSaugaPasirasymas(models.Model):
     user = models.ForeignKey(User,
@@ -485,3 +504,4 @@ class AAPPasirasymas(models.Model):
             next_sign=None,
         )
         return recreated_sign
+

@@ -38,6 +38,8 @@ urlpatterns = [
     path('main/kiti_dokumentai/<uuid:uuid>/', views.KituDocReviewView.as_view(), name='kiti_dokumentai_detail'),
     path('main/AAP/<uuid:uuid>/', views.AAPSignView.as_view(), name='AAP_sign'),
     path('main/AAP_zurnalas', views.AAPZurnalas.as_view(), name='AAP_zurnalas'),
+    path('main/prideti_instrukcijas_visiems/', views.InstructionAddAll.as_view(), name='prideti_instrukcijas_visiems'),
+    path('main/priminimai_administracijai/', views.AdminPriminimaiView.as_view(), name='priminimai_administracijai'),
     #path('login/', views.CustomLoginView.as_view(), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
