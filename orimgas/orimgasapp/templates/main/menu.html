@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block title %}
-    {% trans "Menu" %} {{ block.super }}
+    {{ block.super }} {% trans "Menu" %} 
 {% endblock title %}
 {% block head_style %}
     @media screen and (max-width: 1000px) and (min-width: 501px){
@@ -57,59 +57,128 @@
     } 
 {% endblock head_style %}
 {% block content %}
-<br><br><br>
-<h1>{{ user.company }}</h1>
-<h2>{{ user.position }} - {{ user.get_full_name }}</h2>
-<div class="menu">
-<ul >
-    {% if user.is_authenticated %}
-    <li>
-        <a href="{% url 'user_instructions' %}">{% trans "Mano darbai" %}</a>
-    </li>
-    <li>
-        <a href="{% url 'user_edit' user.uuid %}">{% trans "Redaguoti mano vartotoją" %}</a>
-    </li>  
-    {% endif %}
+<div class="horizontal_container">
+    <div class="vertical_container1 nice-container">
+        <img class="user_image" src="static/img/user.png" alt="user">
+        <p class="upper_text">{% trans "Vardas pavardė" %}</p>
+        <p>{{ user.first_name }} {{ user.last_name }}</p>
+        <p class="upper_text">{% trans "El. paštas" %}</p>
+        <p>{{ user.email }}</p>
+        <p class="upper_text">{% trans "Pareigos ir kompanija" %}</p>
+        <p>{{ user.position }} - {{ user.company }}</p>
+        <p class="upper_text">{% trans "Medicininė apžiūra" %}</p>
+        <p>{% trans "Medicininė apžiūra" %} - {{ user.med_patikros_data }}<br>{% trans "Sekanti medicininė patikra iki" %} - {{ user.sekanti_med_patikros_data }}</p>
+        
+        <a href="{% url 'user_edit' user.uuid %}">{% trans "Keisti slaptažodį" %}</a>
+
+        </form>
+    </div>
+
+    <div class="vertical_container2 nice-container" style="box-shadow: none;">
+        <div class="horizontal_container2">
+            <div class="vertical_container3 nice-container">
+                <p class="upper_text">{% trans "Darbų saugos instrukcijos" %}</p>
+                <div class="scrollable-content">
+                    {% if userinstructionsign_list %}
+                        {% for UserInstructionSign in userinstructionsign_list %}
+                            <p><a href="{% url 'user_instruction_detail' UserInstructionSign.uuid %}">{{ UserInstructionSign.instruction.name }}</a></p>
+                        {% endfor %}
+                    {% else %}
+                        <p>{% trans "Darbų saugos instrukcijos šiuo metu neturite." %}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+                <div class="vertical_container3 nice-container">
+                    <p class="upper_text">{% trans "Priešgaisrinės instrukcijos" %}</p>
+                    <div class="scrollable-content">
+                        {% if priesrines_instrukcijos %}
+                            {% for priesgaisrine in priesrines_instrukcijos %}
+                                <p><a href="{% url 'priesgaisrinis_sign' priesgaisrine.uuid %}">{{ priesgaisrine.instruction.pavadinimas }}</a></p>
+                            {% endfor %}
+                        {% else %}
+                            <p>{% trans "Priešgaisrinių instrukcijų šiuo metu neturite." %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            
+            
+                <div class="vertical_container3 nice-container">
+                    <p class="upper_text">{% trans "Civilinės saugos instrukcijos" %}</p>
+                    <div class="scrollable-content">
+                        {% if civiline_sauga %}
+                            {% for civiline in civiline_sauga %}
+                                <p><a href="{% url 'civiline_sauga_sign' civiline.uuid %}">{{ civiline.instruction.pavadinimas }}</a></p>
+                            {% endfor %}
+                        {% else %}
+                            <p>{% trans "Civilinės saugos instrukcijų šiuo metu neturite." %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            
+        </div>
+            <div class="horizontal_container2">
+                <div class="vertical_container3 nice-container">
+                    <p class="upper_text">{% trans "Mokymai" %}</p>
+                    <div class="scrollable-content">
+                        {% if mokymo_instrukcijos %}
+                            {% for mokymas in mokymo_instrukcijos %}
+                                <p><a href="{% url 'mokymu_sign' mokymas.uuid %}">{{ mokymas.instruction.pavadinimas }}</a></p>
+                            {% endfor %}
+                        {% else %}
+                            <p>{% trans "Mokymų šiuo metu neturite." %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                    <div class="vertical_container3 nice-container">
+                        <p class="upper_text">{% trans "Kiti dokumentai" %}</p>
+                        <div class="scrollable-content">
+                            {% if kitu_doc %}
+                                {% for kitas_doc in kitu_doc %}
+                                    <p><a href="{% url 'kitu_doc_sign' kitas_doc.uuid %}">{{ kitas_doc.instruction.pavadinimas }}</a></p>
+                                {% endfor %}
+                            {% else %}
+                                <p>{% trans "Kitų dokumentų šiuo metu neturite." %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                
+                
+                    <div class="vertical_container3 nice-container">
+                        <p class="upper_text">{% trans "Asmeninės apsaugos priemonės" %}</p>
+                        <div class="scrollable-content">
+                            {% if asmenines_apsaugos_priemones %}
+                                {% for AAP in asmenines_apsaugos_priemones %}
+                                    <p><a href="{% url 'AAP_sign' AAP.uuid %}">{{ AAP.AAP.pavadinimas }}</a></p>
+                                {% endfor %}
+                            {% else %}
+                                <p>{% trans "Šiuo metu AAP neturite." %}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                
+
+        </div>
+        
+    </div>
     {% if user.is_supervisor %}
-    <h2>{% trans "Administratoriaus aplinka:" %}</h2>
-    <li>
+    <div class="vertical_container1 nice-container">
         <a href="{% url 'priminimai_administracijai' %}">{% trans "Administratoriaus atmintinė" %}</a>
-    </li>
-    <li>
         <a href="{% url 'user_add' %}">{% trans "Įtraukti naują darbuotoją" %}</a>
-    </li>
-    <li>
         <a href="{% url 'my_company_users' %}">{% trans "Įmonės darbuotojai" %}</a>
-    </li>
-    <li>
         <a href="{% url 'darbu_saugos_zurnalas' %}">{% trans "Darbų saugos instruktavimo registras" %}</a>
-    </li>
-    <li>
         <a href="{% url 'priesgaisrinės_saugos_zurnalas' %}">{% trans "Priešgaisrinės saugos žurnalas" %}</a>
-    </li>
-    <li>
         <a href="{% url 'civiline_sauga_zurnalas' %}">{% trans "Civilinės saugos žurnalas" %}</a>
-    <li>
         <a href="{% url 'mokymu_zurnalas' %}">{% trans "Neformalus mokymas" %}</a>
-    </li>
-    <li>
         <a href="{% url 'kitu_doc_zurnalas' %}">{% trans "Kiti dokumentai" %}</a>
-    </li>
-    <li>
+        <a href="{% url 'AAP_zurnalas' %}">{% trans "Asmeninės apsaugos priemonės" %}</a>
         <a href="{% url 'sveikatos_tikrinimo_grafikas' %}">{% trans "Darbuotojų sveikatos tikrinimo grafikas" %}</a>
-    </li>
-    <li>
         <a href="{% url 'dokumentai_list' %}">{% trans "Įmonės dokumentai" %}</a>
-    </li>
-    <li>
-        <a href="{% url 'AAP_zurnalas' %}">{% trans "AAP žurnalas" %}</a>
-    </li>
+        {% if user.is_superuser %}
+            <a href="{% url 'admin:index' %}">Admin</a>
+        {% endif %}
+    </div>
     {% endif %}
-    {% if user.is_superuser %}
-    <li>
-        <a href="{% url 'admin:index' %}">Admin</a>
-    </li>
-    {% endif %}
-</ul>
-</div>
+
 {% endblock content %}

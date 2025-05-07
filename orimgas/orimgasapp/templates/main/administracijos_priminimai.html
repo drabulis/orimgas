@@ -45,14 +45,19 @@
         
         <div class="menu">
         <table>
+            <div class="scrollable-content max-height-700">
             {% for priminimas in admin_priminimai %}
                     <ul>
                         <li><a href="{{ priminimas.pdf.url }}" target="_blank">{{ priminimas.pavadinimas }}</a></li>
                         </ul>
             {% endfor %}
+            </div>
         </table>
         </div>
-    {% else %}
+        {% else %}
         <p style="text-align: center;">{% trans "Priminimų nėra" %}</p>
-{% endif %}
+        {% endif %}
+        <div style="align-self: center; max-width: 6rem;">
+            <a href="{% url 'menu' %}" class="button">{% trans "Atgal" %}</a>
+        </div>
 {% endblock content %}

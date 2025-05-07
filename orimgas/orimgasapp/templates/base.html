@@ -3,7 +3,7 @@
 <head>
     {% load static %}
     {% load i18n %}
-    <title>{% block title %}{% trans "Orimgas" %}{% endblock title %}</title>
+    <title>{% block title %}{% trans "Orimgas e-DSV | " %}{% endblock title %}</title>
     <link rel="stylesheet" href="{% static "css/base_style.css" %}">
     <style>
         @media screen and (max-width: 1000px) and (min-width: 501px){
@@ -23,12 +23,13 @@
     </style>
 </head>
 <body>
-    <header>
-        <ul class="nav">
-            <li><a href="{% url "menu" %}">{% trans "Orimgas Meniu" %}</a></li>
-            <li><a href="{% url "user_detail" user.uuid %}">{% trans "Mano vartotojas" %}</a></li>
-            <li class="right">
-                <form class="blank" action="{% url 'set_language' %}" method="post" id="language-form">
+     <header>
+        <div class="horizontal_container">
+            <div>
+                <a href="{% url 'menu' %}"><img src="{% static 'img/orimgas.png' %}" class="nav_logo" alt="Orimgas_logo"></a>
+            </div>
+            <div class="nav-container-right">
+                <form class="nav_form right" action="{% url 'set_language' %}" method="post" id="language-form">
                     {% csrf_token %}
                     <input name="next" type="hidden" value="{{ request.path }}">
                     <select name="language" id="language-select" onchange="this.form.submit()">
@@ -42,10 +43,10 @@
                         {% endfor %}
                     </select>
                 </form>
-            </li>
-            <li class="right"><a href="#" onclick="document.getElementById('logout-form').submit(); return false;">{% trans "Atsijungti" %}</a></li>
-        </ul>
-    </header>
+                <a href="#" onclick="document.getElementById('logout-form').submit(); return false;">{% trans "Atsijungti" %}</a>
+            </div>
+        </div>
+    </header> 
     <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
         {% csrf_token %}
     </form>
@@ -55,7 +56,7 @@
     </div>
 
     <footer>
-        <p>{% trans "Orimgas" %}</p>
+        <p>{% trans "© Visos autorinės teisės priklauso UAB „Orimgas“" %}</p>
     </footer>
 </body>
 </html>

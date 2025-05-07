@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}{{ block.super }}{% trans "Pridėti vartotoją" %}{% endblock title %}
+<style>
+    .nice-container a {
+        display: inline;
+    }
+</style>
 {% block content %}
 <br><br><br>
     <h1>{% trans "Pridėti naują vartotoją" %}</h1>
+    <div class="nice-container" style="padding: 0;">
     <form method="POST" action="{% url 'user_add' %}">
         {% csrf_token %}
         <div class="row-container">
@@ -49,14 +55,17 @@
                 {{ form.med_patikros_data }}
                 <label for="id_med_patikros_periodas">{% trans "Med patikros periodas" %}:</label>
                 {{ form.med_patikros_periodas }}
-                <br>
+                <br><br>
                 <label for="id_AsmeninesApsaugosPriemones">{% trans "Asmenines apsaugos priemones" %}:</label>
                 {{ form.AsmeninesApsaugosPriemones }}
             </div>
         </div>
+        <div class="horizontal_container" style="justify-content: center;">
         <button class="button" type="POST">{% trans "Patvirtinti" %}</button>
         <a class="button" href="{% url "menu" %}">{% trans "Atgal" %}</a>
+        </div>
     </form>
+    </div>
     <br>
     {% endblock content %}
     

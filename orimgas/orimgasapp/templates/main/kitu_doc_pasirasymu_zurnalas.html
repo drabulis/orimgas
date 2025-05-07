@@ -8,31 +8,86 @@
 <br><br>
 {% if object_list %}
 <a href="{% url 'kitu-doc-pasirasymas-list' uuid=uuid %}?generate_pdf=true" class="pdf-button" target="_blank">{% trans "Generuoti PDF" %}</a>
-<table class="nice-table">
-        <tr>
-            <th>{% trans "Vardas ir Pavardė" %}</th>
-            <th>{% trans "Gimimo data" %}</th>
-            <th>{% trans "Darbuotojo pareigos" %}</th>
-            <th>{% trans "Dokumento pavadinimas" %}</th>
-            <th>{% trans "Pasirašymas" %}</th>
-            <th>{% trans "Supažindinimo data" %}</th>
-        </tr>
-        {% for pasirasymas in object_list %}
-            <tr>
-                <td>{{ pasirasymas.user.get_full_name }}</td>
-                <td>{{ pasirasymas.user.date_of_birth }}</td>
-                <td>{{ pasirasymas.user.position }}</td>
-                {% if pasirasymas.instruction.name %}
-                    <td>{{ pasirasymas.instruction.name }}</td>
-                    {% else %}
-                    <td>{{ pasirasymas.instruction.pavadinimas }}</td>
-                {% endif %}
-                <td>{{ pasirasymas.get_status_display }}</td>
-                <td>{{ pasirasymas.date_signed|default:"Nepasirašyta" }}</td>
-            </tr>
 
-        {% endfor %}
-        </table>
+<br>
+
+        <div class="table-wrapper">
+            <table class="nice-container" id="table" style="width: 90%;">
+              <thead>
+              <tr>
+                <th>
+                  <a href="?sort_by=user__first_name&sort_order={% if sort_by == 'user__first_name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
+                    {% trans "Instruktuojamojo vardas ir pavardė" %}
+                    {% if sort_by == 'user__first_name' %}
+                      <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
+                    {% endif %}
+                  </a>
+                </th>
+                <th>
+                  <a href="?sort_by=user__date_of_birth&sort_order={% if sort_by == 'user__date_of_birth' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
+                    {% trans "Instruktuojamojo gimimo data" %}
+                    {% if sort_by == 'user__date_of_birth' %}
+                      <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
+                    {% endif %}
+                </th>
+                <th>
+                  <a href="?sort_by=user__position__name&sort_order={% if sort_by == 'user__position__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
+                    {% trans "Instruktuojamojo pareigos" %}
+                    {% if sort_by == 'user__position__name' %}
+                      <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
+                    {% endif %}
+                  </a>
+                </th>
+                <th>
+                  <a href="?sort_by=instruction__name&sort_order={% if sort_by == 'instruction__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
+                    {% trans "Dokumento pavadinimas" %}
+                    {% if sort_by == 'instruction__name' %}
+                      <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
+                    {% endif %}
+                  </a>
+                </th>
+                <th>
+                  <a href="?sort_by=status&sort_order={% if sort_by == 'status' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
+                    {% trans "Pasirašymas" %}
+                    {% if sort_by == 'status' %}
+                      <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
+                    {% endif %}
+                  </a>
+                </th>
+                <th>
+                  <a href="?sort_by=date_signed&sort_order={% if sort_by == 'date_signed' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
+                    {% trans "Susipažinimo data" %}
+                    {% if sort_by == 'date_signed' %}
+                      <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
+                    {% endif %}
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="scrollable-tbody">
+              {% for pasirasymas in object_list %}
+                <tr>
+                  <td>{{ pasirasymas.user.get_full_name }}</td>
+                  <td>{{ pasirasymas.user.date_of_birth }}</td>
+                  <td>{% if pasirasymas.user.position %}{{ pasirasymas.user.position.name }}{% else %}"N/A"{% endif %}</td>
+                  <td>{% if pasirasymas.instruction.pavadinimas %}{{pasirasymas.instruction.pavadinimas}}{% else %}"N/A"{% endif %}</td>
+                  <td>
+                    {% if pasirasymas.status == 0 %}{% trans "Nepasirašyta" %}
+                    {% else %}{% trans "Pasirašyta" %}
+                    {% endif %}
+                </td>
+                  <td>{{ pasirasymas.date_signed|default:_("Nepasirašyta") }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+            </table>
+            <br>
+                    <div class="nice-container" style="padding: 0;">
+                    <a href="{% url 'menu' %}" class="button" style="justify-self: center;">{% trans "Atgal" %}</a>
+                  </div>
+            </div>
+
+
 {% else %}
     <p style="text-align: center;">{% trans "Kitų dokumentų žurnale įrašų nerasta." %}</p>
 {% endif %}

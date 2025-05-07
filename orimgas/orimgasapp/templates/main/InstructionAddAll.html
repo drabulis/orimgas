@@ -4,6 +4,7 @@
 {% block content %}
 <br><br><br>
     <h1>{% trans "Pridėti instrukciją/ -as vartotojams" %}</h1>
+    <div class="nice-container" style="padding: 0;">
     <form method="POST">
         {% csrf_token %}
         <div class="row-container">
@@ -28,9 +29,12 @@
                 {{ form.kiti_dokumentai }}
             </div>
         </div>
+        <div class="horizontal_container" style="justify-content: center;">
         <button class="button" type="post">{% trans "Patvirtinti" %}</button>
         <a class="button" href="{% url "my_company_users" %}">{% trans "Atgal" %}</a>
-    </form><br><br><br><br>
+        </div>
+    </form>
+    </div><br><br><br><br>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Deselect all options in the ModelMultipleChoiceField

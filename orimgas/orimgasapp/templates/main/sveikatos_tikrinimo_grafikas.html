@@ -7,15 +7,19 @@
         {% include "main/included/paginator_prev_next.html" %}
         <br><br>
         {% if object_list %}
-            <table class="nice-table">
-                <tr>
-                    <th>{% trans "Vardas ir Pavardė" %}</th>
-                    <th>{% trans "Gimimo data" %}</th>
-                    <th>{% trans "Darbuotojo pareigos" %}</th>
-                    <th>{% trans "Sveikatos patikrinimo data" %}</th>
-                    <th>{% trans "Sveikatos tikrinimo periodiškumas" %}</th>
-                    <th>{% trans "Sekanti sveikatos tikrinimo data" %}</th>
-                </tr>
+        <div class="table-wrapper">
+            <table class="nice-container" id="table" style="width: 90%;">
+                <thead>
+                    <tr>
+                        <th>{% trans "Vardas ir Pavardė" %}</th>
+                        <th>{% trans "Gimimo data" %}</th>
+                        <th>{% trans "Darbuotojo pareigos" %}</th>
+                        <th>{% trans "Sveikatos patikrinimo data" %}</th>
+                        <th>{% trans "Sveikatos tikrinimo periodiškumas" %}</th>
+                        <th>{% trans "Sekanti sveikatos tikrinimo data" %}</th>
+                    </tr>
+                </thead>    
+                <tbody class="scrollable-tbody">
                 {% for vartotojas in object_list %}
                     <tr>
                         <td>{{ vartotojas.get_full_name }}</td>
@@ -26,7 +30,14 @@
                         <td>{{ vartotojas.sekanti_med_patikros_data }}</td>
                     </tr>
                 {% endfor %}
-                </table>
+            </tbody>
+        </table>
+        <br>
+                <div class="nice-container" style="padding: 0;">
+                <a href="{% url 'menu' %}" class="button" style="justify-self: center;">{% trans "Atgal" %}</a>
+              </div>
+        </div>
+
         {% else %}
             <p style="text-align: center;">{% trans "Sveikatos tikrinimo žurnale įrašų nerasta." %}</p>
         {% endif %}

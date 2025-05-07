@@ -38,9 +38,25 @@ def log_user_instruction_activity(user, instruction_name, ip_address):
         log_file.write(log_message)
 
 class UserMeniuView(LoginRequiredMixin, generic.ListView):
-    model = models.User
+    model = models.UserInstructionSign
     template_name = 'main/menu.html'
+    paginate_by = 10000
+    # context_object_name = 'instructions'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(user=self.request.user, status=0)
+        return queryset
     
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['priesrines_instrukcijos'] = models.PriesgaisriniuPasirasymas.objects.filter(user=self.request.user, status=0)
+        context['mokymo_instrukcijos'] = models.MokymuPasirasymas.objects.filter(user=self.request.user, status=0)
+        context['kitu_doc'] = models.KituDocPasirasymas.objects.filter(user=self.request.user, status=0)
+        context['civiline_sauga'] = models.CivilineSaugaPasirasymas.objects.filter(user=self.request.user, status=0)
+        context['asmenines_apsaugos_priemones'] = models.AAPPasirasymas.objects.filter(user=self.request.user, status=0)
+        context['user'] = self.request.user
+        return context    
 
 
 class UserDetailView(LoginRequiredMixin, generic.DetailView):
@@ -99,7 +115,7 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
 class UserInstructionSignView(LoginRequiredMixin, generic.ListView):
     model = models.UserInstructionSign
     template_name = 'main/user_instructions.html'
-    paginate_by = 10
+    paginate_by = 10000
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -347,7 +363,7 @@ class UserEditView(LoginRequiredMixin, generic.UpdateView):
 class MyCompanyUsersView(LoginRequiredMixin, generic.ListView):
     model = models.User
     template_name = 'main/my_company_users.html'
-    paginate_by = 10
+    paginate_by = 10000
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_supervisor:
@@ -446,7 +462,7 @@ class MyCompanyUsersView(LoginRequiredMixin, generic.ListView):
 class DarbuSaugosZurnalas(LoginRequiredMixin, generic.ListView):
     model = models.UserInstructionSign
     template_name = 'main/darbu_saugos_zurnalas.html'
-    paginate_by = 10
+    paginate_by = 10000
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_supervisor:
@@ -549,7 +565,7 @@ class DarbuSaugosZurnalas(LoginRequiredMixin, generic.ListView):
 class CivilinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
     model = models.CivilineSaugaPasirasymas
     template_name ='main/civilines_saugos_zurnalas.html'
-    paginate_by = 10
+    paginate_by = 10000
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_supervisor:
@@ -642,7 +658,7 @@ class CivilinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
 class MokymuZurnalas(LoginRequiredMixin, generic.ListView):
     model = models.Mokymai
     template_name ='main/mokymu_zurnalas.html'
-    paginate_by = 10
+    paginate_by = 10000
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_supervisor:
@@ -724,7 +740,7 @@ class MokymuPasirasymasList(generic.ListView):
 class KituDocZurnalas(LoginRequiredMixin, generic.ListView):
     model = models.KitiDokumentai
     template_name ='main/kitu_doc_zurnalas.html'
-    paginate_by = 10
+    paginate_by = 10000
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_supervisor:
@@ -745,7 +761,7 @@ class KituDocZurnalas(LoginRequiredMixin, generic.ListView):
 class KituDocPasirasymuZurnalas(LoginRequiredMixin, generic.ListView):
     model = models.KituDocPasirasymas
     template_name = 'main/kitu_doc_pasirasymu_zurnalas.html'
-    paginate_by = 10
+    paginate_by = 10000
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_supervisor:
@@ -812,7 +828,7 @@ class KituDocPasirasymuZurnalas(LoginRequiredMixin, generic.ListView):
 class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
     model = models.PriesgaisriniuPasirasymas
     template_name ='main/priesgaisrines_saugos_zurnalas.html'
-    paginate_by = 10
+    paginate_by = 10000
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_supervisor:
@@ -901,7 +917,7 @@ class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
 class SveikatosTikrinimoGrafikas(LoginRequiredMixin, generic.ListView):
     model = models.User
     template_name ='main/sveikatos_tikrinimo_grafikas.html'
-    paginate_by = 10
+    paginate_by = 10000
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_supervisor:
@@ -1139,7 +1155,7 @@ class DokumentuListView(LoginRequiredMixin, generic.ListView):
     model = models.Instruction
     template_name = 'main/dokumentai_list.html'
     context_object_name = 'dokumentai'
-    paginate_by = 10
+    paginate_by = 10000
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -1272,7 +1288,7 @@ class AAPSignView(LoginRequiredMixin, generic.UpdateView):
 class AAPZurnalas(LoginRequiredMixin, generic.ListView):
     model = models.AAPPasirasymas
     template_name ='main/AAP_zurnalas.html'
-    paginate_by = 10
+    paginate_by = 10000
 
     def dispatch(self, request, *args, **kwargs):
         if not self.request.user.is_supervisor:
@@ -1486,8 +1502,8 @@ class InstructionAddAll(LoginRequiredMixin, generic.FormView):
 class AdminPriminimaiView(LoginRequiredMixin, generic.ListView):
     model = models.AdminPriminimas
     template_name = 'main/administracijos_priminimai.html'
-    paginate_by = 10
-    context_object_name = 'admin_priminimai'  # Add this line
+    paginate_by = 10000
+    context_object_name = 'admin_priminimai'
 
     def get_queryset(self):
         return models.AdminPriminimas.objects.filter(imone=self.request.user.company)

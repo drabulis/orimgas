@@ -1,5 +1,5 @@
 {% load i18n %}
-<div class="pager">
+{% comment %} <div class="pager">
     {% if page_obj.has_previous %}
         <a href="{{ request.path }}?query={{ request.GET.query }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}&page=1">&laquo;</a>
         {% if page_obj.previous_page_number != 1 %}
@@ -13,16 +13,16 @@
         {% endif %}
         <a href="{{ request.path }}?query={{ request.GET.query }}&sort_by={{ sort_by }}&sort_order={{ sort_order }}&page={{ page_obj.paginator.num_pages }}">&raquo;</a>
     {% endif %}
-</div>
+</div> {% endcomment %}
 
-<div>
-    {% if search %}
-        <form method="GET" style="padding-bottom: 5px; margin-bottom: 0.7rem;" action="{{ request.path }}" class="filter-form">
+{% if search %}
+<div class="nice-container">
+        <form method="GET" action="{{ request.path }}">
             <input type="text" name="query" value="{{ request.GET.query }}" placeholder={% trans "Ieškoti" %}>
             <input type="hidden" name="sort_by" value="{{ sort_by }}">
             <input type="hidden" name="sort_order" value="{{ sort_order }}">
             <button type="submit">&#128269;</button>
             <a href="{{ request.path }}" class="btn btn-secondary">{% trans "Nustatyti iš naujo" %}</a>
         </form>
-    {% endif %}
-</div>
+    </div>
+{% endif %}

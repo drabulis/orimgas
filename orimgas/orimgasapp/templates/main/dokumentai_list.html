@@ -37,95 +37,92 @@
             }
             
         }
+        .nice-container {
+            margin: 1rem;
+        }
+        .horizontal_container2 {
+            justify-content: center;
+        }
     </style>
 {% endblock head_style %}
 <br><br><br>
-    <h1>{% trans "Darbų saugos instrukcijos" %}</h1>
-    {% if dokumentai %}
-        <table class="nice-table">
-            <tr>
-                <th>{% trans "Instrukcijos pavadinimas" %}</th>
-                <th>{% trans "Peržiūrėti" %}</th>
-            </tr>
-            {% for instruction in dokumentai %}
-                <tr>
-                    <td>{{ instruction.name }}</td>
-                    <td><a href="{% url 'darbu_sagos_detail' instruction.uuid %}">{% trans "Skaityti" %}</a></td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p style="text-align: center;">{% trans "Šiuo metu darbų saugos instrukcijų neturite." %}</p>
-    {% endif %}
-    
-    <h1>{% trans "Priešgaisrinės instrukcijos" %}</h1>
-    {% if priesrines_instrukcijos %}
-        <table class="nice-table">
-            <tr>
-                <th>{% trans "Instrukcijos pavadinimas" %}</th>
-                <th>{% trans "Peržiūrėti" %}</th>
-            </tr>
-            {% for priesgaisrine in priesrines_instrukcijos %}
-                <tr>
-                    <td>{{ priesgaisrine.pavadinimas }}</td>
-                    <td><a href="{% url 'priesgaisrinio_detail' priesgaisrine.uuid %}">{% trans "Skaityti" %}</a></td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p style="text-align: center;">{% trans "Šiuo metu priešgaisrinės instrukcijos neturite." %}</p>
-    {% endif %}
-    <h1>{% trans "Civilinės saugos instrukcijos" %}</h1>
-    {% if civiline_sauga %}
-        <table class="nice-table">
-            <tr>
-                <th>{% trans "Instrukcijos pavadinimas" %}</th>
-                <th>{% trans "Peržiūrėti" %}</th>
-            </tr>
-            {% for instruction in civiline_sauga %}
-                <tr>
-                    <td>{{ instruction.pavadinimas }}</td>
-                    <td><a href="{% url 'civiline_sauga_detail' instruction.uuid %}">{% trans "Skaityti" %}</a></td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p style="text-align: center;">{% trans "Šiuo metu civilinės saugos instrukcijų neturite." %}</p>
-    {% endif %}
-    <h1>{% trans "Mokymai" %}</h1>
-    {% if mokymo_instrukcijos %}
-        <table class="nice-table">
-            <tr>
-                <th>{% trans "Instrukcijos pavadinimas" %}</th>
-                <th>{% trans "Peržiūrėti" %}</th>
-            </tr>
-            {% for mokymas in mokymo_instrukcijos %}
-                <tr>
-                    <td>{{ mokymas.pavadinimas }}</td>
-                    <td><a href="{% url 'mokymu_detail' mokymas.uuid %}">{% trans "Skaityti" %}</a></td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p style="text-align: center;">{% trans "Šiuo metu mokymų neturite." %}</p>
-    {% endif %}
-    
-    <h1>{% trans "Kiti dokumentai" %}</h1>
-    {% if kitu_doc %}
-        <table class="nice-table">
-            <tr>
-                <th>{% trans "Dokumento pavadinimas" %}</th>
-                <th>{% trans "Peržiūrėti" %}</th>
-            </tr>
-            {% for kito_dokumento_pasirasymas in kitu_doc %}
-                <tr>
-                    <td>{{ kito_dokumento_pasirasymas.pavadinimas }}</td>
-                    <td><a href="{% url 'kiti_dokumentai_detail' kito_dokumento_pasirasymas.uuid %}">{% trans "Skaityti" %}</a></td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p style="text-align: center;">{% trans "Šiuo metu kitu dokumentų neturite." %}</p>
-    {% endif %}
-    <br><br><br><br>
+<h1>{% trans "Įmonės dokumentai" %}</h1>
+
+    <div class="vertical_container2 nice-container" style="box-shadow: none;">
+        <div class="horizontal_container2">
+            <div class="vertical_container3 nice-container">
+                <p class="upper_text">{% trans "Darbų saugos instrukcijos" %}</p>
+                <div class="scrollable-content">
+                    {% if dokumentai %}
+                        {% for instruction in dokumentai %}
+                        <p><a href="{% url 'darbu_sagos_detail' instruction.uuid %}">{{ instruction.name }}</a></p>
+                        {% endfor %}
+                    {% else %}
+                        <p>{% trans "Darbų saugos instrukcijos šiuo metu neturite." %}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+                <div class="vertical_container3 nice-container">
+                    <p class="upper_text">{% trans "Priešgaisrinės instrukcijos" %}</p>
+                    <div class="scrollable-content">
+                        {% if priesrines_instrukcijos %}
+                            {% for priesgaisrine in priesrines_instrukcijos %}
+                                <p><a href="{% url 'priesgaisrinio_detail' priesgaisrine.uuid %}">{{ priesgaisrine.pavadinimas }}</a></p>
+                            {% endfor %}
+                        {% else %}
+                            <p>{% trans "Priešgaisrinių instrukcijų šiuo metu neturite." %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            
+            
+                <div class="vertical_container3 nice-container">
+                    <p class="upper_text">{% trans "Civilinės saugos instrukcijos" %}</p>
+                    <div class="scrollable-content">
+                        {% if civiline_sauga %}
+                            {% for civiline in civiline_sauga %}
+                                <p><a href="{% url 'civiline_sauga_detail' civiline.uuid %}">{{ civiline.pavadinimas }}</a></p>
+                            {% endfor %}
+                        {% else %}
+                            <p>{% trans "Civilinės saugos instrukcijų šiuo metu neturite." %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            
+        </div>
+            <div class="horizontal_container2">
+                <div class="vertical_container3 nice-container">
+                    <p class="upper_text">{% trans "Mokymai" %}</p>
+                    <div class="scrollable-content">
+                        {% if mokymo_instrukcijos %}
+                            {% for mokymas in mokymo_instrukcijos %}
+                                <p><a href="{% url 'mokymu_detail' mokymas.uuid %}">{{ mokymas.pavadinimas }}</a></p>
+                            {% endfor %}
+                        {% else %}
+                            <p>{% trans "Mokymų šiuo metu neturite." %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="vertical_container3 nice-container">
+                    <p class="upper_text">{% trans "Kiti dokumentai" %}</p>
+                    <div class="scrollable-content">
+                        {% if kitu_doc %}
+                            {% for kitas_doc in kitu_doc %}
+                                <p><a href="{% url 'kiti_dokumentai_detail' kitas_doc.uuid %}">{{ kitas_doc.pavadinimas }}</a></p>
+                            {% endfor %}
+                        {% else %}
+                            <p>{% trans "Kitų dokumentų šiuo metu neturite." %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                
+
+            </div>
+        </div>
+        <div class="nice-container" style="padding: 0;">
+            <a href="{% url 'menu' %}" class="button" style="justify-self: center;">{% trans "Atgal" %}</a>
+          </div>
 {% endblock content %}

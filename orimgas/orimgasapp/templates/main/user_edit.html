@@ -3,11 +3,15 @@
 <title>{% block title %}{% trans "Redaguoti" %} {{ block.super }}{% endblock title %}</title>
 {% block content %}
 <br><br><br>
-    <h1>{% trans "Redaguoti vartotoją" %}</h1>
+    <h1>{% trans "Keisti slaptažodį" %}</h1>
+    <div class="nice-container" style="padding: 0;">
     <form method="post">
         {% csrf_token %}
             {{ form.as_p }}
+            <div class="horizontal_container" style="justify-content: center;">
             <button class="button" type="post">{% trans "Patvirtinti" %}</button>
             <a class="button" href="{% url "menu" %}">{% trans "Atgal" %}</a>
+            </div>
     </form>
+    </div>
 {% endblock content %}

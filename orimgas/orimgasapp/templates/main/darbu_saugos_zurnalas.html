@@ -1,16 +1,22 @@
 {% extends "base.html" %}
 {% load i18n %}
-
 {% block title %}
-  {% trans "Darbų saugos žurnalas" %}
+{% trans "Darbų saugos žurnalas" %}
 {% endblock title %}
 
 {% block content %}
+<style>
+.nice-container a {
+  font-size: 16px;
+  }
+</style>
 <br><br><br>
   <h1>{% trans "Darbuotojų saugos ir sveikatos instruktavimų darbo vietoje registras" %}</h1>
+  <div class="search-filter-box">
   {% include "main/included/paginator_prev_next.html" %}
   <br>
   {% if object_list %}
+  <div class="nice-container">
     <form method="GET" action="{% url 'darbu_saugos_zurnalas' %}" class="filter-form" style="padding-bottom: 5px;">
       <label for="start_date">{% trans "Nuo:" %}</label>
       <input type="date" id="start_date" name="start_date" value="{{ request.GET.start_date }}">
@@ -20,10 +26,14 @@
       <a href="{% url 'darbu_saugos_zurnalas' %}" class="btn btn-secondary">{% trans "Nustatyti iš naujo" %}</a>
       <a href="{% url 'darbu_saugos_zurnalas' %}?generate_pdf=true&query={{ request.GET.query }}&start_date={{ request.GET.start_date }}&end_date={{ request.GET.end_date }}" class="btn btn-success" target="_blank">{% trans "Generuoti PDF" %}</a>
     </form>
-    <table class="nice-table">
+  </div>
+</div>
+  <div class="table-wrapper">
+    <table class="nice-container" id="table" style="width: 90%;">
+      <thead>
       <tr>
         <th>
-          <a href="?sort_by=user__first_name&sort_order={% if sort_by == 'user__first_name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+          <a href="?sort_by=user__first_name&sort_order={% if sort_by == 'user__first_name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
             {% trans "Instruktuojamojo vardas ir pavardė" %}
             {% if sort_by == 'user__first_name' %}
               <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
@@ -31,14 +41,14 @@
           </a>
         </th>
         <th>
-          <a href="?sort_by=user__date_of_birth&sort_order={% if sort_by == 'user__date_of_birth' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+          <a href="?sort_by=user__date_of_birth&sort_order={% if sort_by == 'user__date_of_birth' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
             {% trans "Gimimo data" %}
             {% if sort_by == 'user__date_of_birth' %}
               <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
             {% endif %}
         </th>
         <th>
-          <a href="?sort_by=user__position__name&sort_order={% if sort_by == 'user__position__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+          <a href="?sort_by=user__position__name&sort_order={% if sort_by == 'user__position__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
             {% trans "Instruktuojamojo pareigos" %}
             {% if sort_by == 'user__position__name' %}
               <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
@@ -46,7 +56,7 @@
           </a>
         </th>
         <th>
-          <a href="?sort_by=instruction__name&sort_order={% if sort_by == 'instruction__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+          <a href="?sort_by=instruction__name&sort_order={% if sort_by == 'instruction__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
             {% trans "Instrukcijos Nr." %}
             {% if sort_by == 'instruction__name' %}
               <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
@@ -54,7 +64,7 @@
           </a>
         </th>
         <th>
-          <a href="?sort_by=instruktavimo_tipas&sort_order={% if sort_by == 'instruktavimo_tipas' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+          <a href="?sort_by=instruktavimo_tipas&sort_order={% if sort_by == 'instruktavimo_tipas' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
             {% trans "Instruktavimo pavadinimas" %}
             {% if sort_by == 'instruktavimo_tipas' %}
               <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
@@ -62,7 +72,7 @@
           </a>
         </th>
         <th>
-          <a href="?sort_by=status&sort_order={% if sort_by == 'status' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+          <a href="?sort_by=status&sort_order={% if sort_by == 'status' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
             {% trans "Instruktuojamojo parašas" %}
             {% if sort_by == 'status' %}
               <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
@@ -70,7 +80,7 @@
           </a>
         </th>
         <th>
-          <a href="?sort_by=date_signed&sort_order={% if sort_by == 'date_signed' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+          <a href="?sort_by=date_signed&sort_order={% if sort_by == 'date_signed' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
             {% trans "Pasirašymo data" %}
             {% if sort_by == 'date_signed' %}
               <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
@@ -78,7 +88,7 @@
           </a>
         </th>
         <th>
-          <a href="?sort_by=next_sign&sort_order={% if sort_by == 'next_sign' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+          <a href="?sort_by=next_sign&sort_order={% if sort_by == 'next_sign' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="no-border">
             {% trans "Sekančio pasirašymo data" %}
             {% if sort_by == 'next_sign' %}
               <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
@@ -86,6 +96,8 @@
           </a>
         </th>
       </tr>
+    </thead>
+    <tbody class="scrollable-tbody">
       {% for pasirasymas in object_list %}
         <tr>
           <td>{{ pasirasymas.user.get_full_name }}</td>
@@ -98,8 +110,29 @@
           <td>{{ pasirasymas.next_sign|default:_("Nepatikslinta") }}</td>
         </tr>
       {% endfor %}
+    </tbody>
     </table>
+    <br>
+            <div class="nice-container" style="padding: 0;">
+            <a href="{% url 'menu' %}" class="button" style="justify-self: center;">{% trans "Atgal" %}</a>
+          </div>
+    </div>
   {% else %}
     <p>{% trans "Darbų saugos žurnale įrašų nerasta." %}</p>
   {% endif %}
 {% endblock content %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const table = document.getElementById('table');
+    const headers = table.querySelectorAll('thead th');
+    const firstRowCells = table.querySelector('tbody tr').cells;
+    
+    headers.forEach((header, index) => {
+      const width = header.offsetWidth + 'px';
+      header.style.width = width;
+      header.style.minWidth = width;
+      firstRowCells[index].style.width = width;
+      firstRowCells[index].style.minWidth = width;
+    });
+  });
+</script>

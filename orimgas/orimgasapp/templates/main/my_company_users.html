@@ -9,62 +9,61 @@
         <a href="{% url 'my_company_users' %}?generate_pdf=true" class="pdf-button" target="_blank">{% trans "Generuoti PDF" %}</a>
         <br>
         <a href="{% url 'prideti_instrukcijas_visiems' %}" class="pdf-button">{% trans "Pridėti instrukciją visiems darbuotojams" %}</a>
-    <table class="nice-table" id="table">
-        <tr>
-            <th>
-                <a href="?sort_by=first_name&sort_order={% if sort_by == 'first_name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
-                    {% trans "Vardas Pavardė" %}
-                    {% if sort_by == 'first_name' %}
-                        <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
-                    {% endif %}
-                </a>
-            </th>
-            <th>
-                <a href="?sort_by=date_of_birth&sort_order={% if sort_by == 'date_of_birth' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
-                    {% trans "Gimimo metai" %}
-                    {% if sort_by == 'date_of_birth' %}
-                        <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
-                    {% endif %}
-                </a>
-            </th>
-            <th>
-                <a href="?sort_by=email&sort_order={% if sort_by == 'email' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
-                    {% trans "El. paštas" %}
-                    {% if sort_by == 'email' %}
-                        <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
-                    {% endif %}
-                </a>
-            </th>
-            <th>
-                <a href="?sort_by=position__name&sort_order={% if sort_by == 'position__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
-                    {% trans "Pareigos" %}
-                    {% if sort_by == 'position__name' %}
-                        <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
-                    {% endif %}
-                </a>
-            </th>
-            <th>
-                <a href="?sort_by=is_active&sort_order={% if sort_by == 'is_active' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
-                    {% trans "Aktyvus" %}
-                    {% if sort_by == 'is_active' %}
-                        <span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>
-                    {% endif %}
-                </a>
-            </th>
-            <th>{% trans "Peržiūrėti" %}</th>
-            <th>{% trans "Redaguoti" %}</th>
-        </tr>
-        {% for user_list_obj in page_obj %}
-            <tr>
-                <td>{{ user_list_obj.get_full_name }}</td>
-                <td>{{ user_list_obj.date_of_birth }}</td>
-                <td>{{ user_list_obj.email }}</td>
-                <td>{{ user_list_obj.position.name }}</td>
-                <td>{% if user_list_obj.is_active %}{% trans "Aktyvus" %}{% else %}{% trans "Neaktyvus" %}{% endif %}</td>
-                <td><a href="{% url 'user_detail' user_list_obj.uuid %}">{% trans "Peržiūrėti vartotoja" %}</a></td>
-                <td><a href="{% url 'supervisor_edit_user' user_list_obj.uuid %}">{% trans "Redaguoti" %}</a></td>
-            </tr>
-        {% endfor %}
-
-    </table>
+        <div class="table-wrapper">
+            <table class="nice-container" id="table">
+              <thead>
+                <tr>
+                    <th>
+                        <a href="?sort_by=first_name&sort_order={% if sort_by == 'first_name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                            {% trans "Vardas Pavardė" %}
+                            {% if sort_by == 'first_name' %}<span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="?sort_by=date_of_birth&sort_order={% if sort_by == 'date_of_birth' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                            {% trans "Gimimo data" %}
+                            {% if sort_by == 'date_of_birth' %}<span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="?sort_by=email&sort_order={% if sort_by == 'email' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                            {% trans "El. paštas" %}
+                            {% if sort_by == 'email' %}<span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="?sort_by=position__name&sort_order={% if sort_by == 'position__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                            {% trans "Pareigos" %}
+                            {% if sort_by == 'position__name' %}<span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>{% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="?sort_by=is_active&sort_order={% if sort_by == 'is_active' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                            {% trans "Aktyvus" %}
+                            {% if sort_by == 'is_active' %}<span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>{% endif %}
+                        </a>
+                    </th>
+                    <th>{% trans "Peržiūrėti" %}</th>
+                    <th>{% trans "Redaguoti" %}</th>
+                </tr>
+              </thead>
+              <tbody class="scrollable-tbody">
+                {% for user_list_obj in page_obj %}
+                <tr>
+                  <td>{{ user_list_obj.get_full_name }}</td>
+                  <td>{{ user_list_obj.date_of_birth }}</td>
+                  <td>{{ user_list_obj.email }}</td>
+                  <td>{{ user_list_obj.position.name }}</td>
+                  <td>{% if user_list_obj.is_active %}{% trans "Aktyvus" %}{% else %}{% trans "Neaktyvus" %}{% endif %}</td>
+                  <td><a href="{% url 'user_detail' user_list_obj.uuid %}">{% trans "Peržiūrėti vartotoja" %}</a></td>
+                  <td><a href="{% url 'supervisor_edit_user' user_list_obj.uuid %}">{% trans "Redaguoti" %}</a></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <br>
+            <div class="nice-container" style="padding: 0;">
+            <a href="{% url 'menu' %}" class="button" style="justify-self: center;">{% trans "Atgal" %}</a>
+          </div>
+          </div>
 {% endblock content %}
