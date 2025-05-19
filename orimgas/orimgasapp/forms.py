@@ -362,57 +362,60 @@ class UserInstructionSignForm(forms.ModelForm):
 
         if instruction.pdf:
             # URL to fetch the PDF file
-           pdf_url = instruction.pdf.url
-        cache_buster = int(time.time())
-
-        html = f"""
-        <!-- PDF Display Container -->
-        <div style="width:100%; height:80vh; position:relative;">
-            <!-- Method 1: PDF.js Viewer -->
-            <iframe src="{static('pdfjs/web/viewer.html')}?file={pdf_url}"
-                    style="width:100%; height:100%; border:none;"
-                    id="pdfjs-viewer">
-                Your browser doesn't support iframes
-            </iframe>
-            
-            <!-- Method 2: Direct Link Fallback -->
-            <div id="pdf-fallback" style="
-                position:absolute; 
-                top:50%; 
-                left:50%; 
-                transform:translate(-50%,-50%);
-                text-align:center;
-                display:none;
-            ">
-                <p style="margin-bottom:20px;">PDF viewer unavailable</p>
-                <a href="{pdf_url}?t={cache_buster}" 
-                   download
-                   style="
-                       padding:12px 24px;
-                       background:#4285f4;
-                       color:white;
-                       text-decoration:none;
-                       border-radius:4px;
-                   ">
-                   Download PDF
-                </a>
+            pdf_url = instruction.pdf.url
+            cache_buster = int(time.time())
+            html = f"""
+            <!-- PDF Display Container -->
+            <div style="width:100%; height:80vh; position:relative;">
+                <!-- Method 1: PDF.js Viewer -->
+                <iframe src="{static('pdfjs/web/viewer.html')}?file={pdf_url}"
+                        style="width:100%; height:100%; border:none;"
+                        id="pdfjs-viewer">
+                    Your browser doesn't support iframes
+                </iframe>
+                
+                <!-- Method 2: Direct Link Fallback -->
+                <div id="pdf-fallback" style="
+                    position:absolute; 
+                    top:50%; 
+                    left:50%; 
+                    transform:translate(-50%,-50%);
+                    text-align:center;
+                    display:none;
+                ">
+                    <p style="margin-bottom:20px;">PDF viewer unavailable</p>
+                    <a href="{pdf_url}?t={cache_buster}" 
+                    download
+                    style="
+                        padding:12px 24px;
+                        background:#4285f4;
+                        color:white;
+                        text-decoration:none;
+                        border-radius:4px;
+                    ">
+                    Download PDF
+                    </a>
+                </div>
             </div>
-        </div>
 
-        <!-- Fallback Detection -->
-        <script>
-            document.getElementById('pdfjs-viewer').onerror = function() {{
-                this.style.display = 'none';
-                document.getElementById('pdf-fallback').style.display = 'block';
-            }};
-            setTimeout(function() {{
-                if (document.getElementById('pdfjs-viewer').clientHeight === 0) {{
-                    document.getElementById('pdfjs-viewer').style.display = 'none';
+            <!-- Fallback Detection -->
+            <script>
+                document.getElementById('pdfjs-viewer').onerror = function() {{
+                    this.style.display = 'none';
                     document.getElementById('pdf-fallback').style.display = 'block';
-                }}
-            }}, 3000);
-        </script>
-        """
+                }};
+                setTimeout(function() {{
+                    if (document.getElementById('pdfjs-viewer').clientHeight === 0) {{
+                        document.getElementById('pdfjs-viewer').style.display = 'none';
+                        document.getElementById('pdf-fallback').style.display = 'block';
+                    }}
+                }}, 3000);
+            </script>
+            """
+        else:
+            html = ''
+        
+        
         return mark_safe(html)
 
     class Meta:
