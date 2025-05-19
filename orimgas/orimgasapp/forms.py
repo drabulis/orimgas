@@ -354,7 +354,7 @@ class UserInstructionSignForm(forms.ModelForm):
                         raise ValidationError(_("All questions must be answered."))
         return cleaned_data
 
-    def render_pdf(self):
+    def render_pdf(self): 
         if hasattr(self.instance, 'AAP'):
             instruction = self.instance.AAP
         else:
@@ -362,48 +362,58 @@ class UserInstructionSignForm(forms.ModelForm):
 
         if instruction.pdf:
             # URL to fetch the PDF file
-            pdf_url = instruction.pdf.url
+           pdf_url = instruction.pdf.url
+        cache_buster = int(time.time())
 
-            # JavaScript to fetch the PDF and create an object URL dynamically
-            script = f"""
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {{
-                    const pdfViewer = document.getElementById('pdfViewer');
+        html = f"""
+        <!-- PDF Display Container -->
+        <div style="width:100%; height:80vh; position:relative;">
+            <!-- Method 1: PDF.js Viewer -->
+            <iframe src="{static('pdfjs/web/viewer.html')}?file={pdf_url}"
+                    style="width:100%; height:100%; border:none;"
+                    id="pdfjs-viewer">
+                Your browser doesn't support iframes
+            </iframe>
+            
+            <!-- Method 2: Direct Link Fallback -->
+            <div id="pdf-fallback" style="
+                position:absolute; 
+                top:50%; 
+                left:50%; 
+                transform:translate(-50%,-50%);
+                text-align:center;
+                display:none;
+            ">
+                <p style="margin-bottom:20px;">PDF viewer unavailable</p>
+                <a href="{pdf_url}?t={cache_buster}" 
+                   download
+                   style="
+                       padding:12px 24px;
+                       background:#4285f4;
+                       color:white;
+                       text-decoration:none;
+                       border-radius:4px;
+                   ">
+                   Download PDF
+                </a>
+            </div>
+        </div>
 
-                    // Fetch the PDF file from the server
-                    fetch("{pdf_url}")
-                        .then(response => {{
-                            if (!response.ok) {{
-                                throw new Error('Network response was not ok');
-                            }}
-                            return response.blob();
-                        }})
-                        .then(blob => {{
-                            // Create an object URL for the PDF
-                            const objectUrl = URL.createObjectURL(blob);
-                            pdfViewer.src = objectUrl;
-
-                            // Revoke the object URL after the PDF is loaded
-                            pdfViewer.onload = function () {{
-                                URL.revokeObjectURL(objectUrl);
-                            }};
-                        }})
-                        .catch(error => {{
-                            console.error('There was a problem with the fetch operation:', error);
-                        }});
-                }});
-            </script>
-            """
-
-            # HTML for the iframe to display the PDF
-            html = f"""
-            {script}
-            <iframe id="pdfViewer" width="90%" height="80%" type="application/pdf"></iframe>
-            """
-            return mark_safe(html)
-        else:
-            return ''
-
+        <!-- Fallback Detection -->
+        <script>
+            document.getElementById('pdfjs-viewer').onerror = function() {{
+                this.style.display = 'none';
+                document.getElementById('pdf-fallback').style.display = 'block';
+            }};
+            setTimeout(function() {{
+                if (document.getElementById('pdfjs-viewer').clientHeight === 0) {{
+                    document.getElementById('pdfjs-viewer').style.display = 'none';
+                    document.getElementById('pdf-fallback').style.display = 'block';
+                }}
+            }}, 3000);
+        </script>
+        """
+        return mark_safe(html)
 
     class Meta:
         model = models.UserInstructionSign
@@ -413,95 +423,77 @@ class UserInstructionSignForm(forms.ModelForm):
         }
 
 
+from django import forms
+from django.utils.safestring import mark_safe
+from django.templatetags.static import static
+import time
+
 class RenderPDFForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        instance = kwargs.pop('instance', None)
-        super(RenderPDFForm, self).__init__(*args, **kwargs)
-        self.instance = instance
+        self.instance = kwargs.pop('instance', None)
+        super().__init__(*args, **kwargs)
 
     def render_pdf(self):
-        if hasattr(self.instance, 'AAP'):
-            instruction = self.instance.AAP
-        else:
-            instruction = self.instance
+        if not getattr(self, 'instance', None):
+            return ''
 
-        if instruction.pdf:
-            pdf_url = instruction.pdf.url
+        instruction = getattr(self.instance, 'AAP', self.instance)
+        if not instruction or not instruction.pdf:
+            return ''
 
-            script = f"""
-            <script>
-                function displayPDF() {{
-                    const pdfViewer = document.getElementById('pdfViewer');
-                    const loadingIndicator = document.getElementById('pdf-loading');
-                    const canUseBlob = !/iPhone|iPad|iPod/i.test(navigator.userAgent);
-                    
-                    // Modern browsers (non-iOS)
-                    if (canUseBlob) {{
-                        fetch("{pdf_url}")
-                            .then(response => {{
-                                if (!response.ok) throw new Error('Network error');
-                                return response.blob();
-                            }})
-                            .then(blob => {{
-                                const objectUrl = URL.createObjectURL(blob);
-                                pdfViewer.onload = function() {{
-                                    URL.revokeObjectURL(objectUrl);
-                                    pdfViewer.style.opacity = 1;
-                                    loadingIndicator.style.display = 'none';
-                                }};
-                                pdfViewer.src = objectUrl;
-                            }})
-                            .catch(error => {{
-                                console.error('Fetch failed:', error);
-                                // Fallback to direct URL
-                                pdfViewer.src = "{pdf_url}";
-                                loadingIndicator.style.display = 'none';
-                                pdfViewer.style.opacity = 1;
-                            }});
-                    }} 
-                    // iOS devices
-                    else {{
-                        pdfViewer.src = "{pdf_url}#toolbar=0&navpanes=0";
-                        loadingIndicator.style.display = 'none';
-                        pdfViewer.style.opacity = 1;
-                    }}
-                }}
-                document.addEventListener('DOMContentLoaded', displayPDF);
-            </script>
-            """
+        pdf_url = instruction.pdf.url
+        cache_buster = int(time.time())
 
-            html = f"""
-            <!-- Viewport meta tag for mobile scaling (#6) -->
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        html = f"""
+        <!-- PDF Display Container -->
+        <div style="width:100%; height:80vh; position:relative;">
+            <!-- Method 1: PDF.js Viewer -->
+            <iframe src="{static('pdfjs/web/viewer.html')}?file={pdf_url}"
+                    style="width:100%; height:100%; border:none;"
+                    id="pdfjs-viewer">
+                Your browser doesn't support iframes
+            </iframe>
             
-            <!-- Loading state container (#2) -->
-            <div style="position:relative; width:100%; height:80vh;">
-                {script}
-                <div id="pdf-loading" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center;">
-                    <div style="border:4px solid #f3f3f3; border-top:4px solid #3498db; border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite; margin:0 auto;"></div>
-                    <p style="margin-top:10px;">Loading document...</p>
-                </div>
-                
-                <!-- Main PDF viewer -->
-                <iframe id="pdfViewer" 
-                        style="width:100%; height:100%; border:none; opacity:0; transition:opacity 0.3s;"
-                        type="application/pdf"
-                        allow="autoplay">
-                    <p>Your browser doesn't support PDFs. <a href="{pdf_url}">Download instead</a></p>
-                </iframe>
+            <!-- Method 2: Direct Link Fallback -->
+            <div id="pdf-fallback" style="
+                position:absolute; 
+                top:50%; 
+                left:50%; 
+                transform:translate(-50%,-50%);
+                text-align:center;
+                display:none;
+            ">
+                <p style="margin-bottom:20px;">PDF viewer unavailable</p>
+                <a href="{pdf_url}?t={cache_buster}" 
+                   download
+                   style="
+                       padding:12px 24px;
+                       background:#4285f4;
+                       color:white;
+                       text-decoration:none;
+                       border-radius:4px;
+                   ">
+                   Download PDF
+                </a>
             </div>
-            
-            <!-- Simple spinner animation -->
-            <style>
-                @keyframes spin {{
-                    0% {{ transform: rotate(0deg); }}
-                    100% {{ transform: rotate(360deg); }}
-                }}
-            </style>
-            """
-            return mark_safe(html)
-        return ''
+        </div>
 
+        <!-- Fallback Detection -->
+        <script>
+            document.getElementById('pdfjs-viewer').onerror = function() {{
+                this.style.display = 'none';
+                document.getElementById('pdf-fallback').style.display = 'block';
+            }};
+            setTimeout(function() {{
+                if (document.getElementById('pdfjs-viewer').clientHeight === 0) {{
+                    document.getElementById('pdfjs-viewer').style.display = 'none';
+                    document.getElementById('pdf-fallback').style.display = 'block';
+                }}
+            }}, 3000);
+        </script>
+        """
+        return mark_safe(html)
+    
 class UserEditForm(forms.ModelForm):
     email = forms.EmailField(label=_("El. paštas"))
     first_name = forms.CharField(label=_("Vardas"))

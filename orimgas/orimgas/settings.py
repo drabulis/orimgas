@@ -30,7 +30,7 @@ ALLOWED_HOSTS = [*local_settings.ALLOWED_HOSTS,]
 CSRF_TRUSTED_ORIGINS= [*local_settings.CSRF_TRUSTED_ORIGINS,]
 CSRF_COOKIE_DOMAIN = local_settings.CSRF_COOKIE_DOMAIN
 
-
+STATICFILES_STORAGE = local_settings.STATICFILES_STORAGE
 
 
 # Application definition
@@ -72,7 +72,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'accounts.middleware.LogoutLoggingMiddleware',
 ]
-
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
 
 ROOT_URLCONF = 'orimgas.urls'
 
