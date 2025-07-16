@@ -1,0 +1,48 @@
+/* Tablet Styles (601px - 1024px) */
+.horizontal_container {
+    flex-direction: column;
+    align-items: center;
+}
+
+.vertical_container1, 
+.vertical_container2 {
+    width: 90%;
+    margin-bottom: 20px;
+}
+
+.horizontal_container2 {
+    flex-direction: column;
+    height: auto;
+}
+
+.vertical_container3 {
+    min-width: 90%;
+    margin-bottom: 20px;
+    height: auto;
+}
+
+.user_image {
+    width: 120px;
+    height: 120px;
+}
+
+.nice-container {
+    width: 90%;
+    padding: 15px;
+}
+
+.scrollable-content {
+    max-height: 200px;
+}
+
+/* Adjust header and navigation for tablet */
+header a {
+    font-size: 1.2rem;
+}
+
+/* Make supervisor menu items more compact */
+.vertical_container1.nice-container a {
+    padding: 8px;
+    font-size: 16px;
+    margin-bottom: 8px;
+}

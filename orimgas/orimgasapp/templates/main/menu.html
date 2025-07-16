@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
-
+{% load static %}
 {% block title %}
     {{ block.super }} {% trans "Menu" %} 
 {% endblock title %}
 {% block head_style %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" media="screen and (min-width: 1025px)">
+
     @media screen and (max-width: 1000px) and (min-width: 501px){
         .menu a {
             font-size: 25px;

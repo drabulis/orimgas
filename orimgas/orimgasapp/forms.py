@@ -559,6 +559,11 @@ class InstructionAddAllForm(forms.ModelForm):
         queryset=models.Skyrius.objects.none(),
         required=False,
     )
+    position = forms.ModelChoiceField(
+        label=("Skyrius"),
+        queryset=models.Position.objects.none(),
+        required=False,
+    )
 
     class Meta:
         model = models.User

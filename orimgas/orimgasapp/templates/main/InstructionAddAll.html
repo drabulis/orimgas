@@ -11,6 +11,12 @@
             <div class="collumn">
                 <label for="id_kalba">{% trans "Darbuotojui suprantama kalba:" %}</label>
                 {{ form.kalba }}
+                {% if user.skyrius is None %}
+                    <label for="id_skyrius">{% trans "Skyrius:" %}</label>
+                    {{ form.skyrius }}
+                {% endif %}
+                <label for="id_position">{% trans "Pareigos:" %}</label>
+                {{ form.position }}
             </div>
             <div class="collumn">
                 <label for="id_instructions">{% trans "Darbų saugos instrukcijos:" %}</label>

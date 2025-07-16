@@ -22,6 +22,12 @@ MATO_VNT = (
 
 )
 
+KALBA = (
+    (1, _("LT")),
+    (2, _("RU")),
+    (3, _("EN")),
+)
+
 
 class AsmeninesApsaugosPriemones(models.Model):
     pavadinimas = models.CharField(_("pavadinimas"),max_length=10000)
@@ -111,6 +117,7 @@ class Mokymai(models.Model):
                                default=None
                                )
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    kalba = models.SmallIntegerField(_("kalba"), choices=KALBA, default=1)
 
     def __str__(self):
         return self.pavadinimas
@@ -140,6 +147,7 @@ class PriesgiasrinesInstrukcijos(models.Model):
                                default=None
                                )
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    kalba = models.SmallIntegerField(_("kalba"), choices=KALBA, default=1)
 
     def __str__(self):
         return self.pavadinimas
@@ -154,6 +162,7 @@ class KitiDokumentai(models.Model):
     pavadinimas = models.CharField(_("pavadinimas"),max_length=10000)
     pdf = models.FileField(upload_to='kiti_dokumentai')
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    kalba = models.SmallIntegerField(_("kalba"), choices=KALBA, default=1)
 
     def __str__(self):
         return self.pavadinimas
@@ -175,6 +184,7 @@ class CivilineSauga(models.Model):
                                default=None
                                )
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    kalba = models.SmallIntegerField(_("kalba"), choices=KALBA, default=1)
 
     def __str__(self):
         return self.pavadinimas
@@ -196,6 +206,7 @@ class Instruction(models.Model):
                              default=None
                              )
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    kalba = models.SmallIntegerField(_("kalba"), choices=KALBA, default=1)
 
     def __str__(self):
         return f"{self.name}"

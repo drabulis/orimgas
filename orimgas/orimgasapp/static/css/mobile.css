@@ -1,0 +1,69 @@
+/* Mobile Styles (up to 600px) */
+.horizontal_container {
+    flex-direction: column;
+    align-items: center;
+}
+
+.vertical_container1, 
+.vertical_container2 {
+    width: 95%;
+    margin-bottom: 15px;
+}
+
+.horizontal_container2 {
+    flex-direction: column;
+    height: auto;
+}
+
+.vertical_container3 {
+    min-width: 95%;
+    margin-bottom: 15px;
+    height: auto;
+}
+
+.user_image {
+    width: 100px;
+    height: 100px;
+}
+
+.nice-container {
+    width: 95%;
+    padding: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.scrollable-content {
+    max-height: 150px;
+}
+
+/* Typography adjustments for mobile */
+.upper_text {
+    font-size: 16px;
+}
+
+.nice-container p {
+    font-size: 14px;
+}
+
+/* Make links more touch-friendly */
+.nice-container a {
+    padding: 12px 8px;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+/* Supervisor menu adjustments */
+.vertical_container1.nice-container {
+    width: 95%;
+}
+
+.vertical_container1.nice-container a {
+    padding: 10px;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+/* Hide some decorative elements on mobile */
+.user_image {
+    margin-bottom: 10px;
+}

@@ -1395,6 +1395,12 @@ class InstructionAddAll(LoginRequiredMixin, generic.FormView):
         form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
         form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=self.request.user.company)
         form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=self.request.user.company)
+        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=self.request.user.company)
+        
+        
+        # Add position field with company positions
+        form.fields['position'].queryset = models.Position.objects.filter(company=self.request.user.company)
+
         return form
 
     def filter_instructions(self, form, user):
@@ -1487,15 +1493,29 @@ class InstructionAddAll(LoginRequiredMixin, generic.FormView):
     def form_valid(self, form):
         with transaction.atomic():
             kalba = form.cleaned_data.get('kalba')
-            skyrius = self.request.user.skyrius
+            position = form.cleaned_data.get('position')
+            company = self.request.user.company
             
-            if skyrius is not None:
-                user_list = models.User.objects.filter(skyrius=skyrius, company=self.request.user.company, kalba=kalba, is_active=True)
-            else:
-                user_list = models.User.objects.filter(company=self.request.user.company, kalba=kalba, is_active=True)
+            # Start with base queryset
+            user_list = models.User.objects.filter(
+                company=company,
+                kalba=kalba,
+                is_active=True
+            )
+            
+            # Apply skyrius filter if user has one or if selected in form
+            if self.request.user.skyrius:
+                user_list = user_list.filter(skyrius=self.request.user.skyrius)
+            elif form.cleaned_data.get('skyrius'):
+                user_list = user_list.filter(skyrius=form.cleaned_data['skyrius'])
+            
+            # Apply position filter if selected
+            if position:
+                user_list = user_list.filter(position=position)
             
             for user in user_list:
                 self.create_instructions(form, user)
+                
         return super().form_valid(form)
 
 
