@@ -50,12 +50,12 @@
                 {{ form.kiti_dokumentai }}
             </div>
             <div class="collumn">
-                <label for="id_med_patikros_data">{% trans "Med patikros data:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
+                <label for="id_med_patikros_data">{% trans "Med patikros data:   " %}<span class="info-icon" title="Įrašoma faktinė med. patikros datą.">&#8505;</span></label>
                 {{ form.med_patikros_data }}
-                <label for="id_med_patikros_periodas">{% trans "Med patikros periodas:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
+                <label for="id_med_patikros_periodas">{% trans "Med patikros periodas:   " %}<span class="info-icon" title="Pasirenkama pagal gydytojo nurodytą terminą.">&#8505;</span></label>
                 {{ form.med_patikros_periodas }}
                 <br><br>
-                <label for="id_AsmeninesApsaugosPriemones">{% trans "Asmenines apsaugos priemones:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span>:</label>
+                <label for="id_AsmeninesApsaugosPriemones">{% trans "Asmenines apsaugos priemones:   " %}<span class="info-icon" title="Pasirenkama pagal dartuojoto atliekamą darbą.">&#8505;</span></label>
                 {{ form.AsmeninesApsaugosPriemones }}
             </div>
         </div>
@@ -121,7 +121,7 @@ $(document).ready(function() {
 
     $('#id_instructions').select2({
         width: '200px',
-        placeholder: "Pasirinkite instrukcijas",
+        placeholder: "Pasirinkite darbų saugos instrukcijas",
         allowClear: true
     });
     $('#id_priesgaisrines').select2({
