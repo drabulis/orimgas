@@ -42,5 +42,6 @@ urlpatterns = [
     path('main/priminimai_administracijai/', views.AdminPriminimaiView.as_view(), name='priminimai_administracijai'),
     #path('login/', views.CustomLoginView.as_view(), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('get_instructions_by_language/', views.get_instructions_by_language, name='get_instructions_by_language'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

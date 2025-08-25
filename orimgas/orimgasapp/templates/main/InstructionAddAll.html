@@ -9,29 +9,32 @@
         {% csrf_token %}
         <div class="row-container">
             <div class="collumn">
-                <label for="id_kalba">{% trans "Darbuotojui suprantama kalba:" %}</label>
-                {{ form.kalba }}
-                {% if user.skyrius is None %}
-                    <label for="id_skyrius">{% trans "Skyrius:" %}</label>
-                    {{ form.skyrius }}
-                {% endif %}
                 <label for="id_position">{% trans "Pareigos:" %}</label>
                 {{ form.position }}
+                <br><br>
+                <label for="id_skyrius">{% trans "Skyrius:" %}</label>
+                {{ form.skyrius }}
+                <br><br>
+                <label for="id_kalba">{% trans "Darbuotojui suprantama kalba:" %}</label>
+                {{ form.kalba }}
+                <br><br>
             </div>
             <div class="collumn">
-                <label for="id_instructions">{% trans "Darbų saugos instrukcijos:" %}</label>
-                {{ form.instructions }}
-                <label for="id_priesgaisrines">{% trans "Priesgaisrinės instrukcijos:" %}</label>
+                <label for="id_instructions">{% trans "Darbų saugos instrukcijos:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
+                <div class="form-group">
+                    {{ form.instructions }}
+                </div>    
+                <label for="id_priesgaisrines" class="margin_top20">{% trans "Priesgaisrinės instrukcijos:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
                 {{ form.priesgaisrines }}
-                <label for="id_civiline_sauga">{% trans "Civilinės saugos instrukcijos:" %}</label>
+                <label for="id_civiline_sauga" class="margin_top20">{% trans "Civilinės saugos instrukcijos:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
                 {{ form.civiline_sauga }}
             </div>
             <div class="collumn">
-                <label for="id_mokymai">{% trans "Mokymai:" %}</label>
+                <label for="id_mokymai">{% trans "Mokymai:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
                 {{ form.mokymai }}
             </div>
             <div class="collumn">
-                <label for="id_kiti_dokumentai">{% trans "Kiti dokumentai:" %}</label>
+                <label for="id_kiti_dokumentai">{% trans "Kiti dokumentai:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
                 {{ form.kiti_dokumentai }}
             </div>
         </div>
@@ -39,15 +42,108 @@
         <button class="button" type="post">{% trans "Patvirtinti" %}</button>
         <a class="button" href="{% url "my_company_users" %}">{% trans "Atgal" %}</a>
         </div>
-    </form>
-    </div><br><br><br><br>
+    </form><br><br>
+    </div>
+{% endblock content %}
+    {% block extrajs %}
+
+<!-- In your <head> or before </body> -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Deselect all options in the ModelMultipleChoiceField
-        const selectElement = document.getElementById('id_AsmeninesApsaugosPriemones');
-        if (selectElement) {
-            selectElement.selectedIndex = -1;  // Deselect all options
+document.addEventListener('DOMContentLoaded', function () {
+    const langSelect = document.getElementById('id_kalba');
+    const instructionsSelect = document.getElementById('id_instructions');
+    // Get assigned instructions from Django context
+    const assignedInstructions = {{ assigned_instructions|safe }};
+
+    function updateOptions(select, items, assigned) {
+        if (!select) return;
+        select.innerHTML = '';
+        items.forEach(function(item) {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.text = item.name;
+            if (assigned.includes(item.id)) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        });
+    }
+
+    if (langSelect) {
+        langSelect.addEventListener('change', function () {
+            fetch(`/get_instructions_by_language/?kalba=${langSelect.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateOptions(instructionsSelect, data.instructions, assignedInstructions);
+                    updateOptions(priesgaisrinesSelect, data.priesgaisrines, assignedPriesgaisrines);
+                    updateOptions(civilineSaugaSelect, data.civiline_sauga, assignedCivilineSauga);
+                    updateOptions(mokymaiSelect, data.mokymai, assignedMokymai);
+                    updateOptions(kitiDokumentaiSelect, data.kiti_dokumentai, assignedKitiDokumentai);
+                    updateOptions(AsmeninesApsaugosPriemonesSelect, data.AsmeninesApsaugosPriemones, assignedAsmeninesApsaugosPriemones);
+                });
+        });
+    }
+
+
+});
+</script>
+<script>
+$(document).ready(function() {
+    $.fn.select2.defaults.set('language', {
+        noResults: function() {
+            return "Rezultatų nėra";
         }
     });
-    </script>
-{% endblock content %}
+
+    $('#id_instructions').select2({
+        width: '200px',
+        placeholder: "Pasirinkite instrukcijas",
+        allowClear: true
+    });
+    $('#id_priesgaisrines').select2({
+        width: '200px',
+        placeholder: "Pasirinkite priesgaisrines instrukcijas",
+        allowClear: true
+    });
+    $('#id_civiline_sauga').select2({
+        width: '200px',
+        placeholder: "Pasirinkite civilines saugos instrukcijas",
+        allowClear: true
+    });
+    $('#id_mokymai').select2({
+        width: '200px',
+        placeholder: "Pasirinkite mokymo instrukcijas",
+        allowClear: true
+    });
+    $('#id_kiti_dokumentai').select2({
+        width: '200px',
+        placeholder: "Pasirinkite kitus dokumentus",
+        allowClear: true
+    });
+    $('#id_AsmeninesApsaugosPriemones').select2({
+        width: '200px',
+        placeholder: "Pasirinkite asmenines apsaugos priemones",
+        allowClear: true
+    });
+});
+</script>
+<style>
+.select2-container--default .select2-selection--multiple,
+.select2-container--default .select2-selection--single,
+.select2-selection__rendered,
+.select2-search__field,
+.select2-container {
+    font-size: 14px !important;
+    min-height: 29px !important;
+    box-sizing: border-box;
+    max-width: 200px !important;
+    width: 200px !important;
+}
+.margin_top20 {
+    margin-top: 20px !important;
+}
+</style>
+{% endblock extrajs %}

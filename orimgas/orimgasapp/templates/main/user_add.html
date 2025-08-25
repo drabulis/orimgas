@@ -14,84 +14,162 @@
         {% csrf_token %}
         <div class="row-container">
             <div class="collumn">
-                <label for="id_first_name">{% trans "Vardas" %}:</label>
+                <label for="id_first_name">{% trans "Vardas:" %}</label>
                 {{ form.first_name }}
-                <label for="id_last_name">{% trans "Pavardė" %}:</label>
+                <label for="id_last_name">{% trans "Pavardė:" %}</label>
                 {{ form.last_name }}
-                <label for="id_email">{% trans "El. paštas" %}:</label>
+                <label for="id_email">{% trans "El. paštas:" %}</label>
                 {{ form.email }}
-                <label for="id_date_of_birth">{% trans "Gimimo data" %}:</label>
+                <label for="id_date_of_birth">{% trans "Gimimo data:" %}</label>
                 {{ form.date_of_birth }}
-                <label for="id_position">{% trans "Pareigos" %}:</label>
+                <label for="id_position">{% trans "Pareigos:" %}</label>
                 {{ form.position }}
                 <br><br>
-                <label for="id_skyrius">{% trans "Skyrius" %}:</label>
+                <label for="id_skyrius">{% trans "Skyrius:" %}</label>
                 {{ form.skyrius }}
                 <br><br>
                 <label for="id_kalba">{% trans "Darbuotojui suprantama kalba:" %}</label>
                 {{ form.kalba }}
                 <br><br>
-                <label for="id_password">{% trans "Slaptažodis" %}:</label>
+                <label for="id_password">{% trans "Slaptažodis:" %}</label>
                 {{ form.password }}
+                <label for="is_active">{% trans "Aktyvus:" %}</label>
+                {{ form.is_active }}
             </div>
             <div class="collumn">
-                <label for="id_instructions">{% trans "Darbų saugos instrukcijos" %}:</label>
-                {{ form.instructions }}
-                <label for="id_priesgaisrines">{% trans "Priešgaisrinės instrukcijos" %}:</label>
+                <label for="id_instructions">{% trans "Darbų saugos instrukcijos:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
+                <div class="form-group">
+                    {{ form.instructions }}
+                </div>    
+                <label for="id_priesgaisrines" class="margin_top20">{% trans "Priesgaisrinės instrukcijos:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
                 {{ form.priesgaisrines }}
-                <label for="id_civiline_sauga">{% trans "Civilinės saugos instrukcijos" %}:</label>
+                <label for="id_civiline_sauga" class="margin_top20">{% trans "Civilinės saugos instrukcijos:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
                 {{ form.civiline_sauga }}
             </div>
             <div class="collumn">
-                <label for="id_mokymai">{% trans "Mokymai" %}:</label>
+                <label for="id_mokymai">{% trans "Mokymai:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
                 {{ form.mokymai }}
             </div>
             <div class="collumn">
-                <label for="id_kiti_dokumentai">{% trans "Kiti dokumentai" %}:</label>
+                <label for="id_kiti_dokumentai">{% trans "Kiti dokumentai:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
                 {{ form.kiti_dokumentai }}
             </div>
             <div class="collumn">
-                <label for="id_med_patikros_data">{% trans "Med patikros data" %}:</label>
+                <label for="id_med_patikros_data">{% trans "Med patikros data:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
                 {{ form.med_patikros_data }}
-                <label for="id_med_patikros_periodas">{% trans "Med patikros periodas" %}:</label>
+                <label for="id_med_patikros_periodas">{% trans "Med patikros periodas:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
                 {{ form.med_patikros_periodas }}
                 <br><br>
-                <label for="id_AsmeninesApsaugosPriemones">{% trans "Asmenines apsaugos priemones" %}:</label>
+                <label for="id_AsmeninesApsaugosPriemones">{% trans "Asmenines apsaugos priemones:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span>:</label>
                 {{ form.AsmeninesApsaugosPriemones }}
             </div>
         </div>
         <div class="horizontal_container" style="justify-content: center;">
-        <button class="button" type="POST">{% trans "Patvirtinti" %}</button>
-        <a class="button" href="{% url "menu" %}">{% trans "Atgal" %}</a>
+        <button class="button" type="post">{% trans "Patvirtinti" %}</button>
+        <a class="button" href="{% url "my_company_users" %}">{% trans "Atgal" %}</a>
         </div>
-    </form>
+    </form><br><br>
     </div>
-    <br>
-    {% endblock content %}
-    
-    {% block extrahead %}
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    {% endblock extrahead %}
-    
+{% endblock content %}
     {% block extrajs %}
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-        <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/lt.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                console.log("Initializing flatpickr...");
-    
-                var dateInput = document.querySelector("#id_date_of_birth");
-    
-                if (dateInput) {
-                    console.log("Date input found:", dateInput);
-    
-                    flatpickr(dateInput, {
-                        dateFormat: "Y-m-d",
-                        locale: "lt"
-                    });
-                } else {
-                    console.error("Date input not found");
-                }
-            });
-        </script>
-    {% endblock extrajs %}
+
+<!-- In your <head> or before </body> -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const langSelect = document.getElementById('id_kalba');
+    const instructionsSelect = document.getElementById('id_instructions');
+    // Get assigned instructions from Django context
+    const assignedInstructions = {{ assigned_instructions|safe }};
+
+    function updateOptions(select, items, assigned) {
+        if (!select) return;
+        select.innerHTML = '';
+        items.forEach(function(item) {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.text = item.name;
+            if (assigned.includes(item.id)) {
+                option.selected = true;
+            }
+            select.appendChild(option);
+        });
+    }
+
+    if (langSelect) {
+        langSelect.addEventListener('change', function () {
+            fetch(`/get_instructions_by_language/?kalba=${langSelect.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateOptions(instructionsSelect, data.instructions, assignedInstructions);
+                    updateOptions(priesgaisrinesSelect, data.priesgaisrines, assignedPriesgaisrines);
+                    updateOptions(civilineSaugaSelect, data.civiline_sauga, assignedCivilineSauga);
+                    updateOptions(mokymaiSelect, data.mokymai, assignedMokymai);
+                    updateOptions(kitiDokumentaiSelect, data.kiti_dokumentai, assignedKitiDokumentai);
+                    updateOptions(AsmeninesApsaugosPriemonesSelect, data.AsmeninesApsaugosPriemones, assignedAsmeninesApsaugosPriemones);
+                });
+        });
+    }
+
+
+});
+</script>
+<script>
+$(document).ready(function() {
+    $.fn.select2.defaults.set('language', {
+        noResults: function() {
+            return "Rezultatų nėra";
+        }
+    });
+
+    $('#id_instructions').select2({
+        width: '200px',
+        placeholder: "Pasirinkite instrukcijas",
+        allowClear: true
+    });
+    $('#id_priesgaisrines').select2({
+        width: '200px',
+        placeholder: "Pasirinkite priesgaisrines instrukcijas",
+        allowClear: true
+    });
+    $('#id_civiline_sauga').select2({
+        width: '200px',
+        placeholder: "Pasirinkite civilines saugos instrukcijas",
+        allowClear: true
+    });
+    $('#id_mokymai').select2({
+        width: '200px',
+        placeholder: "Pasirinkite mokymo instrukcijas",
+        allowClear: true
+    });
+    $('#id_kiti_dokumentai').select2({
+        width: '200px',
+        placeholder: "Pasirinkite kitus dokumentus",
+        allowClear: true
+    });
+    $('#id_AsmeninesApsaugosPriemones').select2({
+        width: '200px',
+        placeholder: "Pasirinkite asmenines apsaugos priemones",
+        allowClear: true
+    });
+});
+</script>
+<style>
+.select2-container--default .select2-selection--multiple,
+.select2-container--default .select2-selection--single,
+.select2-selection__rendered,
+.select2-search__field,
+.select2-container {
+    font-size: 14px !important;
+    min-height: 29px !important;
+    box-sizing: border-box;
+    max-width: 200px !important;
+    width: 200px !important;
+}
+.margin_top20 {
+    margin-top: 20px !important;
+}
+</style>
+{% endblock extrajs %}

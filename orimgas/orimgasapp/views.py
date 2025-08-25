@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.mixins import  LoginRequiredMixin
 from django.utils.translation import gettext_lazy as _
 from django.db.models.query import QuerySet, Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
@@ -82,19 +82,35 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.fields['position'].queryset = models.Position.objects.filter(company=self.request.user.company)
-        form.fields['instructions'].queryset = models.Instruction.objects.filter(company=self.request.user.company)
-        form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
-        form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=self.request.user.company)
-        form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
-        form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=self.request.user.company)
-        form.fields['AsmeninesApsaugosPriemones'].queryset = self.request.user.company.AAP
-        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=self.request.user.company)
+        selected_language = self.request.POST.get('kalba') or self.request.GET.get('kalba') or form.initial.get('kalba')
+        company = self.request.user.company
+        if selected_language:
+            form.fields['instructions'].queryset = models.Instruction.objects.filter(company=company, kalba=selected_language)
+            form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=company, kalba=selected_language)
+            form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=company, kalba=selected_language)
+            form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=company, kalba=selected_language)
+            form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=company, kalba=selected_language)
+        else:
+            form.fields['instructions'].queryset = models.Instruction.objects.filter(company=company)
+            form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=company)
+            form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=company)
+            form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=company)
+            form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=company)
+        form.fields['position'].queryset = models.Position.objects.filter(company=company)
+        form.fields['AsmeninesApsaugosPriemones'].queryset = company.AAP
+        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=company)
+        form.fields['AsmeninesApsaugosPriemones'].initial = []
         return form
 
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['company'] = self.request.user.company
+        # For AddUserView, there is no user object yet
+        context['assigned_instructions'] = []
+        context['priesgaisrines'] = []
+        context['civiline_sauga'] = []
+        context['mokymai'] = []
+        context['kiti_dokumentai'] = []
+        context['AAP'] = []
         return context
     
     def form_valid(self, form):
@@ -1017,17 +1033,40 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.user = self.request.user
-        form.fields['position'].queryset = models.Position.objects.filter(company=self.request.user.company)
-        form.fields['instructions'].queryset = models.Instruction.objects.filter(company=self.request.user.company)
-        form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=self.request.user.company)
-        form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
-        form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
-        form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=self.request.user.company)
-        form.fields['AsmeninesApsaugosPriemones'].queryset = self.request.user.company.AAP
-        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=self.request.user.company)
+        selected_language = self.request.POST.get('kalba') or self.request.GET.get('kalba') or form.initial.get('kalba')
+        company = self.request.user.company
+        user_to_edit = self.get_object()
+        if selected_language:
+            form.fields['instructions'].queryset = models.Instruction.objects.filter(company=company, kalba=selected_language)
+            form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=company, kalba=selected_language)
+            form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=company, kalba=selected_language)
+            form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=company, kalba=selected_language)
+            form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=company, kalba=selected_language)
+        else:
+            form.fields['instructions'].queryset = models.Instruction.objects.filter(company=company)
+            form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=company)
+            form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=company)
+            form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=company)
+            form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=company)
+        form.fields['position'].queryset = models.Position.objects.filter(company=company)
+        form.fields['AsmeninesApsaugosPriemones'].queryset = company.AAP
+        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=company)
         form.fields['AsmeninesApsaugosPriemones'].initial = []
+        assigned_instructions = user_to_edit.instructions.all()  # Adjust if you use a different related name
+        form.fields['instructions'].initial = [i.pk for i in assigned_instructions]
         return form
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_to_edit = self.get_object()
+        context['assigned_instructions'] = [i.pk for i in user_to_edit.instructions.all()]
+        context['priesgaisrines'] = [i.pk for i in user_to_edit.priesgaisrines.all()]
+        context['civiline_sauga'] = [i.pk for i in user_to_edit.civiline_sauga.all()]
+        context['mokymai'] = [i.pk for i in user_to_edit.mokymai.all()]
+        context['kiti_dokumentai'] = [i.pk for i in user_to_edit.kiti_dokumentai.all()]
+        context['AAP'] = [aap.pk for aap in user_to_edit.AsmeninesApsaugosPriemones.all()]
+        # Repeat for other instruction types if needed
+        return context
 
     def get_object(self, queryset=None):
         uuid = self.kwargs.get('uuid')
@@ -1378,144 +1417,94 @@ class AAPZurnalas(LoginRequiredMixin, generic.ListView):
 class InstructionAddAll(LoginRequiredMixin, generic.FormView):
     model = models.User
     form_class = forms.InstructionAddAllForm
-    template_name = "main/InstructionAddAll.html"  
+    template_name = "main/InstructionAddAll.html"
     success_url = reverse_lazy('my_company_users')
-
-    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['company'] = self.request.user.company
-        return context
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.user = self.request.user
-        form.fields['instructions'].queryset = models.Instruction.objects.filter(company=self.request.user.company)
-        form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=self.request.user.company)
-        form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=self.request.user.company)
-        form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=self.request.user.company)
-        form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=self.request.user.company)
-        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=self.request.user.company)
-        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=self.request.user.company)
-        
-        
-        # Add position field with company positions
-        form.fields['position'].queryset = models.Position.objects.filter(company=self.request.user.company)
-
+        company = self.request.user.company
+        selected_language = self.request.POST.get('kalba') or self.request.GET.get('kalba') or form.initial.get('kalba')
+        # Filter instructions by selected language if provided
+        if selected_language:
+            form.fields['instructions'].queryset = models.Instruction.objects.filter(company=company, kalba=selected_language)
+            form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=company, kalba=selected_language)
+            form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=company, kalba=selected_language)
+            form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=company, kalba=selected_language)
+            form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=company, kalba=selected_language)
+        else:
+            form.fields['instructions'].queryset = models.Instruction.objects.filter(company=company)
+            form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=company)
+            form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=company)
+            form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=company)
+            form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=company)
+        form.fields['position'].queryset = models.Position.objects.filter(company=company)
+        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=company)
         return form
 
-    def filter_instructions(self, form, user):
-        """Helper method to get filtered instructions for a user"""
-        return {
-            'instructions': form.cleaned_data.get('instructions'),
-            'priesgaisrines': form.cleaned_data.get('priesgaisrines'),
-            'civiline_sauga': form.cleaned_data.get('civiline_sauga'),
-            'mokymai': form.cleaned_data.get('mokymai'),
-            'kitidokumentai': form.cleaned_data.get('kiti_dokumentai'),
-            'priesgaisrinesinstrukcijospasirasymai': models.PriesgaisriniuPasirasymas.objects.filter(user=user),
-            'civilinesaugapasirasymai': models.CivilineSaugaPasirasymas.objects.filter(user=user),
-            'mokymaipasirasymai': models.MokymuPasirasymas.objects.filter(user=user),
-            'kitidokumentaipasirasymai': models.KituDocPasirasymas.objects.filter(user=user),
-            'existing_signs': models.UserInstructionSign.objects.filter(user=user),
-        }
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
-    def create_instructions(self, form, user):
-        """Create instructions for a specific user"""
-        filtered_data = self.filter_instructions(form, user)
-        
-        # Unpack all the filtered data
-        instructions = filtered_data['instructions']
-        priesgaisrines = filtered_data['priesgaisrines']
-        civiline_sauga = filtered_data['civiline_sauga']
-        mokymai = filtered_data['mokymai']
-        kitidokumentai = filtered_data['kitidokumentai']
-        priesgaisrinesinstrukcijospasirasymai = filtered_data['priesgaisrinesinstrukcijospasirasymai']
-        civilinesaugapasirasymai = filtered_data['civilinesaugapasirasymai']
-        mokymaipasirasymai = filtered_data['mokymaipasirasymai']
-        kitidokumentaipasirasymai = filtered_data['kitidokumentaipasirasymai']
-        existing_signs = filtered_data['existing_signs']
+    def create_instructions_for_user(self, user, form):
+        """Assign selected instructions to a user, creating sign instances if needed."""
+        instructions = form.cleaned_data.get('instructions')
+        priesgaisrines = form.cleaned_data.get('priesgaisrines')
+        civiline_sauga = form.cleaned_data.get('civiline_sauga')
+        mokymai = form.cleaned_data.get('mokymai')
+        kiti_dokumentai = form.cleaned_data.get('kiti_dokumentai')
 
+        # Assign instructions (append, do not remove existing)
         if instructions:
+            user.instructions.add(*instructions)
             for instruction in instructions:
-                existing_sign = existing_signs.filter(instruction=instruction).first()
-                if existing_sign:
-                    existing_sign.save()
-                else:
-                    models.UserInstructionSign.objects.create(
-                        user=user,
-                        instruction=instruction,
-                    )
+                if not models.UserInstructionSign.objects.filter(user=user, instruction=instruction).exists():
+                    models.UserInstructionSign.objects.create(user=user, instruction=instruction)
 
         if priesgaisrines:
+            user.priesgaisrines.add(*priesgaisrines)
             for instruction in priesgaisrines:
-                existing_sign = priesgaisrinesinstrukcijospasirasymai.filter(instruction=instruction).first()
-                if existing_sign:
-                    existing_sign.save()
-                else:
-                    models.PriesgaisriniuPasirasymas.objects.create(
-                        user=user,
-                        instruction=instruction,
-                    )
-        
+                if not models.PriesgaisriniuPasirasymas.objects.filter(user=user, instruction=instruction).exists():
+                    models.PriesgaisriniuPasirasymas.objects.create(user=user, instruction=instruction)
+
         if civiline_sauga:
+            user.civiline_sauga.add(*civiline_sauga)
             for instruction in civiline_sauga:
-                existing_sign = civilinesaugapasirasymai.filter(instruction=instruction).first()
-                if existing_sign:
-                    existing_sign.save()
-                else:
-                    models.CivilineSaugaPasirasymas.objects.create(
-                        user=user,
-                        instruction=instruction,
-                    )
+                if not models.CivilineSaugaPasirasymas.objects.filter(user=user, instruction=instruction).exists():
+                    models.CivilineSaugaPasirasymas.objects.create(user=user, instruction=instruction)
 
         if mokymai:
+            user.mokymai.add(*mokymai)
             for instruction in mokymai:
-                existing_sign = mokymaipasirasymai.filter(instruction=instruction).first()
-                if existing_sign:
-                    existing_sign.save()
-                else:
-                    models.MokymuPasirasymas.objects.create(
-                        user=user,
-                        instruction=instruction,
-                    )
+                if not models.MokymuPasirasymas.objects.filter(user=user, instruction=instruction).exists():
+                    models.MokymuPasirasymas.objects.create(user=user, instruction=instruction)
 
-        if kitidokumentai:
-            for instruction in kitidokumentai:
-                existing_sign = kitidokumentaipasirasymai.filter(instruction=instruction).first()
-                if existing_sign:
-                    existing_sign.save()
-                else:
-                    models.KituDocPasirasymas.objects.create(
-                        user=user,
-                        instruction=instruction,
-                    )
+        if kiti_dokumentai:
+            user.kiti_dokumentai.add(*kiti_dokumentai)
+            for instruction in kiti_dokumentai:
+                if not models.KituDocPasirasymas.objects.filter(user=user, instruction=instruction).exists():
+                    models.KituDocPasirasymas.objects.create(user=user, instruction=instruction)
+
 
 
     def form_valid(self, form):
         with transaction.atomic():
+            company = self.request.user.company
             kalba = form.cleaned_data.get('kalba')
             position = form.cleaned_data.get('position')
-            company = self.request.user.company
-            
-            # Start with base queryset
-            user_list = models.User.objects.filter(
-                company=company,
-                kalba=kalba,
-                is_active=True
-            )
-            
-            # Apply skyrius filter if user has one or if selected in form
-            if self.request.user.skyrius:
-                user_list = user_list.filter(skyrius=self.request.user.skyrius)
-            elif form.cleaned_data.get('skyrius'):
-                user_list = user_list.filter(skyrius=form.cleaned_data['skyrius'])
-            
-            # Apply position filter if selected
+            skyrius = form.cleaned_data.get('skyrius')
+
+            # Build user queryset based on filters
+            user_list = models.User.objects.filter(company=company, is_active=True)
+            if kalba:
+                user_list = user_list.filter(kalba=kalba)
+            if skyrius:
+                user_list = user_list.filter(skyrius=skyrius)
             if position:
                 user_list = user_list.filter(position=position)
-            
+
             for user in user_list:
-                self.create_instructions(form, user)
-                
+                self.create_instructions_for_user(user, form)
+
         return super().form_valid(form)
 
 
@@ -1527,4 +1516,34 @@ class AdminPriminimaiView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return models.AdminPriminimas.objects.filter(imone=self.request.user.company)
-    
+
+
+def get_instructions_by_language(request):
+    kalba = request.GET.get('kalba')
+    company = request.user.company
+    data = {
+        'instructions': [],
+        'priesgaisrines': [],
+        'mokymai': [],
+        'kiti_dokumentai': [],
+        'civiline_sauga': [],
+    }
+    if kalba:
+        kalba = int(kalba)
+        data['instructions'] = [
+            {'id': i.id, 'name': i.name} for i in models.Instruction.objects.filter(company=company, kalba=int(kalba))
+        ]
+        data['priesgaisrines'] = [
+            {'id': i.id, 'name': i.pavadinimas} for i in models.PriesgiasrinesInstrukcijos.objects.filter(imone=company, kalba=kalba)
+        ]
+        data['mokymai'] = [
+            {'id': i.id, 'name': i.pavadinimas} for i in models.Mokymai.objects.filter(imone=company, kalba=kalba)
+        ]
+        data['kiti_dokumentai'] = [
+            {'id': i.id, 'name': i.pavadinimas} for i in models.KitiDokumentai.objects.filter(imone=company, kalba=kalba)
+        ]
+        data['civiline_sauga'] = [
+            {'id': i.id, 'name': i.pavadinimas} for i in models.CivilineSauga.objects.filter(imone=company, kalba=kalba)
+        ]
+    return JsonResponse(data)
+
