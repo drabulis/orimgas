@@ -39,7 +39,7 @@ def log_user_instruction_activity(user, instruction_name, ip_address):
 
 class UserMeniuView(LoginRequiredMixin, generic.ListView):
     model = models.UserInstructionSign
-    template_name = 'main/menu.html'
+    template_name = 'menu_bootstrap.html'
     paginate_by = 10000
     # context_object_name = 'instructions'
 
@@ -50,12 +50,53 @@ class UserMeniuView(LoginRequiredMixin, generic.ListView):
     
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['priesrines_instrukcijos'] = models.PriesgaisriniuPasirasymas.objects.filter(user=self.request.user, status=0)
-        context['mokymo_instrukcijos'] = models.MokymuPasirasymas.objects.filter(user=self.request.user, status=0)
-        context['kitu_doc'] = models.KituDocPasirasymas.objects.filter(user=self.request.user, status=0)
-        context['civiline_sauga'] = models.CivilineSaugaPasirasymas.objects.filter(user=self.request.user, status=0)
-        context['asmenines_apsaugos_priemones'] = models.AAPPasirasymas.objects.filter(user=self.request.user, status=0)
-        context['user'] = self.request.user
+        user = self.request.user
+        
+        # All pending instructions by type (status=0 means pending/unsigned)
+        context['priesrines_instrukcijos'] = models.PriesgaisriniuPasirasymas.objects.filter(user=user, status=0)
+        context['mokymo_instrukcijos'] = models.MokymuPasirasymas.objects.filter(user=user, status=0)
+        context['kitu_doc'] = models.KituDocPasirasymas.objects.filter(user=user, status=0)
+        context['civiline_sauga'] = models.CivilineSaugaPasirasymas.objects.filter(user=user, status=0)
+        context['asmenines_apsaugos_priemones'] = models.AAPPasirasymas.objects.filter(user=user, status=0)
+        
+        # Calculate statistics for dashboard
+        # Total pending instructions
+        pending_count = (
+            context['object_list'].count() +
+            context['priesrines_instrukcijos'].count() +
+            context['mokymo_instrukcijos'].count() +
+            context['kitu_doc'].count() +
+            context['civiline_sauga'].count() +
+            context['asmenines_apsaugos_priemones'].count()
+        )
+        context['pending_instructions'] = pending_count
+        
+        # Total signed instructions (status=1 means signed)
+        signed_count = (
+            models.UserInstructionSign.objects.filter(user=user, status=1).count() +
+            models.PriesgaisriniuPasirasymas.objects.filter(user=user, status=1).count() +
+            models.MokymuPasirasymas.objects.filter(user=user, status=1).count() +
+            models.KituDocPasirasymas.objects.filter(user=user, status=1).count() +
+            models.CivilineSaugaPasirasymas.objects.filter(user=user, status=1).count() +
+            models.AAPPasirasymas.objects.filter(user=user, status=1).count()
+        )
+        context['signed_instructions'] = signed_count
+        
+        # Total instructions (both signed and pending)
+        context['total_instructions'] = pending_count + signed_count
+        
+        # Expired instructions (status=2 typically means expired/overdue)
+        expired_count = (
+            models.UserInstructionSign.objects.filter(user=user, status=2).count() +
+            models.PriesgaisriniuPasirasymas.objects.filter(user=user, status=2).count() +
+            models.MokymuPasirasymas.objects.filter(user=user, status=2).count() +
+            models.KituDocPasirasymas.objects.filter(user=user, status=2).count() +
+            models.CivilineSaugaPasirasymas.objects.filter(user=user, status=2).count() +
+            models.AAPPasirasymas.objects.filter(user=user, status=2).count()
+        )
+        context['expired_instructions'] = expired_count
+        
+        context['user'] = user
         return context    
 
 
@@ -72,7 +113,7 @@ class UserDetailView(LoginRequiredMixin, generic.DetailView):
 class AddUserView(LoginRequiredMixin, generic.CreateView):
     model = models.User
     form_class = forms.AddUserForm
-    template_name = 'main/user_add.html'
+    template_name = 'main/user_add_bootstrap.html'
     success_url = reverse_lazy('my_company_users')
 
     def dispatch(self, request, *args, **kwargs):
@@ -85,20 +126,20 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
         selected_language = self.request.POST.get('kalba') or self.request.GET.get('kalba') or form.initial.get('kalba')
         company = self.request.user.company
         if selected_language:
-            form.fields['instructions'].queryset = models.Instruction.objects.filter(company=company, kalba=selected_language)
-            form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=company, kalba=selected_language)
-            form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=company, kalba=selected_language)
-            form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=company, kalba=selected_language)
-            form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=company, kalba=selected_language)
+            form.fields['instructions'].queryset = models.Instruction.objects.filter(company=company, kalba=selected_language).order_by('name')
+            form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=company, kalba=selected_language).order_by('pavadinimas')
+            form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=company, kalba=selected_language).order_by('pavadinimas')
+            form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=company, kalba=selected_language).order_by('pavadinimas')
+            form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=company, kalba=selected_language).order_by('pavadinimas')
         else:
-            form.fields['instructions'].queryset = models.Instruction.objects.filter(company=company)
-            form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=company)
-            form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=company)
-            form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=company)
-            form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=company)
-        form.fields['position'].queryset = models.Position.objects.filter(company=company)
-        form.fields['AsmeninesApsaugosPriemones'].queryset = company.AAP
-        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=company)
+            form.fields['instructions'].queryset = models.Instruction.objects.filter(company=company).order_by('name')
+            form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=company).order_by('pavadinimas')
+            form.fields['mokymai'].queryset = models.Mokymai.objects.filter(imone=company).order_by('pavadinimas')
+            form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=company).order_by('pavadinimas')
+            form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=company).order_by('pavadinimas')
+        form.fields['position'].queryset = models.Position.objects.filter(company=company).order_by('name')
+        form.fields['AsmeninesApsaugosPriemones'].queryset = company.AAP.order_by('pavadinimas')
+        form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=company).order_by('pavadinimas')
         form.fields['AsmeninesApsaugosPriemones'].initial = []
         return form
 
@@ -126,6 +167,13 @@ class AddUserView(LoginRequiredMixin, generic.CreateView):
             form.instance.sekanti_med_patikros_data = med_patikros_data + timedelta_periodas
 
         return super().form_valid(form)
+
+
+class DemoAddUserView(AddUserView):
+    """Bootstrap demo version of AddUserView (read-only access from demo page)."""
+
+    template_name = 'main/user_add_bootstrap.html'
+    success_url = reverse_lazy('menu_bootstrap')
 
 
 class UserInstructionSignView(LoginRequiredMixin, generic.ListView):
@@ -184,7 +232,7 @@ class UserInstructionSignUpdateView(LoginRequiredMixin, generic.UpdateView):
         return ip
 
     def get_success_url(self):
-        return reverse_lazy('user_instructions')
+        return reverse_lazy('menu')
 
 
 class CivilineSaugaSignView(LoginRequiredMixin, generic.UpdateView):
@@ -223,7 +271,7 @@ class CivilineSaugaSignView(LoginRequiredMixin, generic.UpdateView):
         return ip
 
     def get_success_url(self):
-        return reverse_lazy('user_instructions')
+        return reverse_lazy('menu')
 
 
 class PriesgaisrinioSignView(LoginRequiredMixin, generic.UpdateView):
@@ -262,7 +310,7 @@ class PriesgaisrinioSignView(LoginRequiredMixin, generic.UpdateView):
         return ip
 
     def get_success_url(self):
-        return reverse_lazy('user_instructions')
+        return reverse_lazy('menu')
 
     
 
@@ -301,7 +349,7 @@ class MokymuSignView(LoginRequiredMixin, generic.UpdateView):
         return ip
 
     def get_success_url(self):
-        return reverse_lazy('user_instructions')
+        return reverse_lazy('menu')
 
 
 class KituDocSignView(LoginRequiredMixin, generic.UpdateView):
@@ -338,7 +386,7 @@ class KituDocSignView(LoginRequiredMixin, generic.UpdateView):
         return ip
 
     def get_success_url(self):
-        return reverse_lazy('user_instructions')
+        return reverse_lazy('menu')
 
 
 
@@ -1036,6 +1084,7 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
         selected_language = self.request.POST.get('kalba') or self.request.GET.get('kalba') or form.initial.get('kalba')
         company = self.request.user.company
         user_to_edit = self.get_object()
+        
         if selected_language:
             form.fields['instructions'].queryset = models.Instruction.objects.filter(company=company, kalba=selected_language)
             form.fields['priesgaisrines'].queryset = models.PriesgiasrinesInstrukcijos.objects.filter(imone=company, kalba=selected_language)
@@ -1049,9 +1098,15 @@ class SupervisorEditUserView(LoginRequiredMixin, generic.UpdateView):
             form.fields['kiti_dokumentai'].queryset = models.KitiDokumentai.objects.filter(imone=company)
             form.fields['civiline_sauga'].queryset = models.CivilineSauga.objects.filter(imone=company)
         form.fields['position'].queryset = models.Position.objects.filter(company=company)
-        form.fields['AsmeninesApsaugosPriemones'].queryset = company.AAP
+        form.fields['AsmeninesApsaugosPriemones'].queryset = company.AAP.all()
         form.fields['skyrius'].queryset = models.Skyrius.objects.filter(company=company)
-        form.fields['AsmeninesApsaugosPriemones'].initial = []
+        
+        # Clear the AAP field so no items are pre-selected when loading the form
+        # This prevents the field from showing currently assigned items
+        if not self.request.POST:
+            # Only clear on GET request (when loading the form), not on POST (when submitting)
+            form.initial['AsmeninesApsaugosPriemones'] = []
+        
         assigned_instructions = user_to_edit.instructions.all()  # Adjust if you use a different related name
         form.fields['instructions'].initial = [i.pk for i in assigned_instructions]
         return form
@@ -1321,7 +1376,290 @@ class AAPSignView(LoginRequiredMixin, generic.UpdateView):
         return ip
 
     def get_success_url(self):
-        return reverse_lazy('user_instructions')
+        return reverse_lazy('menu')
+
+
+class AAPSignAjaxView(LoginRequiredMixin, generic.View):
+    """AJAX view for signing AAP in modal"""
+    
+    def get(self, request, uuid):
+        """Return AAP details as JSON"""
+        try:
+            aap_pasirasymas = get_object_or_404(models.AAPPasirasymas, uuid=uuid, user=request.user)
+            aap = aap_pasirasymas.AAP
+            
+            data = {
+                'success': True,
+                'title': aap.pavadinimas,
+                'pdf_url': aap.pdf.url if aap.pdf else None,
+                'uuid': str(uuid),
+            }
+            return JsonResponse(data)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    
+    def post(self, request, uuid):
+        """Handle AAP signing via AJAX"""
+        try:
+            aap_pasirasymas = get_object_or_404(models.AAPPasirasymas, uuid=uuid, user=request.user)
+            
+            # Update the signature
+            aap_pasirasymas.status = 1
+            aap_pasirasymas.date_signed = datetime.now()
+            aap_pasirasymas.next_sign = datetime.now() + timedelta(int(aap_pasirasymas.AAP.periodiskumas * 30))
+            aap_pasirasymas.save()
+            
+            # Log activity
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip_address = x_forwarded_for.split(',')[0]
+            else:
+                ip_address = request.META.get('REMOTE_ADDR')
+            
+            log_user_instruction_activity(request.user, aap_pasirasymas.AAP.pavadinimas, ip_address)
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'AAP pasirašyta sėkmingai'
+            })
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+def get_test_data(instruction):
+    """Helper function to get test data for an instruction"""
+    test = instruction.testas if hasattr(instruction, 'testas') and instruction.testas else None
+    if not test:
+        return None
+    
+    questions = []
+    for klausimas in test.klausimai.all():
+        answers = []
+        for atsakymas in klausimas.atsakymai.all():
+            answers.append({
+                'id': atsakymas.id,
+                'text': atsakymas.atsakymas,
+                'is_correct': atsakymas.teisingas
+            })
+        questions.append({
+            'id': klausimas.id,
+            'question': klausimas.klausimas,
+            'answers': answers
+        })
+    
+    return {
+        'id': test.id,
+        'title': test.pavadinimas,
+        'questions': questions
+    }
+
+
+class UserInstructionSignAjaxView(LoginRequiredMixin, generic.View):
+    """AJAX view for signing User Instructions in modal"""
+    
+    def get(self, request, uuid):
+        try:
+            instruction_sign = get_object_or_404(models.UserInstructionSign, uuid=uuid, user=request.user)
+            instruction = instruction_sign.instruction
+            
+            data = {
+                'success': True,
+                'title': instruction.name,
+                'pdf_url': instruction.pdf.url if instruction.pdf else None,
+                'uuid': str(uuid),
+                'test': get_test_data(instruction)
+            }
+            return JsonResponse(data)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    
+    def post(self, request, uuid):
+        try:
+            import json
+            instruction_sign = get_object_or_404(models.UserInstructionSign, uuid=uuid, user=request.user)
+            instruction = instruction_sign.instruction
+            
+            # Validate test answers if test exists
+            if instruction.testas:
+                body = json.loads(request.body)
+                test_answers = body.get('test_answers', {})
+                
+                for klausimas in instruction.testas.klausimai.all():
+                    question_id = str(klausimas.id)
+                    if question_id not in test_answers:
+                        return JsonResponse({'success': False, 'error': 'Prašome atsakyti į visus klausimus'}, status=400)
+                    
+                    selected_answer_id = int(test_answers[question_id])
+                    correct_answers = [a.id for a in klausimas.atsakymai.filter(teisingas=True)]
+                    
+                    if selected_answer_id not in correct_answers:
+                        return JsonResponse({'success': False, 'error': 'Neteisingas atsakymas. Prašome bandyti dar kartą.'}, status=400)
+            
+            instruction_sign.status = 1
+            instruction_sign.date_signed = datetime.now()
+            instruction_sign.next_sign = datetime.now() + timedelta(int(instruction_sign.instruction.periodiskumas))
+            instruction_sign.save()
+            
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            ip_address = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
+            
+            log_user_instruction_activity(request.user, instruction_sign.instruction.name, ip_address)
+            
+            return JsonResponse({'success': True, 'message': 'Instrukcija pasirašyta sėkmingai'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+class PriesgaisrinisSignAjaxView(LoginRequiredMixin, generic.View):
+    """AJAX view for signing Priesgaisrinis instructions in modal"""
+    
+    def get(self, request, uuid):
+        try:
+            pasirasymas = get_object_or_404(models.PriesgaisriniuPasirasymas, uuid=uuid, user=request.user)
+            instruction = pasirasymas.instruction
+            
+            data = {
+                'success': True,
+                'title': instruction.pavadinimas,
+                'pdf_url': instruction.pdf.url if instruction.pdf else None,
+                'uuid': str(uuid),
+                'test': get_test_data(instruction)
+            }
+            return JsonResponse(data)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    
+    def post(self, request, uuid):
+        try:
+            pasirasymas = get_object_or_404(models.PriesgaisriniuPasirasymas, uuid=uuid, user=request.user)
+            
+            pasirasymas.status = 1
+            pasirasymas.date_signed = datetime.now()
+            pasirasymas.next_sign = datetime.now() + timedelta(int(pasirasymas.instruction.periodiskumas))
+            pasirasymas.save()
+            
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            ip_address = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
+            
+            log_user_instruction_activity(request.user, pasirasymas.instruction.pavadinimas, ip_address)
+            
+            return JsonResponse({'success': True, 'message': 'Priešgaisrinė instrukcija pasirašyta sėkmingai'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+class CivilineSaugaSignAjaxView(LoginRequiredMixin, generic.View):
+    """AJAX view for signing Civiline Sauga instructions in modal"""
+    
+    def get(self, request, uuid):
+        try:
+            pasirasymas = get_object_or_404(models.CivilineSaugaPasirasymas, uuid=uuid, user=request.user)
+            instruction = pasirasymas.instruction
+            
+            data = {
+                'success': True,
+                'title': instruction.pavadinimas,
+                'pdf_url': instruction.pdf.url if instruction.pdf else None,
+                'uuid': str(uuid),
+                'test': get_test_data(instruction)
+            }
+            return JsonResponse(data)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    
+    def post(self, request, uuid):
+        try:
+            pasirasymas = get_object_or_404(models.CivilineSaugaPasirasymas, uuid=uuid, user=request.user)
+            
+            pasirasymas.status = 1
+            pasirasymas.date_signed = datetime.now()
+            pasirasymas.next_sign = datetime.now() + timedelta(int(pasirasymas.instruction.periodiskumas))
+            pasirasymas.save()
+            
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            ip_address = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
+            
+            log_user_instruction_activity(request.user, pasirasymas.instruction.pavadinimas, ip_address)
+            
+            return JsonResponse({'success': True, 'message': 'Civilinės saugos instrukcija pasirašyta sėkmingai'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+class MokymuSignAjaxView(LoginRequiredMixin, generic.View):
+    """AJAX view for signing Mokymai in modal"""
+    
+    def get(self, request, uuid):
+        try:
+            pasirasymas = get_object_or_404(models.MokymuPasirasymas, uuid=uuid, user=request.user)
+            mokymas = pasirasymas.instruction
+            
+            data = {
+                'success': True,
+                'title': mokymas.pavadinimas,
+                'pdf_url': mokymas.pdf.url if mokymas.pdf else None,
+                'uuid': str(uuid),
+                'test': get_test_data(mokymas)
+            }
+            return JsonResponse(data)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    
+    def post(self, request, uuid):
+        try:
+            pasirasymas = get_object_or_404(models.MokymuPasirasymas, uuid=uuid, user=request.user)
+            
+            pasirasymas.status = 1
+            pasirasymas.date_signed = datetime.now()
+            pasirasymas.next_sign = datetime.now() + timedelta(int(pasirasymas.instruction.periodiskumas * 30))
+            pasirasymas.save()
+            
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            ip_address = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
+            
+            log_user_instruction_activity(request.user, pasirasymas.instruction.pavadinimas, ip_address)
+            
+            return JsonResponse({'success': True, 'message': 'Mokymas pasirašytas sėkmingai'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+
+class KituDocSignAjaxView(LoginRequiredMixin, generic.View):
+    """AJAX view for signing Kiti Dokumentai in modal"""
+    
+    def get(self, request, uuid):
+        try:
+            pasirasymas = get_object_or_404(models.KituDocPasirasymas, uuid=uuid, user=request.user)
+            doc = pasirasymas.instruction
+            
+            data = {
+                'success': True,
+                'title': doc.pavadinimas,
+                'pdf_url': doc.pdf.url if doc.pdf else None,
+                'uuid': str(uuid),
+                'test': get_test_data(doc)
+            }
+            return JsonResponse(data)
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    
+    def post(self, request, uuid):
+        try:
+            pasirasymas = get_object_or_404(models.KituDocPasirasymas, uuid=uuid, user=request.user)
+            
+            pasirasymas.status = 1
+            pasirasymas.date_signed = datetime.now()
+            pasirasymas.next_sign = datetime.now() + timedelta(int(pasirasymas.instruction.periodiskumas * 30))
+            pasirasymas.save()
+            
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            ip_address = x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
+            
+            log_user_instruction_activity(request.user, pasirasymas.instruction.pavadinimas, ip_address)
+            
+            return JsonResponse({'success': True, 'message': 'Dokumentas pasirašytas sėkmingai'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
 
 class AAPZurnalas(LoginRequiredMixin, generic.ListView):
@@ -1546,4 +1884,65 @@ def get_instructions_by_language(request):
             {'id': i.id, 'name': i.pavadinimas} for i in models.CivilineSauga.objects.filter(imone=company, kalba=kalba)
         ]
     return JsonResponse(data)
+
+class MenuBootstrapView(LoginRequiredMixin, generic.ListView):
+    model = models.UserInstructionSign
+    template_name = 'menu_bootstrap.html'
+    paginate_by = 10000
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(user=self.request.user, status=0)
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        
+        # All pending instructions by type (status=0 means pending/unsigned)
+        context['priesrines_instrukcijos'] = models.PriesgaisriniuPasirasymas.objects.filter(user=user, status=0)
+        context['mokymo_instrukcijos'] = models.MokymuPasirasymas.objects.filter(user=user, status=0)
+        context['kitu_doc'] = models.KituDocPasirasymas.objects.filter(user=user, status=0)
+        context['civiline_sauga'] = models.CivilineSaugaPasirasymas.objects.filter(user=user, status=0)
+        context['asmenines_apsaugos_priemones'] = models.AAPPasirasymas.objects.filter(user=user, status=0)
+        
+        # Calculate statistics for dashboard
+        # Total pending instructions
+        pending_count = (
+            context['object_list'].count() +
+            context['priesrines_instrukcijos'].count() +
+            context['mokymo_instrukcijos'].count() +
+            context['kitu_doc'].count() +
+            context['civiline_sauga'].count() +
+            context['asmenines_apsaugos_priemones'].count()
+        )
+        context['pending_instructions'] = pending_count
+        
+        # Total signed instructions (status=1 means signed)
+        signed_count = (
+            models.UserInstructionSign.objects.filter(user=user, status=1).count() +
+            models.PriesgaisriniuPasirasymas.objects.filter(user=user, status=1).count() +
+            models.MokymuPasirasymas.objects.filter(user=user, status=1).count() +
+            models.KituDocPasirasymas.objects.filter(user=user, status=1).count() +
+            models.CivilineSaugaPasirasymas.objects.filter(user=user, status=1).count() +
+            models.AAPPasirasymas.objects.filter(user=user, status=1).count()
+        )
+        context['signed_instructions'] = signed_count
+        
+        # Total instructions (both signed and pending)
+        context['total_instructions'] = pending_count + signed_count
+        
+        # Expired instructions (status=2 typically means expired/overdue)
+        expired_count = (
+            models.UserInstructionSign.objects.filter(user=user, status=2).count() +
+            models.PriesgaisriniuPasirasymas.objects.filter(user=user, status=2).count() +
+            models.MokymuPasirasymas.objects.filter(user=user, status=2).count() +
+            models.KituDocPasirasymas.objects.filter(user=user, status=2).count() +
+            models.CivilineSaugaPasirasymas.objects.filter(user=user, status=2).count() +
+            models.AAPPasirasymas.objects.filter(user=user, status=2).count()
+        )
+        context['expired_instructions'] = expired_count
+        
+        context['user'] = user
+        return context
 

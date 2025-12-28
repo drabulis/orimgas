@@ -1,70 +1,119 @@
-{% extends "base.html" %}
+{% extends "base_bootstrap.html" %}
 {% load i18n %}
 {% load static %}
-<title>{% block title %}{{ user.get_full_name }}{% trans "informacija" %}{% endblock title %}</title>
+
+{% block title %}{{ user.get_full_name }} - {% trans "informacija" %}{% endblock %}
+
 {% block content %}
-<br><br><br>
-    <h1>{% trans "Vartotojo informacija" %}</h1>
-    <table class="nice-table">
-        <tr>
-            <th>{% trans "Vardas" %}</th>
-            <td>{{ user.first_name }}</td>
-        </tr>
-        <tr>
-            <th>{% trans "Pavarde" %}</th>
-            <td>{{ user.last_name }}</td>
-        </tr>
-        <tr>
-            <th>{% trans "Gymimo data" %}</th>
-            <td>{{ user.date_of_birth }}</td>
-        </tr>
-        <tr>
-            <th>{% trans "El. paštas" %}</th>
-            <td>{{ user.email }}</td>
-        </tr>
-        <tr>
-            <th>{% trans "Kompanija" %}</th>
-            <td>{{ user.company }}</td>
-        </tr>
-        <tr>
-            <th>{% trans "Pareigos" %}</th>
-            <td>{{ user.position }}</td>
-        </tr>
-        <tr>
-            <th>{% trans "Darbų saugos instrukcijos" %}</th>
-            <td>{% for instruction in user.instructions.all %}
-                {{ instruction.name }}, <br>
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <th>{% trans "Priešgaisrinės instrukcijos" %}</th>
-            <td>{% for instruction in user.priesgaisrines.all %}
-                {{ instruction.pavadinimas }}, <br>
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <th>{% trans "Mokymai" %}</th>
-            <td>{% for mokymas in user.mokymai.all %}
-                {{ mokymas.pavadinimas }}, <br>
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <th>{% trans "Kiti dokumentai" %}</th>
-            <td>{% for dok in user.kiti_dokumentai.all %}
-                {{ dok.pavadinimas }}, <br>
-                {% endfor %}
-            </td>
-        </tr>
-        <tr>
-            <th>{% trans "Medicininės patikros data" %}</th>
-            <td>{{ user.med_patikros_data }}</td>
-        </tr>
-        <tr>
-            <th>{% trans "Medicininės patikros periodas" %}</th>
-            <td>{{ user.get_med_patikros_periodas_display }}</td>
-        </tr>
-    </table>
-{% endblock content %}
+<div class="container-fluid py-4">
+    <div class="row mb-3">
+        <div class="col-12 d-flex align-items-center">
+            <a href="{% url 'my_company_users' %}" class="btn btn-outline-secondary btn-sm me-2">
+                <i class="bi bi-arrow-left"></i> {% trans "Atgal" %}
+            </a>
+            <h4 class="mb-0">{% trans "Vartotojo informacija" %}: {{ user.get_full_name }}</h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="bi bi-person"></i> {% trans "Asmens informacija" %}</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th class="text-muted" style="width: 40%;">{% trans "Vardas" %}</th>
+                            <td>{{ user.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">{% trans "Pavardė" %}</th>
+                            <td>{{ user.last_name }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">{% trans "Gimimo data" %}</th>
+                            <td>{{ user.date_of_birth|date:"Y-m-d" }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">{% trans "El. paštas" %}</th>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">{% trans "Kompanija" %}</th>
+                            <td>{{ user.company.name }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">{% trans "Pareigos" %}</th>
+                            <td>{{ user.position.name }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="bi bi-heart-pulse"></i> {% trans "Medicininė informacija" %}</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th class="text-muted" style="width: 40%;">{% trans "Med. patikros data" %}</th>
+                            <td>{{ user.med_patikros_data|date:"Y-m-d"|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <th class="text-muted">{% trans "Med. patikros periodas" %}</th>
+                            <td>{{ user.get_med_patikros_periodas_display|default:"-" }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-file-text"></i> {% trans "Instrukcijos ir dokumentai" %}</h6>
+                </div>
+                <div class="card-body">
+                    <h6 class="text-uppercase text-muted fw-bold mb-2">{% trans "Darbų saugos instrukcijos" %}</h6>
+                    <ul class="list-group list-group-flush mb-3">
+                        {% for instruction in user.instructions.all %}
+                            <li class="list-group-item">{{ instruction.name }}</li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">{% trans "Nėra" %}</li>
+                        {% endfor %}
+                    </ul>
+
+                    <h6 class="text-uppercase text-muted fw-bold mb-2">{% trans "Priešgaisrinės instrukcijos" %}</h6>
+                    <ul class="list-group list-group-flush mb-3">
+                        {% for instruction in user.priesgaisrines.all %}
+                            <li class="list-group-item">{{ instruction.pavadinimas }}</li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">{% trans "Nėra" %}</li>
+                        {% endfor %}
+                    </ul>
+
+                    <h6 class="text-uppercase text-muted fw-bold mb-2">{% trans "Mokymai" %}</h6>
+                    <ul class="list-group list-group-flush mb-3">
+                        {% for mokymas in user.mokymai.all %}
+                            <li class="list-group-item">{{ mokymas.pavadinimas }}</li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">{% trans "Nėra" %}</li>
+                        {% endfor %}
+                    </ul>
+
+                    <h6 class="text-uppercase text-muted fw-bold mb-2">{% trans "Kiti dokumentai" %}</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for dok in user.kiti_dokumentai.all %}
+                            <li class="list-group-item">{{ dok.pavadinimas }}</li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">{% trans "Nėra" %}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

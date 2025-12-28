@@ -5,6 +5,9 @@
     {% load i18n %}
     <title>{% block title %}{% trans "Orimgas e-DSV | " %}{% endblock title %}</title>
     <link rel="stylesheet" href="{% static "css/base_style.css" %}">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <style>
         @media screen and (max-width: 1000px) and (min-width: 501px){
 
@@ -58,6 +61,187 @@
     <footer>
         <p>{% trans "© Visos autorinės teisės priklauso UAB „Orimgas“" %}</p>
     </footer>
+    <script>
+        // Check if libraries loaded
+        console.log('=== Checking libraries ===');
+        console.log('jQuery loaded:', typeof jQuery !== 'undefined' ? jQuery.fn.jquery : 'NO');
+        console.log('jQuery UI loaded:', typeof jQuery !== 'undefined' && typeof jQuery.ui !== 'undefined' ? 'YES' : 'NO');
+        console.log('Datepicker available:', typeof jQuery !== 'undefined' && typeof jQuery.fn.datepicker !== 'undefined' ? 'YES' : 'NO');
+        
+        // Define Lithuanian locale
+        jQuery(function($) {
+            $.datepicker.regional['lt'] = {
+                closeText: 'Uždaryti',
+                prevText: '&#x3C;Atgal',
+                nextText: 'Pirmyn&#x3E;',
+                currentText: 'Šiandien',
+                monthNames: ['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis',
+                    'Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'],
+                monthNamesShort: ['Sau','Vas','Kov','Bal','Geg','Bir',
+                    'Lie','Rgp','Rgs','Spa','Lap','Grd'],
+                dayNames: ['sekmadienis','pirmadienis','antradienis','trečiadienis','ketvirtadienis','penktadienis','šeštadienis'],
+                dayNamesShort: ['sek','pir','ant','tre','ket','pen','šeš'],
+                dayNamesMin: ['Se','Pr','An','Tr','Ke','Pe','Še'],
+                weekHeader: 'Wk',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            
+            // Define Russian locale
+            $.datepicker.regional['ru'] = {
+                closeText: 'Закрыть',
+                prevText: '&#x3C;Пред',
+                nextText: 'След&#x3E;',
+                currentText: 'Сегодня',
+                monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                    'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+                monthNamesShort: ['Янв','Фев','Мар','Апр','Май','Июн',
+                    'Июл','Авг','Сен','Окт','Ноя','Дек'],
+                dayNames: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
+                dayNamesShort: ['вск','пнд','втр','срд','чтв','птн','сбт'],
+                dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+                weekHeader: 'Не',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+        });
+        
+        jQuery(function($) {
+            console.log('=== Starting datepicker initialization ===');
+            
+            // Get current language
+            var language = "{{ LANGUAGE_CODE }}";
+            console.log('Language:', language);
+            
+            // Check if datepicker is available
+            if (typeof $.fn.datepicker === 'undefined') {
+                console.error('ERROR: jQuery UI Datepicker is not loaded!');
+                alert('Date picker library failed to load. Please check your internet connection and refresh.');
+                return;
+            }
+            
+            // Check available locales
+            console.log('Available datepicker locales:', Object.keys($.datepicker.regional));
+            
+            // Set locale based on language
+            if (language === 'lt') {
+                $.datepicker.setDefaults($.datepicker.regional['lt']);
+                console.log('Lithuanian locale applied');
+            } else if (language === 'ru') {
+                $.datepicker.setDefaults($.datepicker.regional['ru']);
+                console.log('Russian locale applied');
+            } else {
+                // English - use defaults
+                console.log('Using default English locale');
+            }
+            
+            // Additional settings
+            $.datepicker.setDefaults({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: '1900:2100',
+                showButtonPanel: true
+            });
+            
+            // Auto-dash insertion function
+            function addDashAutoInsert($input) {
+                $input.on('keyup', function(e) {
+                    var val = this.value.replace(/[^0-9]/g, '');
+                    var formatted = '';
+                    
+                    // Format as YYYY-MM-DD with validation
+                    if (val.length >= 4) {
+                        var year = val.substring(0, 4);
+                        // Validate year (1900-2100)
+                        if (parseInt(year) < 1900 || parseInt(year) > 2100) {
+                            if (val.length === 4) {
+                                this.value = year;
+                                return;
+                            }
+                        }
+                        formatted = year;
+                        
+                        if (val.length >= 6) {
+                            var month = val.substring(4, 6);
+                            // Validate month (01-12)
+                            if (parseInt(month) < 1 || parseInt(month) > 12) {
+                                this.value = formatted;
+                                return;
+                            }
+                            formatted += '-' + month;
+                            
+                            if (val.length >= 8) {
+                                var day = val.substring(6, 8);
+                                // Validate day (01-31)
+                                if (parseInt(day) < 1 || parseInt(day) > 31) {
+                                    this.value = formatted;
+                                    return;
+                                }
+                                formatted += '-' + day;
+                            } else if (val.length > 6) {
+                                formatted += '-' + val.substring(6);
+                            }
+                        } else if (val.length > 4) {
+                            formatted += '-' + val.substring(4);
+                        }
+                    } else {
+                        formatted = val;
+                    }
+                    
+                    if (formatted !== this.value) {
+                        this.value = formatted;
+                    }
+                });
+            }
+            
+            // Find and initialize date inputs
+            var dateInputs = $('.datepicker, input[type="date"]');
+            console.log('Found date inputs:', dateInputs.length);
+            
+            if (dateInputs.length === 0) {
+                console.warn('WARNING: No date inputs found!');
+            }
+            
+            dateInputs.each(function(index) {
+                var $input = $(this);
+                var fieldName = $input.attr('name') || $input.attr('id') || 'unknown';
+                console.log('Processing input #' + index + ':', fieldName);
+                
+                try {
+                    var currentValue = $input.val();
+                    
+                    // Change to text input
+                    $input.attr('type', 'text');
+                    $input.attr('autocomplete', 'off');
+                    
+                    // Add dash auto-insertion
+                    addDashAutoInsert($input);
+                    console.log('  - Auto-dash added');
+                    
+                    // Initialize datepicker
+                    $input.datepicker();
+                    console.log('  - Datepicker initialized');
+                    
+                    // Test click
+                    $input.on('focus click', function() {
+                        console.log('Date input focused/clicked:', fieldName);
+                    });
+                    
+                    // No conversion needed - dates are already in YYYY-MM-DD format
+                } catch (error) {
+                    console.error('Error initializing datepicker for ' + fieldName + ':', error);
+                }
+            });
+            
+            console.log('=== Datepicker initialization complete ===');
+        });
+    </script>
     {% block extrajs %}
     {% endblock extrajs %}
 </body>

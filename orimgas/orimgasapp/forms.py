@@ -35,8 +35,8 @@ class AddUserForm(forms.ModelForm):
     date_of_birth = forms.DateField(
         label="Gimimo data",
         required=True,
-        widget=forms.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd'}),
-        input_formats=['%Y-%m-%d']
+        widget=forms.DateInput(attrs={'class': 'datepicker', 'type': 'text', 'placeholder': 'yyyy-mm-dd', 'autocomplete': 'off'}, format='%Y-%m-%d'),
+        input_formats=['%Y-%m-%d', '%d-%m-%Y', '%d.%m.%Y', '%d/%m/%Y']
     )
     position = forms.ModelChoiceField(
         label="Pareigos",
@@ -77,7 +77,8 @@ class AddUserForm(forms.ModelForm):
     med_patikros_data = forms.DateField(
         label="Medicininės patikros data",
         required=True,
-        widget=forms.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd'})
+        widget=forms.DateInput(attrs={'class': 'datepicker', 'type': 'text', 'placeholder': 'yyyy-mm-dd', 'autocomplete': 'off'}, format='%Y-%m-%d'),
+        input_formats=['%Y-%m-%d', '%d-%m-%Y', '%d.%m.%Y', '%d/%m/%Y']
     )
     med_patikros_periodas = forms.ChoiceField(
         label=("Medicininės patikros periodas"),
@@ -228,7 +229,8 @@ class SupervisorEditUserForm(forms.ModelForm):
     date_of_birth = forms.DateField(
         label="Gimimo data",
         required=True,
-        widget=forms.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd'})
+        widget=forms.DateInput(attrs={'class': 'datepicker', 'type': 'text', 'placeholder': 'yyyy-mm-dd', 'autocomplete': 'off'}, format='%Y-%m-%d'),
+        input_formats=['%Y-%m-%d', '%d-%m-%Y', '%d.%m.%Y', '%d/%m/%Y']
     )
     position = forms.ModelChoiceField(
         label="Pareigos",
@@ -269,7 +271,8 @@ class SupervisorEditUserForm(forms.ModelForm):
     med_patikros_data = forms.DateField(
         label="Medicininės patikros data",
         required=True,
-        widget=forms.DateInput(attrs={'type': 'date', 'placeholder': 'yyyy-mm-dd'})
+        widget=forms.DateInput(attrs={'class': 'datepicker', 'type': 'text', 'placeholder': 'yyyy-mm-dd', 'autocomplete': 'off'}, format='%Y-%m-%d'),
+        input_formats=['%Y-%m-%d', '%d-%m-%Y', '%d.%m.%Y', '%d/%m/%Y']
     )
     med_patikros_periodas = forms.ChoiceField(
         label=("Medicininės patikros periodas"),
@@ -306,7 +309,12 @@ class SupervisorEditUserForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+        # Format date fields to display in YYYY-MM-DD format
+        if self.instance and self.instance.pk:
+            if self.instance.date_of_birth:
+                self.initial['date_of_birth'] = self.instance.date_of_birth
+            if self.instance.med_patikros_data:
+                self.initial['med_patikros_data'] = self.instance.med_patikros_data
 
 
     def clean_password(self):

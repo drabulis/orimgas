@@ -72,6 +72,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'accounts.middleware.LogoutLoggingMiddleware',
 ]
+
+# Allow iframes from same origin (needed for PDF display in modals)
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
@@ -136,9 +140,14 @@ LANGUAGE_COOKIE_NAME = 'django_language'
 
 TIME_ZONE = 'Europe/Vilnius'
 
-DATE_INPUT_FORMATS  = ['%Y-%m-%d']
+# Database date format (YYYY-MM-DD)
+DATE_FORMAT = 'Y-m-d'
+SHORT_DATE_FORMAT = 'Y-m-d'
+DATE_INPUT_FORMATS = ['%Y-%m-%d', '%d-%m-%Y', '%d.%m.%Y', '%d/%m/%Y']
+DATETIME_FORMAT = 'Y-m-d H:i'
+SHORT_DATETIME_FORMAT = 'Y-m-d H:i'
 
-USE_L10N = True
+USE_L10N = False
 
 USE_I18N = True
 

@@ -1,83 +1,375 @@
-{% extends "base.html" %}
+{% extends "base_bootstrap.html" %}
 {% load i18n %}
-{% block title %}{{ block.super }}{% trans "Redaguoti" %} {{ user.get_full_name }}{% endblock title %}
-{% block content %}
-<br><br><br>
-    <h1>{% trans "Redaguoti vartotoją" %}</h1>
-    <div class="nice-container" style="padding: 0;">
-    <form method="POST">
-        {% csrf_token %}
-        <div class="row-container">
-            <div class="collumn">
-                <label for="id_first_name">{% trans "Vardas:" %}</label>
-                {{ form.first_name }}
-                <label for="id_last_name">{% trans "Pavardė:" %}</label>
-                {{ form.last_name }}
-                <label for="id_email">{% trans "El. paštas:" %}</label>
-                {{ form.email }}
-                <label for="id_date_of_birth">{% trans "Gimimo data:" %}</label>
-                {{ form.date_of_birth }}
-                <label for="id_position">{% trans "Pareigos:" %}</label>
-                {{ form.position }}
-                <br><br>
-                <label for="id_skyrius">{% trans "Skyrius:" %}</label>
-                {{ form.skyrius }}
-                <br><br>
-                <label for="id_kalba">{% trans "Darbuotojui suprantama kalba:" %}</label>
-                {{ form.kalba }}
-                <br><br>
-                <label for="id_password">{% trans "Slaptažodis:" %}</label>
-                {{ form.password }}
-                <label for="is_active">{% trans "Aktyvus:" %}</label>
-                {{ form.is_active }}
-            </div>
-            <div class="collumn">
-                <label for="id_instructions">{% trans "Darbų saugos instrukcijos:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
-                <div class="form-group">
-                    {{ form.instructions }}
-                </div>    
-                <label for="id_priesgaisrines" class="margin_top20">{% trans "Priesgaisrinės instrukcijos:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
-                {{ form.priesgaisrines }}
-                <label for="id_civiline_sauga" class="margin_top20">{% trans "Civilinės saugos instrukcijos:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
-                {{ form.civiline_sauga }}
-            </div>
-            <div class="collumn">
-                <label for="id_mokymai">{% trans "Mokymai:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
-                {{ form.mokymai }}
-            </div>
-            <div class="collumn">
-                <label for="id_kiti_dokumentai">{% trans "Kiti dokumentai:   " %}<span class="info-icon" title="Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.">&#8505;</span></label>
-                {{ form.kiti_dokumentai }}
-            </div>
-            <div class="collumn">
-                <label for="id_med_patikros_data">{% trans "Med patikros data:   " %}<span class="info-icon" title="Įrašoma faktinė med. patikros datą.">&#8505;</span></label>
-                {{ form.med_patikros_data }}
-                <label for="id_med_patikros_periodas">{% trans "Med patikros periodas:   " %}<span class="info-icon" title="Pasirenkama pagal gydytojo nurodytą terminą.">&#8505;</span></label>
-                {{ form.med_patikros_periodas }}
-                <br><br>
-                <label for="id_AsmeninesApsaugosPriemones">{% trans "Asmenines apsaugos priemones:   " %}<span class="info-icon" title="Pasirenkama pagal dartuojoto atliekamą darbą.">&#8505;</span></label>
-                {{ form.AsmeninesApsaugosPriemones }}
-            </div>
-        </div>
-        <div class="horizontal_container" style="justify-content: center;">
-        <button class="button" type="post">{% trans "Patvirtinti" %}</button>
-        <a class="button" href="{% url "my_company_users" %}">{% trans "Atgal" %}</a>
-        </div>
-    </form><br><br>
-    </div>
-{% endblock content %}
-    {% block extrajs %}
+{% load static %}
 
-<!-- In your <head> or before </body> -->
+{% block title %}{% trans "Redaguoti" %} {{ user.get_full_name }}{% endblock %}
+
+{% block extra_css %}
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<style>
+    .select2-container .select2-selection--multiple,
+    .select2-container .select2-selection--single {
+        min-height: 38px;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #0d6efd;
+        border: none;
+        color: #fff;
+        padding: 2px 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-3">
+        <div class="col-12 d-flex align-items-center">
+            <a href="{% url 'my_company_users' %}" class="btn btn-outline-secondary btn-sm me-2">
+                <i class="bi bi-arrow-left"></i> {% trans "Atgal" %}
+            </a>
+            <h4 class="mb-0">{% trans "Redaguoti vartotoją" %}: {{ user.get_full_name }}</h4>
+        </div>
+    </div>
+
+    <form method="post" class="card" novalidate>
+        {% csrf_token %}
+        <div class="card-body">
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for err in form.non_field_errors %}
+                    <div>{{ err }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h6 class="text-uppercase text-muted fw-bold mb-3">{% trans "Asmens duomenys" %}</h6>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_first_name">{% trans "Vardas" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.first_name.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_last_name">{% trans "Pavardė" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.last_name.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_email">{% trans "El. paštas" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.email.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_date_of_birth">{% trans "Gimimo data" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.date_of_birth }}
+                                {% if form.date_of_birth.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.date_of_birth.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_password">{% trans "Slaptažodis" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.password }}
+                                {% if form.password.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.password.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_kalba">{% trans "Darbuotojui suprantama kalba" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.kalba }}
+                                {% if form.kalba.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.kalba.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <h6 class="text-uppercase text-muted fw-bold mb-3">{% trans "Darbo informacija" %}</h6>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_position">{% trans "Pareigos" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.position }}
+                                {% if form.position.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.position.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_skyrius">{% trans "Skyrius" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.skyrius }}
+                                {% if form.skyrius.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.skyrius.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_is_active">{% trans "Aktyvus" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.is_active }}
+                                {% if form.is_active.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.is_active.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-uppercase text-muted fw-bold mt-4 mb-3">
+                        {% trans "Medicininė apžiūra" %}
+                    </h6>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_med_patikros_data">
+                                    {% trans "Med. patikros data" %}
+                                    <i class="bi bi-info-circle text-primary" title="{% trans 'Įrašoma faktinė med. patikros datą.' %}"></i>
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.med_patikros_data }}
+                                {% if form.med_patikros_data.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.med_patikros_data.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_med_patikros_periodas">
+                                    {% trans "Med. patikros periodas" %}
+                                    <i class="bi bi-info-circle text-primary" title="{% trans 'Pasirenkama pagal gydytojo nurodytą terminą.' %}"></i>
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.med_patikros_periodas }}
+                                {% if form.med_patikros_periodas.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.med_patikros_periodas.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <h6 class="text-uppercase text-muted fw-bold mb-3">{% trans "Instrukcijos ir dokumentai" %}</h6>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_instructions">
+                                    {% trans "Darbų saugos instrukcijos" %}
+                                    <i class="bi bi-info-circle text-primary" title="{% trans 'Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.' %}"></i>
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.instructions }}
+                                {% if form.instructions.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.instructions.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_priesgaisrines">
+                                    {% trans "Priešgaisrinės instrukcijos" %}
+                                    <i class="bi bi-info-circle text-primary" title="{% trans 'Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.' %}"></i>
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.priesgaisrines }}
+                                {% if form.priesgaisrines.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.priesgaisrines.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_civiline_sauga">
+                                    {% trans "Civilinės saugos instrukcijos" %}
+                                    <i class="bi bi-info-circle text-primary" title="{% trans 'Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.' %}"></i>
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.civiline_sauga }}
+                                {% if form.civiline_sauga.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.civiline_sauga.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_mokymai">
+                                    {% trans "Mokymai" %}
+                                    <i class="bi bi-info-circle text-primary" title="{% trans 'Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.' %}"></i>
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.mokymai }}
+                                {% if form.mokymai.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.mokymai.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_kiti_dokumentai">
+                                    {% trans "Kiti dokumentai" %}
+                                    <i class="bi bi-info-circle text-primary" title="{% trans 'Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus.' %}"></i>
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.kiti_dokumentai }}
+                                {% if form.kiti_dokumentai.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.kiti_dokumentai.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_AsmeninesApsaugosPriemones">
+                                    {% trans "Asmeninės apsaugos priemonės" %}
+                                    <i class="bi bi-info-circle text-primary" title="{% trans 'Pasirenkama pagal darbuotojo atliekamą darbą.' %}"></i>
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.AsmeninesApsaugosPriemones }}
+                                {% if form.AsmeninesApsaugosPriemones.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.AsmeninesApsaugosPriemones.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{% url 'my_company_users' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> {% trans "Atgal" %}
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle"></i> {% trans "Patvirtinti" %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+(function() {
     const langSelect = document.getElementById('id_kalba');
     const instructionsSelect = document.getElementById('id_instructions');
-    // Get assigned instructions from Django context
+    const priesgaisrinesSelect = document.getElementById('id_priesgaisrines');
+    const civilineSaugaSelect = document.getElementById('id_civiline_sauga');
+    const mokymaiSelect = document.getElementById('id_mokymai');
+    const kitiDokumentaiSelect = document.getElementById('id_kiti_dokumentai');
+    const AAPSelect = document.getElementById('id_AsmeninesApsaugosPriemones');
+
     const assignedInstructions = {{ assigned_instructions|safe }};
+    const assignedPriesgaisrines = {{ priesgaisrines|safe }};
+    const assignedCivilineSauga = {{ civiline_sauga|safe }};
+    const assignedMokymai = {{ mokymai|safe }};
+    const assignedKitiDokumentai = {{ kiti_dokumentai|safe }};
+    const assignedAAP = {{ AAP|safe }};
 
     function updateOptions(select, items, assigned) {
         if (!select) return;
@@ -86,11 +378,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const option = document.createElement('option');
             option.value = item.id;
             option.text = item.name;
-            if (assigned.includes(item.id)) {
-                option.selected = true;
-            }
+            if (assigned.includes(item.id)) option.selected = true;
             select.appendChild(option);
         });
+        if (window.jQuery && $(select).data('select2')) {
+            $(select).trigger('change');
+        }
     }
 
     if (langSelect) {
@@ -103,76 +396,30 @@ document.addEventListener('DOMContentLoaded', function () {
                     updateOptions(civilineSaugaSelect, data.civiline_sauga, assignedCivilineSauga);
                     updateOptions(mokymaiSelect, data.mokymai, assignedMokymai);
                     updateOptions(kitiDokumentaiSelect, data.kiti_dokumentai, assignedKitiDokumentai);
-                    updateOptions(AsmeninesApsaugosPriemonesSelect, data.AsmeninesApsaugosPriemones, assignedAsmeninesApsaugosPriemones);
+                    updateOptions(AAPSelect, data.AsmeninesApsaugosPriemones, assignedAAP);
                 });
         });
     }
 
+    $(document).ready(function() {
+        const opts = { width: '100%', allowClear: true, placeholder: '' };
+        $('#id_instructions').select2(opts);
+        $('#id_priesgaisrines').select2(opts);
+        $('#id_civiline_sauga').select2(opts);
+        $('#id_mokymai').select2(opts);
+        $('#id_kiti_dokumentai').select2(opts);
+        $('#id_AsmeninesApsaugosPriemones').select2(opts);
+        
+        $('.datepicker').datepicker({ dateFormat: 'yy-mm-dd' });
 
-});
+        // Mark fields with server-side errors visually
+        document.querySelectorAll('.invalid-feedback.d-block').forEach(function(el) {
+            const field = el.previousElementSibling;
+            if (field && ['INPUT','SELECT','TEXTAREA'].includes(field.tagName)) {
+                field.classList.add('is-invalid');
+            }
+        });
+    });
+})();
 </script>
-<script>
-$(document).ready(function() {
-    $.fn.select2.defaults.set('language', {
-        noResults: function() {
-            return "Rezultatų nėra";
-        }
-    });
-
-    $('#id_instructions').select2({
-        width: '200px',
-        placeholder: "Pasirinkite darbų saugos instrukcijas",
-        allowClear: true
-    });
-    $('#id_priesgaisrines').select2({
-        width: '200px',
-        placeholder: "Pasirinkite priesgaisrines instrukcijas",
-        allowClear: true
-    });
-    $('#id_civiline_sauga').select2({
-        width: '200px',
-        placeholder: "Pasirinkite civilines saugos instrukcijas",
-        allowClear: true
-    });
-    $('#id_mokymai').select2({
-        width: '200px',
-        placeholder: "Pasirinkite mokymo instrukcijas",
-        allowClear: true
-    });
-    $('#id_kiti_dokumentai').select2({
-        width: '200px',
-        placeholder: "Pasirinkite kitus dokumentus",
-        allowClear: true
-    });
-    $('#id_AsmeninesApsaugosPriemones').select2({
-        width: '200px',
-        placeholder: "Pasirinkite asmenines apsaugos priemones",
-        allowClear: true
-    });
-});
-</script>
-<style>
-.select2-container--default .select2-selection--multiple,
-.select2-container--default .select2-selection--single,
-.select2-selection__rendered,
-.select2-search__field,
-.select2-container {
-    font-size: 14px !important;
-    min-height: 29px !important;
-    box-sizing: border-box;
-    max-width: 200px !important;
-    width: 200px !important;
-}
-.margin_top20 {
-    margin-top: 20px !important;
-}
-.info-icon {
-    display: inline-block;
-    margin-left: 6px;
-    color: #1976d2;
-    cursor: pointer;
-    font-size: 16px;
-    vertical-align: middle;
-}
-</style>
-{% endblock extrajs %}
+{% endblock %}

@@ -1,18 +1,43 @@
-{% extends "base.html" %}
+{% extends "base_bootstrap.html" %}
 {% load i18n %}
 {% block title %}{% trans "Mokymų žurnalas" %}{% endblock title %}
 {% block content %}
-<br><br><br>
-    <h1>{% trans "Mokymų žurnalas" %}</h1>
-    <table class="nice-container">
-        <tr>
-            <th>{% trans "Mokymo pavadinimas" %}</th>
-            <th>{% trans "Peržiūrėti protokolą" %}</th>
-        </tr>
-        {% for mokymas in mokymai_list %}
-        <tr>
-            <td>{{ mokymas.pavadinimas }}</td>
-            <td><a href="{% url 'mokymu-pasirasymas-list' mokymas.uuid %}">{% trans "Peržiūrėti" %}</a></td>
-        {% endfor %}
+<div class="container-fluid py-4">
+    <h1 class="mb-4">{% trans "Mokymų žurnalas" %}</h1>
+    
+    {% if mokymai_list %}
+    <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>{% trans "Mokymo pavadinimas" %}</th>
+                    <th style="width: 150px;">{% trans "Peržiūrėti protokolą" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mokymas in mokymai_list %}
+                <tr>
+                    <td>{{ mokymas.pavadinimas }}</td>
+                    <td>
+                        <a href="{% url 'mokymu-pasirasymas-list' mokymas.uuid %}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-eye me-1"></i>{% trans "Peržiūrėti" %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>{% trans "Mokymų žurnale įrašų nerasta." %}
+    </div>
+    {% endif %}
+    
+    <div class="mt-3">
+        <a href="{% url 'user_menu' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>{% trans "Atgal" %}
+        </a>
+    </div>
+</div>
 {% endblock content %}

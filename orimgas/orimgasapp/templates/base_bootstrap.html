@@ -1,0 +1,373 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Orimgas{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    
+    <!-- jQuery (required for datepicker) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa;
+        }
+        
+        .navbar-brand img {
+            max-height: 40px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+        
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .datepicker {
+            border-radius: 0.375rem;
+        }
+        
+        .table-responsive {
+            border-radius: 0.375rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #0052a3;
+            border-color: #0052a3;
+        }
+        
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .alert {
+            border-radius: 0.375rem;
+        }
+        
+        /* Mobile menu improvements */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background-color: white;
+                padding: 1rem;
+                border-radius: 0.375rem;
+                margin-top: 0.5rem;
+                box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            }
+        }
+        
+        /* Form improvements */
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(0, 102, 204, 0.25);
+        }
+        
+        /* Stats cards */
+        .stat-card {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .stat-card.danger {
+            border-left-color: var(--danger-color);
+        }
+        
+        .stat-card.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .stat-card.warning {
+            border-left-color: var(--warning-color);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'menu' %}">
+                <img src="{% static 'img/orimgas.png' %}" alt="Orimgas" class="me-2">
+                <span>Orimgas</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'menu' %}">
+                                <i class="bi bi-house-door"></i> {% trans "Pradžia" %}
+                            </a>
+                        </li>
+                        
+                        {% if user.is_supervisor %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="supervisorDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-badge"></i> {% trans "Vadovas" %}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="supervisorDropdown">
+                                    <li><a class="dropdown-item" href="{% url 'my_company_users' %}"><i class="bi bi-people"></i> {% trans "Darbuotojai" %}</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'user_add' %}"><i class="bi bi-person-plus"></i> {% trans "Pridėti darbuotoją" %}</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'dokumentai_list' %}"><i class="bi bi-file-text"></i> {% trans "Instrukcijos" %}</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-translate"></i> {% trans "Kalba" %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="languageDropdown">
+                                <li>
+                                    <form method="post" action="{% url 'set_language' %}" class="px-3 py-2">
+                                        {% csrf_token %}
+                                        <input name="next" type="hidden" value="{{ request.path }}">
+                                        <div class="mb-2 small text-muted">{% trans "Pasirinkite kalbą" %}:</div>
+                                        <select name="language" onchange="this.form.submit()" class="form-select form-select-sm">
+                                            {% get_current_language as LANGUAGE_CODE %}
+                                            {% get_available_languages as LANGUAGES %}
+                                            {% for lang_code, lang_name in LANGUAGES %}
+                                                <option value="{{ lang_code }}" {% if lang_code == LANGUAGE_CODE %}selected{% endif %}>
+                                                    {{ lang_name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> {{ user.first_name }} {{ user.last_name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{% url 'user_detail' user.uuid %}"><i class="bi bi-person"></i> {% trans "Profilis" %}</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}" class="dropdown-item">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-link p-0 text-decoration-none text-dark w-100 text-start">
+                                            <i class="bi bi-box-arrow-right"></i> {% trans "Atsijungti" %}
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <i class="bi bi-box-arrow-in-right"></i> {% trans "Prisijungti" %}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container-fluid">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; {% now "Y" %} Orimgas. {% trans "Visos teisės saugomos" %}.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0">{% trans "Versija" %}: 2.0 Bootstrap</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery UI Datepicker Configuration -->
+    <script>
+        jQuery(document).ready(function($) {
+            // Lithuanian locale
+            $.datepicker.regional['lt'] = {
+                closeText: 'Uždaryti',
+                prevText: '&#x3C;Atgal',
+                nextText: 'Pirmyn&#x3E;',
+                currentText: 'Šiandien',
+                monthNames: ['Sausis','Vasaris','Kovas','Balandis','Gegužė','Birželis',
+                    'Liepa','Rugpjūtis','Rugsėjis','Spalis','Lapkritis','Gruodis'],
+                monthNamesShort: ['Sau','Vas','Kov','Bal','Geg','Bir',
+                    'Lie','Rgp','Rgs','Spa','Lap','Grd'],
+                dayNames: ['sekmadienis','pirmadienis','antradienis','trečiadienis','ketvirtadienis','penktadienis','šeštadienis'],
+                dayNamesShort: ['sek','pir','ant','tre','ket','pen','šeš'],
+                dayNamesMin: ['Se','Pr','An','Tr','Ke','Pe','Še'],
+                weekHeader: 'Wk',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            
+            // Russian locale
+            $.datepicker.regional['ru'] = {
+                closeText: 'Закрыть',
+                prevText: '&#x3C;Пред',
+                nextText: 'След&#x3E;',
+                currentText: 'Сегодня',
+                monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                    'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+                monthNamesShort: ['Янв','Фев','Мар','Апр','Май','Июн',
+                    'Июл','Авг','Сен','Окт','Ноя','Дек'],
+                dayNames: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
+                dayNamesShort: ['вск','пнд','втр','срд','чтв','птн','сбт'],
+                dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+                weekHeader: 'Не',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: ''
+            };
+            
+            // Set locale based on language
+            var currentLang = '{{ LANGUAGE_CODE }}';
+            if (currentLang === 'lt') {
+                $.datepicker.setDefaults($.datepicker.regional['lt']);
+            } else if (currentLang === 'ru') {
+                $.datepicker.setDefaults($.datepicker.regional['ru']);
+            }
+            
+            // Auto-dash insertion for YYYY-MM-DD format
+            function addDashAutoInsert($input) {
+                $input.on('keyup', function(e) {
+                    var val = this.value.replace(/[^0-9]/g, '');
+                    var formatted = '';
+                    
+                    if (val.length >= 4) {
+                        var year = val.substring(0, 4);
+                        if (parseInt(year) < 1900 || parseInt(year) > 2100) {
+                            if (val.length === 4) {
+                                this.value = year;
+                                return;
+                            }
+                        }
+                        formatted = year;
+                        
+                        if (val.length >= 6) {
+                            var month = val.substring(4, 6);
+                            if (parseInt(month) < 1 || parseInt(month) > 12) {
+                                this.value = formatted;
+                                return;
+                            }
+                            formatted += '-' + month;
+                            
+                            if (val.length >= 8) {
+                                var day = val.substring(6, 8);
+                                if (parseInt(day) < 1 || parseInt(day) > 31) {
+                                    this.value = formatted;
+                                    return;
+                                }
+                                formatted += '-' + day;
+                            } else if (val.length > 6) {
+                                formatted += '-' + val.substring(6);
+                            }
+                        } else if (val.length > 4) {
+                            formatted += '-' + val.substring(4);
+                        }
+                    } else {
+                        formatted = val;
+                    }
+                    
+                    if (formatted !== this.value) {
+                        this.value = formatted;
+                    }
+                });
+            }
+            
+            // Initialize datepickers
+            $('.datepicker').each(function() {
+                var $input = $(this);
+                addDashAutoInsert($input);
+                $input.datepicker();
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

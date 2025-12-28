@@ -1,0 +1,422 @@
+{% extends "base_bootstrap.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "Pridėti vartotoją (demo)" %}{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container .select2-selection--multiple,
+    .select2-container .select2-selection--single {
+        min-height: 38px;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #0d6efd;
+        border: none;
+        color: #fff;
+        padding: 2px 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-3">
+        <div class="col-12 d-flex align-items-center">
+            <a href="{% url 'menu_bootstrap' %}" class="btn btn-outline-secondary btn-sm me-2">
+                <i class="bi bi-arrow-left"></i> {% trans "Atgal į demo" %}
+            </a>
+            <h4 class="mb-0">{% trans "Pridėti naują vartotoją (demo)" %}</h4>
+        </div>
+    </div>
+
+    <form method="post" class="card" novalidate>
+        {% csrf_token %}
+        <div class="card-body">
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for err in form.non_field_errors %}
+                    <div>{{ err }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h6 class="text-uppercase text-muted fw-bold mb-3">{% trans "Asmens duomenys" %}</h6>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_first_name">{% trans "Vardas" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.first_name.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_last_name">{% trans "Pavardė" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.last_name.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_email">{% trans "El. paštas" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.email.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_password">{% trans "Slaptažodis" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.password }}
+                                {% if form.password.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.password.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_date_of_birth">{% trans "Gimimo data" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    {{ form.date_of_birth }}
+                                    <button type="button" class="btn btn-outline-secondary" id="dobTodayBtn">{% trans "Šiandien" %}</button>
+                                </div>
+                                {% if form.date_of_birth.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.date_of_birth.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_kalba">{% trans "Darbuotojui suprantama kalba" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.kalba }}
+                                {% if form.kalba.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.kalba.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <h6 class="text-uppercase text-muted fw-bold mb-3">{% trans "Darbo informacija" %}</h6>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_position">{% trans "Pareigos" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.position }}
+                                {% if form.position.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.position.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_skyrius">{% trans "Skyrius" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.skyrius }}
+                                {% if form.skyrius.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.skyrius.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-uppercase text-muted fw-bold mt-4 mb-3">{% trans "Medicininė apžiūra" %}</h6>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_med_patikros_data">{% trans "Med. patikros data" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    {{ form.med_patikros_data }}
+                                    <button type="button" class="btn btn-outline-secondary" id="medTodayBtn">{% trans "Šiandien" %}</button>
+                                </div>
+                                {% if form.med_patikros_data.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.med_patikros_data.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_med_patikros_periodas">{% trans "Med. patikros periodas" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.med_patikros_periodas }}
+                                {% if form.med_patikros_periodas.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.med_patikros_periodas.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <h6 class="text-uppercase text-muted fw-bold mb-3">{% trans "Instrukcijos ir dokumentai" %}</h6>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_instructions">{% trans "Darbų saugos instrukcijos" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.instructions }}
+                                {% if form.instructions.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.instructions.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_priesgaisrines">{% trans "Priešgaisrinės instrukcijos" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.priesgaisrines }}
+                                {% if form.priesgaisrines.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.priesgaisrines.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_civiline_sauga">{% trans "Civilinės saugos instrukcijos" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.civiline_sauga }}
+                                {% if form.civiline_sauga.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.civiline_sauga.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_mokymai">{% trans "Mokymai" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.mokymai }}
+                                {% if form.mokymai.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.mokymai.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_kiti_dokumentai">{% trans "Kiti dokumentai" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.kiti_dokumentai }}
+                                {% if form.kiti_dokumentai.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.kiti_dokumentai.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label" for="id_AsmeninesApsaugosPriemones">{% trans "Asmeninės apsaugos priemonės" %}</label>
+                            </div>
+                            <div class="col-md-8">
+                                {{ form.AsmeninesApsaugosPriemones }}
+                                {% if form.AsmeninesApsaugosPriemones.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for err in form.AsmeninesApsaugosPriemones.errors %}{{ err }}{% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer d-flex justify-content-between">
+            <a href="{% url 'menu_bootstrap' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> {% trans "Atgal" %}
+            </a>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-circle"></i> {% trans "Patvirtinti" %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+(function() {
+    const langSelect = document.getElementById('id_kalba');
+    const instructionsSelect = document.getElementById('id_instructions');
+    const priesgaisrinesSelect = document.getElementById('id_priesgaisrines');
+    const civilineSaugaSelect = document.getElementById('id_civiline_sauga');
+    const mokymaiSelect = document.getElementById('id_mokymai');
+    const kitiDokumentaiSelect = document.getElementById('id_kiti_dokumentai');
+    const AAPSelect = document.getElementById('id_AsmeninesApsaugosPriemones');
+
+    const assignedInstructions = [];
+    const assignedPriesgaisrines = [];
+    const assignedCivilineSauga = [];
+    const assignedMokymai = [];
+    const assignedKitiDokumentai = [];
+    const assignedAAP = [];
+
+    function updateOptions(select, items, assigned) {
+        if (!select) return;
+        select.innerHTML = '';
+        items.forEach(function(item) {
+            const option = document.createElement('option');
+            option.value = item.id;
+            option.text = item.name;
+            if (assigned.includes(item.id)) option.selected = true;
+            select.appendChild(option);
+        });
+        if (window.jQuery && $(select).data('select2')) {
+            $(select).trigger('change');
+        }
+    }
+
+    if (langSelect) {
+        langSelect.addEventListener('change', function () {
+            fetch(`/get_instructions_by_language/?kalba=${langSelect.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateOptions(instructionsSelect, data.instructions, assignedInstructions);
+                    updateOptions(priesgaisrinesSelect, data.priesgaisrines, assignedPriesgaisrines);
+                    updateOptions(civilineSaugaSelect, data.civiline_sauga, assignedCivilineSauga);
+                    updateOptions(mokymaiSelect, data.mokymai, assignedMokymai);
+                    updateOptions(kitiDokumentaiSelect, data.kiti_dokumentai, assignedKitiDokumentai);
+                    updateOptions(AAPSelect, data.AsmeninesApsaugosPriemones, assignedAAP);
+                });
+        });
+    }
+
+    // Init Select2 for multiselects
+    $(document).ready(function() {
+        const opts = { width: '100%', allowClear: true, placeholder: '' };
+        $('#id_instructions').select2(opts);
+        $('#id_priesgaisrines').select2(opts);
+        $('#id_civiline_sauga').select2(opts);
+        $('#id_mokymai').select2(opts);
+        $('#id_kiti_dokumentai').select2(opts);
+        $('#id_AsmeninesApsaugosPriemones').select2(opts);
+        // Datepickers
+        const datepickerOpts = {
+            dateFormat: 'yy-mm-dd',
+            showButtonPanel: true,
+            currentText: 'Šiandien',
+            closeText: 'Užverti'
+        };
+        if ($('#id_date_of_birth').length) {
+            $('#id_date_of_birth').addClass('datepicker').datepicker(datepickerOpts);
+        }
+        if ($('#id_med_patikros_data').length) {
+            $('#id_med_patikros_data').addClass('datepicker').datepicker(datepickerOpts);
+        }
+
+        // Mark fields with server-side errors visually
+        document.querySelectorAll('.invalid-feedback.d-block').forEach(function(el) {
+            const field = el.previousElementSibling;
+            if (field && ['INPUT','SELECT','TEXTAREA'].includes(field.tagName)) {
+                field.classList.add('is-invalid');
+            }
+        });
+
+        // Today buttons
+        function setTodayFor(id) {
+            const input = document.getElementById(id);
+            if (!input) return;
+            const d = new Date();
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            const val = `${yyyy}-${mm}-${dd}`;
+            input.value = val;
+            if (window.jQuery && $(input).datepicker) {
+                $(input).datepicker('setDate', d);
+            }
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        const dobBtn = document.getElementById('dobTodayBtn');
+        if (dobBtn) dobBtn.addEventListener('click', function() { setTodayFor('id_date_of_birth'); });
+        const medBtn = document.getElementById('medTodayBtn');
+        if (medBtn) medBtn.addEventListener('click', function() { setTodayFor('id_med_patikros_data'); });
+    });
+})();
+</script>
+{% endblock %}

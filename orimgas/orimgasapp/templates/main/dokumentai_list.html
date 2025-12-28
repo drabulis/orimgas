@@ -1,128 +1,121 @@
-{% extends "base.html" %}
+{% extends "base_bootstrap.html" %}
 {% load i18n %}
 {% block title %}{% trans "Dokumetai" %} {{ block.super }}{% endblock title %}
 {% block content %}
-{% block head_style %}
-    <style>
-        .nice-table {
-            min-width: 30rem;
-            max-width: 30rem;
-            
-        }
-        @media screen and (max-width: 1000px) and (min-width: 501px){
-            .menu a {
-                font-size: 25px;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            h2 {
-                font-size: 1.5rem;
-            }
-            header a {
-                font-size: 1.5rem;
-            }
-            .blank {
-                font-size: 1.5rem;
-                width: 10rem;
-            }
-        }
-        @media screen and (max-width: 500px) and (min-width: 300px){
-            .nice-table td {
-                max-width: 121px;
-            }
-            .nice-table {
-                min-width: 284px;
-                max-width: 284px;
-            }
-            
-        }
-        .nice-container {
-            margin: 1rem;
-        }
-        .horizontal_container2 {
-            justify-content: center;
-        }
-    </style>
-{% endblock head_style %}
-<br><br><br>
-<h1>{% trans "Įmonės dokumentai" %}</h1>
+<div class="container-fluid py-4">
+    <h1 class="mb-4">{% trans "Įmonės dokumentai" %}</h1>
 
-    <div class="vertical_container2 nice-container" style="box-shadow: none;">
-        <div class="horizontal_container2">
-            <div class="vertical_container3 nice-container">
-                <p class="upper_text">{% trans "Darbų saugos instrukcijos" %}</p>
-                <div class="scrollable-content">
-                    {% if dokumentai %}
-                        {% for instruction in dokumentai %}
-                        <p><a href="{% url 'darbu_sagos_detail' instruction.uuid %}">{{ instruction.name }}</a></p>
-                        {% endfor %}
-                    {% else %}
-                        <p>{% trans "Darbų saugos instrukcijos šiuo metu neturite." %}</p>
-                    {% endif %}
+    <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">{% trans "Darbų saugos instrukcijos" %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% if dokumentai %}
+                            {% for instruction in dokumentai %}
+                            <a href="{% url 'darbu_sagos_detail' instruction.uuid %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-file-text me-2"></i>{{ instruction.name }}
+                            </a>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">{% trans "Darbų saugos instrukcijos šiuo metu neturite." %}</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-            
-                <div class="vertical_container3 nice-container">
-                    <p class="upper_text">{% trans "Priešgaisrinės instrukcijos" %}</p>
-                    <div class="scrollable-content">
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">{% trans "Priešgaisrinės instrukcijos" %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
                         {% if priesrines_instrukcijos %}
                             {% for priesgaisrine in priesrines_instrukcijos %}
-                                <p><a href="{% url 'priesgaisrinio_detail' priesgaisrine.uuid %}">{{ priesgaisrine.pavadinimas }}</a></p>
+                            <a href="{% url 'priesgaisrinio_detail' priesgaisrine.uuid %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-fire me-2"></i>{{ priesgaisrine.pavadinimas }}
+                            </a>
                             {% endfor %}
                         {% else %}
-                            <p>{% trans "Priešgaisrinių instrukcijų šiuo metu neturite." %}</p>
+                            <p class="text-muted">{% trans "Priešgaisrinių instrukcijų šiuo metu neturite." %}</p>
                         {% endif %}
                     </div>
                 </div>
-            
-            
-                <div class="vertical_container3 nice-container">
-                    <p class="upper_text">{% trans "Civilinės saugos instrukcijos" %}</p>
-                    <div class="scrollable-content">
-                        {% if civiline_sauga %}
-                            {% for civiline in civiline_sauga %}
-                                <p><a href="{% url 'civiline_sauga_detail' civiline.uuid %}">{{ civiline.pavadinimas }}</a></p>
-                            {% endfor %}
-                        {% else %}
-                            <p>{% trans "Civilinės saugos instrukcijų šiuo metu neturite." %}</p>
-                        {% endif %}
-                    </div>
-                </div>
-            
-        </div>
-            <div class="horizontal_container2">
-                <div class="vertical_container3 nice-container">
-                    <p class="upper_text">{% trans "Mokymai" %}</p>
-                    <div class="scrollable-content">
-                        {% if mokymo_instrukcijos %}
-                            {% for mokymas in mokymo_instrukcijos %}
-                                <p><a href="{% url 'mokymu_detail' mokymas.uuid %}">{{ mokymas.pavadinimas }}</a></p>
-                            {% endfor %}
-                        {% else %}
-                            <p>{% trans "Mokymų šiuo metu neturite." %}</p>
-                        {% endif %}
-                    </div>
-                </div>
-                
-                <div class="vertical_container3 nice-container">
-                    <p class="upper_text">{% trans "Kiti dokumentai" %}</p>
-                    <div class="scrollable-content">
-                        {% if kitu_doc %}
-                            {% for kitas_doc in kitu_doc %}
-                                <p><a href="{% url 'kiti_dokumentai_detail' kitas_doc.uuid %}">{{ kitas_doc.pavadinimas }}</a></p>
-                            {% endfor %}
-                        {% else %}
-                            <p>{% trans "Kitų dokumentų šiuo metu neturite." %}</p>
-                        {% endif %}
-                    </div>
-                </div>
-                
-                
-
             </div>
         </div>
-        <div class="nice-container" style="padding: 0;">
-            <a href="{% url 'menu' %}" class="button" style="justify-self: center;">{% trans "Atgal" %}</a>
-          </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">{% trans "Civilinės saugos instrukcijos" %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% if civiline_sauga %}
+                            {% for civiline in civiline_sauga %}
+                            <a href="{% url 'civiline_sauga_detail' civiline.uuid %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-shield-check me-2"></i>{{ civiline.pavadinimas }}
+                            </a>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">{% trans "Civilinės saugos instrukcijų šiuo metu neturite." %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">{% trans "Mokymai" %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% if mokymo_instrukcijos %}
+                            {% for mokymas in mokymo_instrukcijos %}
+                            <a href="{% url 'mokymu_detail' mokymas.uuid %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-book me-2"></i>{{ mokymas.pavadinimas }}
+                            </a>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">{% trans "Mokymų šiuo metu neturite." %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">{% trans "Kiti dokumentai" %}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% if kitu_doc %}
+                            {% for kitas_doc in kitu_doc %}
+                            <a href="{% url 'kiti_dokumentai_detail' kitas_doc.uuid %}" class="list-group-item list-group-item-action">
+                                <i class="bi bi-file-earmark me-2"></i>{{ kitas_doc.pavadinimas }}
+                            </a>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">{% trans "Kitų dokumentų šiuo metu neturite." %}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a href="{% url 'user_menu' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>{% trans "Atgal" %}
+        </a>
+    </div>
+</div>
 {% endblock content %}

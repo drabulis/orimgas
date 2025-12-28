@@ -1,69 +1,118 @@
-{% extends "base.html" %}
+{% extends "base_bootstrap.html" %}
 {% load i18n %}
-{% block title %}{% trans "Įmonės darbuotojai" %} {{ block.super }}{% endblock title %}
+
+{% block title %}{% trans "Įmonės darbuotojai" %}{% endblock %}
+
 {% block content %}
-<br><br><br>
-    <h1>{% trans "Įmonės darbuotojai" %}</h1>
-    {% include "main/included/paginator_prev_next.html" %}
-    <br><br>
-        <a href="{% url 'my_company_users' %}?generate_pdf=true" class="pdf-button" target="_blank">{% trans "Generuoti PDF" %}</a>
-        <br>
-        <a href="{% url 'prideti_instrukcijas_visiems' %}" class="pdf-button">{% trans "Pridėti instrukciją visiems darbuotojams" %}</a>
-        <div class="table-wrapper">
-            <table class="nice-container" id="table">
-              <thead>
-                <tr>
-                    <th>
-                        <a href="?sort_by=first_name&sort_order={% if sort_by == 'first_name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
-                            {% trans "Vardas Pavardė" %}
-                            {% if sort_by == 'first_name' %}<span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>{% endif %}
-                        </a>
-                    </th>
-                    <th>
-                        <a href="?sort_by=date_of_birth&sort_order={% if sort_by == 'date_of_birth' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
-                            {% trans "Gimimo data" %}
-                            {% if sort_by == 'date_of_birth' %}<span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>{% endif %}
-                        </a>
-                    </th>
-                    <th>
-                        <a href="?sort_by=email&sort_order={% if sort_by == 'email' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
-                            {% trans "El. paštas" %}
-                            {% if sort_by == 'email' %}<span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>{% endif %}
-                        </a>
-                    </th>
-                    <th>
-                        <a href="?sort_by=position__name&sort_order={% if sort_by == 'position__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
-                            {% trans "Pareigos" %}
-                            {% if sort_by == 'position__name' %}<span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>{% endif %}
-                        </a>
-                    </th>
-                    <th>
-                        <a href="?sort_by=is_active&sort_order={% if sort_by == 'is_active' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
-                            {% trans "Aktyvus" %}
-                            {% if sort_by == 'is_active' %}<span>{% if sort_order == 'asc' %}▲{% else %}▼{% endif %}</span>{% endif %}
-                        </a>
-                    </th>
-                    <th>{% trans "Peržiūrėti" %}</th>
-                    <th>{% trans "Redaguoti" %}</th>
-                </tr>
-              </thead>
-              <tbody class="scrollable-tbody">
-                {% for user_list_obj in page_obj %}
-                <tr>
-                  <td>{{ user_list_obj.get_full_name }}</td>
-                  <td>{{ user_list_obj.date_of_birth }}</td>
-                  <td>{{ user_list_obj.email }}</td>
-                  <td>{{ user_list_obj.position.name }}</td>
-                  <td>{% if user_list_obj.is_active %}{% trans "Aktyvus" %}{% else %}{% trans "Neaktyvus" %}{% endif %}</td>
-                  <td><a href="{% url 'user_detail' user_list_obj.uuid %}">{% trans "Peržiūrėti vartotoja" %}</a></td>
-                  <td><a href="{% url 'supervisor_edit_user' user_list_obj.uuid %}">{% trans "Redaguoti" %}</a></td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-            <br>
-            <div class="nice-container" style="padding: 0;">
-            <a href="{% url 'menu' %}" class="button" style="justify-self: center;">{% trans "Atgal" %}</a>
-          </div>
-          </div>
-{% endblock content %}
+<div class="container-fluid py-4">
+    <div class="row mb-3">
+        <div class="col-12 d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <a href="{% url 'menu' %}" class="btn btn-outline-secondary btn-sm me-2">
+                    <i class="bi bi-arrow-left"></i> {% trans "Atgal" %}
+                </a>
+                <h4 class="mb-0">{% trans "Įmonės darbuotojai" %}</h4>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'my_company_users' %}?generate_pdf=true" class="btn btn-danger" target="_blank">
+                    <i class="bi bi-file-pdf"></i> {% trans "Generuoti PDF" %}
+                </a>
+                <a href="{% url 'prideti_instrukcijas_visiems' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> {% trans "Pridėti instrukciją visiems" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {% include "main/included/paginator_prev_next.html" %}
+            
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>
+                                <a href="?sort_by=first_name&sort_order={% if sort_by == 'first_name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="text-decoration-none text-dark">
+                                    {% trans "Vardas Pavardė" %}
+                                    {% if sort_by == 'first_name' %}
+                                        <i class="bi bi-caret-{% if sort_order == 'asc' %}up{% else %}down{% endif %}-fill"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>
+                                <a href="?sort_by=date_of_birth&sort_order={% if sort_by == 'date_of_birth' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="text-decoration-none text-dark">
+                                    {% trans "Gimimo data" %}
+                                    {% if sort_by == 'date_of_birth' %}
+                                        <i class="bi bi-caret-{% if sort_order == 'asc' %}up{% else %}down{% endif %}-fill"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>
+                                <a href="?sort_by=email&sort_order={% if sort_by == 'email' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="text-decoration-none text-dark">
+                                    {% trans "El. paštas" %}
+                                    {% if sort_by == 'email' %}
+                                        <i class="bi bi-caret-{% if sort_order == 'asc' %}up{% else %}down{% endif %}-fill"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>
+                                <a href="?sort_by=position__name&sort_order={% if sort_by == 'position__name' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="text-decoration-none text-dark">
+                                    {% trans "Pareigos" %}
+                                    {% if sort_by == 'position__name' %}
+                                        <i class="bi bi-caret-{% if sort_order == 'asc' %}up{% else %}down{% endif %}-fill"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th>
+                                <a href="?sort_by=is_active&sort_order={% if sort_by == 'is_active' and sort_order == 'asc' %}desc{% else %}asc{% endif %}" class="text-decoration-none text-dark">
+                                    {% trans "Aktyvus" %}
+                                    {% if sort_by == 'is_active' %}
+                                        <i class="bi bi-caret-{% if sort_order == 'asc' %}up{% else %}down{% endif %}-fill"></i>
+                                    {% endif %}
+                                </a>
+                            </th>
+                            <th class="text-center">{% trans "Veiksmai" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user_list_obj in page_obj %}
+                        <tr>
+                            <td>{{ user_list_obj.get_full_name }}</td>
+                            <td>{{ user_list_obj.date_of_birth|date:"Y-m-d" }}</td>
+                            <td>{{ user_list_obj.email }}</td>
+                            <td>{{ user_list_obj.position.name }}</td>
+                            <td>
+                                {% if user_list_obj.is_active %}
+                                    <span class="badge bg-success">{% trans "Aktyvus" %}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{% trans "Neaktyvus" %}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{% url 'user_detail' user_list_obj.uuid %}" class="btn btn-outline-primary" title="{% trans 'Peržiūrėti' %}">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{% url 'supervisor_edit_user' user_list_obj.uuid %}" class="btn btn-outline-secondary" title="{% trans 'Redaguoti' %}">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                {% trans "Darbuotojų nerasta" %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% include "main/included/paginator_prev_next.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

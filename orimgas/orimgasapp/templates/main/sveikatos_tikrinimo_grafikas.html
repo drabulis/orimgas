@@ -1,45 +1,57 @@
-{% extends "base.html" %}
+{% extends "base_bootstrap.html" %}
 {% load i18n %}
 {% block title %}{% trans "Sveikatos tikrinimo grafikas" %}{% endblock title %}
 {% block content %}
-<br><br><br>
-        <h1>{% trans "Darbuotojų sveikatos tikrinimo grafikas" %}</h1>
-        {% include "main/included/paginator_prev_next.html" %}
-        <br><br>
-        {% if object_list %}
-        <div class="table-wrapper">
-            <table class="nice-container" id="table" style="width: 90%;">
-                <thead>
-                    <tr>
-                        <th>{% trans "Vardas ir Pavardė" %}</th>
-                        <th>{% trans "Gimimo data" %}</th>
-                        <th>{% trans "Darbuotojo pareigos" %}</th>
-                        <th>{% trans "Sveikatos patikrinimo data" %}</th>
-                        <th>{% trans "Sveikatos tikrinimo periodiškumas" %}</th>
-                        <th>{% trans "Sekanti sveikatos tikrinimo data" %}</th>
-                    </tr>
-                </thead>    
-                <tbody class="scrollable-tbody">
-                {% for vartotojas in object_list %}
-                    <tr>
-                        <td>{{ vartotojas.get_full_name }}</td>
-                        <td>{{ vartotojas.date_of_birth }}</td>
-                        <td>{{ vartotojas.position }}</td>
-                        <td>{{ vartotojas.med_patikros_data }}</td>
-                        <td>{{ vartotojas.get_med_patikros_periodas_display }}</td>
-                        <td>{{ vartotojas.sekanti_med_patikros_data }}</td>
-                    </tr>
-                {% endfor %}
+<div class="container-fluid py-4">
+    <h1 class="mb-4">{% trans "Darbuotojų sveikatos tikrinimo grafikas" %}</h1>
+    
+    {% if object_list %}
+    {% include "main/included/paginator_prev_next.html" %}
+    
+    <div class="table-responsive">
+        <table class="table table-hover table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>{% trans "Vardas ir Pavardė" %}</th>
+                    <th>{% trans "Gimimo data" %}</th>
+                    <th>{% trans "Darbuotojo pareigos" %}</th>
+                    <th>{% trans "Sveikatos patikrinimo data" %}</th>
+                    <th>{% trans "Sveikatos tikrinimo periodiškumas" %}</th>
+                    <th>{% trans "Sekanti sveikatos tikrinimo data" %}</th>
+                </tr>
+            </thead>    
+            <tbody>
+            {% for vartotojas in object_list %}
+                <tr>
+                    <td>{{ vartotojas.get_full_name }}</td>
+                    <td>{{ vartotojas.date_of_birth }}</td>
+                    <td>{{ vartotojas.position }}</td>
+                    <td>{{ vartotojas.med_patikros_data }}</td>
+                    <td>{{ vartotojas.get_med_patikros_periodas_display }}</td>
+                    <td>{{ vartotojas.sekanti_med_patikros_data }}</td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
-        <br>
-                <div class="nice-container" style="padding: 0;">
-                <a href="{% url 'menu' %}" class="button" style="justify-self: center;">{% trans "Atgal" %}</a>
-              </div>
-        </div>
+    </div>
+    
+    {% include "main/included/paginator_prev_next.html" %}
+    
+    <div class="mt-3">
+        <a href="{% url 'user_menu' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>{% trans "Atgal" %}
+        </a>
+    </div>
 
-        {% else %}
-            <p style="text-align: center;">{% trans "Sveikatos tikrinimo žurnale įrašų nerasta." %}</p>
-        {% endif %}
-
+    {% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>{% trans "Sveikatos tikrinimo žurnale įrašų nerasta." %}
+    </div>
+    <div class="mt-3">
+        <a href="{% url 'user_menu' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>{% trans "Atgal" %}
+        </a>
+    </div>
+    {% endif %}
+</div>
 {% endblock content %}
