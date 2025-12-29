@@ -41,6 +41,12 @@ urlpatterns = [
     path('main/civiline_sauga/<uuid:uuid>/', views.CivilineSaugaReviewView.as_view(), name='civiline_sauga_detail'),
     path('main/mokymai/<uuid:uuid>/', views.MokymuReviewView.as_view(), name='mokymu_detail'),
     path('main/kiti_dokumentai/<uuid:uuid>/', views.KituDocReviewView.as_view(), name='kiti_dokumentai_detail'),
+    # API endpoints for document viewing
+    path('api/document/instruction/<uuid:uuid>/', views.InstructionViewApiView.as_view(), name='instruction_view_api'),
+    path('api/document/priesgaisrinis/<uuid:uuid>/', views.PriesgaisrinisViewApiView.as_view(), name='priesgaisrinis_view_api'),
+    path('api/document/civiline/<uuid:uuid>/', views.CivilineSaugaViewApiView.as_view(), name='civiline_view_api'),
+    path('api/document/mokymas/<uuid:uuid>/', views.MokymasViewApiView.as_view(), name='mokymas_view_api'),
+    path('api/document/kitudoc/<uuid:uuid>/', views.KituDocViewApiView.as_view(), name='kitudoc_view_api'),
     path('main/AAP/<uuid:uuid>/', views.AAPSignView.as_view(), name='AAP_sign'),
     path('api/AAP/<uuid:uuid>/sign/', views.AAPSignAjaxView.as_view(), name='AAP_sign_ajax'),
     path('main/AAP_zurnalas', views.AAPZurnalas.as_view(), name='AAP_zurnalas'),

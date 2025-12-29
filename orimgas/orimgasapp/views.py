@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views import generic
+from django.views import View
 from django.http import FileResponse
 from . import models, forms
 from django.http import Http404
@@ -508,7 +509,9 @@ class MyCompanyUsersView(LoginRequiredMixin, generic.ListView):
         context = {
             'title': 'Įmonės Darbuotojai',
             'headers': table_headers,
-            'data': table_data
+            'data': table_data,
+            'company_name': request.user.company.name,
+            'generation_date': datetime.now().strftime('%Y-%m-%d %H:%M')
         }
 
         # Render the PDF
@@ -604,7 +607,9 @@ class DarbuSaugosZurnalas(LoginRequiredMixin, generic.ListView):
         context = {
             'title': 'Darbuotojų saugos ir sveikatos instruktavimų darbo vietoje registras',
             'headers': table_headers,
-            'data': table_data
+            'data': table_data,
+            'company_name': request.user.company.name,
+            'generation_date': datetime.now().strftime('%Y-%m-%d %H:%M')
         }
 
          # Render the PDF
@@ -699,7 +704,9 @@ class CivilinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
         context = {
             'title': 'Civilinės saugos instruktavimų registracijos žurnalas',
             'headers': table_headers,
-            'data': table_data
+            'data': table_data,
+            'company_name': request.user.company.name,
+            'generation_date': datetime.now().strftime('%Y-%m-%d %H:%M')
         }
 
         # Render the PDF
@@ -781,6 +788,8 @@ class MokymuPasirasymasList(generic.ListView):
         'title': 'Atestavimo protokolas',
         'headers': table_headers,
         'data': table_data,
+        'company_name': request.user.company.name,
+        'generation_date': datetime.now().strftime('%Y-%m-%d %H:%M')
     }
 
         # Render the PDF
@@ -869,7 +878,9 @@ class KituDocPasirasymuZurnalas(LoginRequiredMixin, generic.ListView):
         context = {
             'title': 'Kitų dokumentų protokolas',
             'headers': table_headers,
-            'data': table_data
+            'data': table_data,
+            'company_name': request.user.company.name,
+            'generation_date': datetime.now().strftime('%Y-%m-%d %H:%M')
         }
         # Render the PDF
         html_string = render_to_string('pdf_template.html', context)
@@ -960,7 +971,9 @@ class PriesgaisrinesSaugosZurnalas(LoginRequiredMixin, generic.ListView):
         context = {
             'title': 'Gaisrinės saugos instruktažų registracijos žurnalas',
             'headers': table_headers,
-            'data': table_data
+            'data': table_data,
+            'company_name': request.user.company.name,
+            'generation_date': datetime.now().strftime('%Y-%m-%d %H:%M')
         }
         # Render the PDF
         html_string = render_to_string('pdf_template.html', context)
@@ -1058,7 +1071,9 @@ class SveikatosTikrinimoGrafikas(LoginRequiredMixin, generic.ListView):
         context = {
             'title': 'Įmonės Darbuotojai',
             'headers': table_headers,
-            'data': table_data
+            'data': table_data,
+            'company_name': request.user.company.name,
+            'generation_date': datetime.now().strftime('%Y-%m-%d %H:%M')
         }
 
         # Render the PDF
@@ -1946,3 +1961,66 @@ class MenuBootstrapView(LoginRequiredMixin, generic.ListView):
         context['user'] = user
         return context
 
+
+# API views for document viewing in modal
+class DocumentViewApiView(LoginRequiredMixin, View):
+    """Base API view for document PDF retrieval"""
+    
+    def get_document_data(self, document, title_attr='name'):
+        """Helper to extract document data"""
+        if not document:
+            return {'success': False, 'error': 'Document not found'}
+        
+        title = getattr(document, title_attr, 'Document')
+        
+        # Check if document has pdf attribute and file exists
+        pdf_url = None
+        if hasattr(document, 'pdf') and document.pdf:
+            try:
+                pdf_url = document.pdf.url
+            except Exception as e:
+                print(f"Error getting PDF URL: {e}")
+        
+        return {
+            'success': True,
+            'title': title,
+            'pdf_url': pdf_url,
+        }
+    
+    def get(self, request, uuid):
+        raise NotImplementedError('Subclasses must implement get method')
+
+
+class InstructionViewApiView(DocumentViewApiView):
+    def get(self, request, uuid):
+        instruction = get_object_or_404(models.Instruction, uuid=uuid)
+        data = self.get_document_data(instruction, 'name')
+        return JsonResponse(data)
+
+
+class PriesgaisrinisViewApiView(DocumentViewApiView):
+    def get(self, request, uuid):
+        instruction = get_object_or_404(models.PriesgiasrinesInstrukcijos, uuid=uuid)
+        data = self.get_document_data(instruction, 'pavadinimas')
+        return JsonResponse(data)
+
+
+class CivilineSaugaViewApiView(DocumentViewApiView):
+    def get(self, request, uuid):
+        instruction = get_object_or_404(models.CivilineSauga, uuid=uuid)
+        data = self.get_document_data(instruction, 'pavadinimas')
+        return JsonResponse(data)
+
+
+class MokymasViewApiView(DocumentViewApiView):
+    def get(self, request, uuid):
+        instruction = get_object_or_404(models.Mokymai, uuid=uuid)
+        data = self.get_document_data(instruction, 'pavadinimas')
+        return JsonResponse(data)
+
+
+class KituDocViewApiView(DocumentViewApiView):
+    def get(self, request, uuid):
+        instruction = get_object_or_404(models.KitiDokumentai, uuid=uuid)
+        data = self.get_document_data(instruction, 'pavadinimas')
+        return JsonResponse(data)

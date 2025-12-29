@@ -1,7 +1,29 @@
 {% extends "base_bootstrap.html" %}
 {% load i18n %}
+{% load static %}
 {% block title %}{% trans "Dokumetai" %} {{ block.super }}{% endblock title %}
 {% block content %}
+<style>
+    /* Responsive PDF viewer - larger on mobile/tablet */
+    .pdf-viewer-responsive {
+        height: 600px;
+    }
+    
+    /* Tablets and below - fullscreen with better PDF height */
+    @media (max-width: 991px) {
+        .pdf-viewer-responsive {
+            height: 70vh;
+        }
+    }
+    
+    /* Mobile devices - fullscreen with optimized height */
+    @media (max-width: 576px) {
+        .pdf-viewer-responsive {
+            height: 65vh;
+        }
+    }
+</style>
+
 <div class="container-fluid py-4">
     <h1 class="mb-4">{% trans "Įmonės dokumentai" %}</h1>
 
@@ -15,7 +37,7 @@
                     <div class="list-group list-group-flush">
                         {% if dokumentai %}
                             {% for instruction in dokumentai %}
-                            <a href="{% url 'darbu_sagos_detail' instruction.uuid %}" class="list-group-item list-group-item-action">
+                            <a href="#" data-doc-uuid="{{ instruction.uuid }}" data-doc-type="instruction" class="doc-view-link list-group-item list-group-item-action">
                                 <i class="bi bi-file-text me-2"></i>{{ instruction.name }}
                             </a>
                             {% endfor %}
@@ -36,7 +58,7 @@
                     <div class="list-group list-group-flush">
                         {% if priesrines_instrukcijos %}
                             {% for priesgaisrine in priesrines_instrukcijos %}
-                            <a href="{% url 'priesgaisrinio_detail' priesgaisrine.uuid %}" class="list-group-item list-group-item-action">
+                            <a href="#" data-doc-uuid="{{ priesgaisrine.uuid }}" data-doc-type="priesgaisrinis" class="doc-view-link list-group-item list-group-item-action">
                                 <i class="bi bi-fire me-2"></i>{{ priesgaisrine.pavadinimas }}
                             </a>
                             {% endfor %}
@@ -57,7 +79,7 @@
                     <div class="list-group list-group-flush">
                         {% if civiline_sauga %}
                             {% for civiline in civiline_sauga %}
-                            <a href="{% url 'civiline_sauga_detail' civiline.uuid %}" class="list-group-item list-group-item-action">
+                            <a href="#" data-doc-uuid="{{ civiline.uuid }}" data-doc-type="civiline" class="doc-view-link list-group-item list-group-item-action">
                                 <i class="bi bi-shield-check me-2"></i>{{ civiline.pavadinimas }}
                             </a>
                             {% endfor %}
@@ -78,7 +100,7 @@
                     <div class="list-group list-group-flush">
                         {% if mokymo_instrukcijos %}
                             {% for mokymas in mokymo_instrukcijos %}
-                            <a href="{% url 'mokymu_detail' mokymas.uuid %}" class="list-group-item list-group-item-action">
+                            <a href="#" data-doc-uuid="{{ mokymas.uuid }}" data-doc-type="mokymas" class="doc-view-link list-group-item list-group-item-action">
                                 <i class="bi bi-book me-2"></i>{{ mokymas.pavadinimas }}
                             </a>
                             {% endfor %}
@@ -99,7 +121,7 @@
                     <div class="list-group list-group-flush">
                         {% if kitu_doc %}
                             {% for kitas_doc in kitu_doc %}
-                            <a href="{% url 'kiti_dokumentai_detail' kitas_doc.uuid %}" class="list-group-item list-group-item-action">
+                            <a href="#" data-doc-uuid="{{ kitas_doc.uuid }}" data-doc-type="kitudoc" class="doc-view-link list-group-item list-group-item-action">
                                 <i class="bi bi-file-earmark me-2"></i>{{ kitas_doc.pavadinimas }}
                             </a>
                             {% endfor %}
@@ -113,9 +135,120 @@
     </div>
 
     <div class="mt-3">
-        <a href="{% url 'user_menu' %}" class="btn btn-secondary">
+        <a href="{% url 'menu' %}" class="btn btn-secondary">
             <i class="bi bi-arrow-left me-1"></i>{% trans "Atgal" %}
         </a>
     </div>
 </div>
+
+<!-- Modal for viewing documents -->
+<div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="documentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-fullscreen-lg-down">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white" id="modalHeader">
+                <h5 class="modal-title" id="documentModalLabel">
+                    <i class="bi bi-file-text"></i> <span id="documentTitle"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="documentContent">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">{% trans "Kraunama..." %}</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- PDF Viewer -->
+                <div id="pdfContainer" class="mb-4" style="display:none;">
+                    <iframe id="pdfViewer" style="width:100%; height:600px; border:1px solid #dee2e6;" class="pdf-viewer-responsive"></iframe>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> {% trans "Uždaryti" %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const typeConfig = {
+        'instruction': {
+            apiUrl: '/api/document/instruction/',
+            headerClass: 'bg-primary',
+        },
+        'priesgaisrinis': {
+            apiUrl: '/api/document/priesgaisrinis/',
+            headerClass: 'bg-danger',
+        },
+        'civiline': {
+            apiUrl: '/api/document/civiline/',
+            headerClass: 'bg-warning',
+        },
+        'mokymas': {
+            apiUrl: '/api/document/mokymas/',
+            headerClass: 'bg-success',
+        },
+        'kitudoc': {
+            apiUrl: '/api/document/kitudoc/',
+            headerClass: 'bg-info',
+        }
+    };
+    
+    // Setup click handlers for all document links
+    document.querySelectorAll('.doc-view-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const uuid = this.getAttribute('data-doc-uuid');
+            const type = this.getAttribute('data-doc-type');
+            loadDocument(uuid, type);
+        });
+    });
+    
+    function loadDocument(uuid, type) {
+        const config = typeConfig[type];
+        const modal = new bootstrap.Modal(document.getElementById('documentModal'));
+        const modalHeader = document.getElementById('modalHeader');
+        
+        // Set header color based on document type
+        modalHeader.className = 'modal-header text-white ' + config.headerClass;
+        
+        modal.show();
+        
+        // Reset content
+        document.getElementById('documentContent').innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">{% trans "Kraunama..." %}</span></div></div>';
+        document.getElementById('pdfContainer').style.display = 'none';
+        
+        // Fetch document data from API
+        fetch(`${config.apiUrl}${uuid}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('documentTitle').textContent = data.title;
+                    document.getElementById('documentContent').innerHTML = '';
+                    
+                    if (data.pdf_url) {
+                        // Use direct PDF loading (browser's native viewer)
+                        const absolutePdfUrl = window.location.origin + data.pdf_url;
+                        
+                        // Load PDF directly in iframe with toolbar
+                        document.getElementById('pdfViewer').src = absolutePdfUrl + '#toolbar=1&navpanes=0&scrollbar=1';
+                        document.getElementById('pdfContainer').style.display = 'block';
+                    } else {
+                        document.getElementById('documentContent').innerHTML = '<div class="alert alert-warning">{% trans "PDF dokumentas nepridėtas" %}</div>';
+                    }
+                } else {
+                    document.getElementById('documentContent').innerHTML = `<div class="alert alert-danger">${data.error || '{% trans "Klaida kraunant dokumentą" %}'}</div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading document:', error);
+                document.getElementById('documentContent').innerHTML = '<div class="alert alert-danger">{% trans "Klaida kraunant dokumentą" %}</div>';
+            });
+    }
+});
+</script>
 {% endblock content %}

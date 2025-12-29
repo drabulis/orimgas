@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-07 21:14+0300\n"
+"POT-Creation-Date: 2025-12-28 17:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,643 +16,1400 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
+#: accounts/models.py:47
 msgid "12 Mėnesių"
 msgstr "12 месяцев"
 
+#: accounts/models.py:48
 msgid "24 Mėnesiai"
 msgstr "24 месяца"
 
+#: accounts/models.py:52 orimgasapp/models.py:26
 msgid "LT"
 msgstr "LT"
 
+#: accounts/models.py:53 orimgasapp/models.py:27
 msgid "RU"
 msgstr "RU"
 
+#: accounts/models.py:54 orimgasapp/models.py:28
 msgid "EN"
 msgstr "EN"
 
+#: accounts/models.py:59
 msgid "first name"
 msgstr "Имя"
 
+#: accounts/models.py:60
 msgid "last name"
 msgstr "Фамилия"
 
+#: accounts/models.py:62 orimgasapp/models.py:105 orimgasapp/models.py:135
+#: orimgasapp/models.py:158 orimgasapp/models.py:172 orimgasapp/models.py:194
+#: orimgasapp/models.py:240
 msgid "company"
 msgstr "предприятие"
 
+#: accounts/models.py:67
 msgid "position"
 msgstr "должность"
 
+#: accounts/models.py:73 orimgasapp/models.py:216 orimgasapp/models.py:234
+#: orimgasapp/models.py:283 orimgasapp/models.py:336 orimgasapp/models.py:387
+#: orimgasapp/models.py:436 orimgasapp/models.py:471 orimgasapp/models.py:506
 msgid "instructions"
 msgstr "инструкции"
 
+#: accounts/models.py:78
 msgid "PriesgiasrinesInstrukcijos"
 msgstr "Противопожарные инструкции"
 
+#: accounts/models.py:83
 msgid "mokymai"
 msgstr "Учение"
 
+#: accounts/models.py:88
 msgid "kiti dokumentai"
 msgstr "Другие документы"
 
+#: accounts/models.py:93
 msgid "CivilineSauga"
 msgstr "Гражданская безопасность"
 
+#: accounts/models.py:98
 msgid "AsmeninesApsaugosPriemones"
 msgstr "Средства индивидуальной защиты"
 
+#: accounts/models.py:105
 msgid "med patikros periodas"
 msgstr "Период медицинского осмотра"
 
+#: accounts/models.py:117
+#: orimgasapp/templates/main/supervisor_edit_user.html:161
+#: orimgasapp/templates/main/user_add_bootstrap.html:164
 msgid "Skyrius"
 msgstr "Отдел"
 
+#: accounts/models.py:123 orimgasapp/models.py:120 orimgasapp/models.py:150
+#: orimgasapp/models.py:165 orimgasapp/models.py:187 orimgasapp/models.py:209
 msgid "kalba"
 msgstr "язык"
 
+#: accounts/templates/registration/logged_out.html:6
 msgid "Atsijungėt nuo Orimgas"
 msgstr "Отключились от Оримгас"
 
+#: accounts/templates/registration/logged_out.html:10
+#: accounts/templates/registration/login.html:31
+#: accounts/templates/registration/password_reset_form.html:13
 msgid "Orimgas"
 msgstr "Оримгас"
 
+#: accounts/templates/registration/logged_out.html:11
 msgid "Sėkmingai atsijungėte nuo Orimgas."
 msgstr "Вы успешно вышли из системы Оримгас"
 
+#: accounts/templates/registration/logged_out.html:13
+#: accounts/templates/registration/login.html:32
+#: accounts/templates/registration/login.html:68
+#: orimgasapp/templates/base_bootstrap.html:216
 msgid "Prisijungti"
 msgstr "Подключиться"
 
+#: accounts/templates/registration/logged_out.html:16
+#: accounts/templates/registration/login.html:69
+#: accounts/templates/registration/password_reset_form.html:14
 msgid "Pamiršote slaptažodį?"
 msgstr "Забыли пароль?"
 
+#: accounts/templates/registration/login.html:7
 msgid "Prisijungti prie Orimgas"
 msgstr "Подключиться к Оримгас"
 
+#: accounts/templates/registration/login.html:62
+#: accounts/templates/registration/password_reset_form.html:17
+#: orimgasapp/templates/main/user_add.html:21
 msgid "El. paštas:"
 msgstr "Эл. почта:"
 
+#: accounts/templates/registration/login.html:65
+#: orimgasapp/templates/main/user_add.html:34
 msgid "Slaptažodis:"
 msgstr "Пароль:"
 
+#: accounts/templates/registration/password_reset_complete.html:6
+#: accounts/templates/registration/password_reset_complete.html:10
 msgid "Slaptažodis pakeistas"
 msgstr "Пароль изменен"
 
+#: accounts/templates/registration/password_reset_complete.html:11
 msgid "Jūsų slaptažodis sėkmingai pakeistas."
 msgstr "Ваш пароль успешно изменен."
 
+#: accounts/templates/registration/password_reset_complete.html:11
 msgid "Prisijunkite"
 msgstr "Подключитесь"
 
+#: accounts/templates/registration/password_reset_confirm.html:6
+#: accounts/templates/registration/password_reset_confirm.html:11
+#: orimgasapp/templates/main/menu.html:74
+#: orimgasapp/templates/main/user_edit.html:6
+#: orimgasapp/templates/menu_bootstrap.html:71
 msgid "Keisti slaptažodį"
 msgstr "Изменить пароль"
 
+#: accounts/templates/registration/password_reset_confirm.html:14
 msgid "Naujas slaptažodis:"
 msgstr "Новый пароль:"
 
+#: accounts/templates/registration/password_reset_confirm.html:16
 msgid "Pakartoti nauja slaptažodi:"
 msgstr "Повторить новый пароль:"
 
+#: accounts/templates/registration/password_reset_confirm.html:18
+#: accounts/templates/registration/password_reset_form.html:19
+#: orimgasapp/templates/main/InstructionAddAll.html:52
+#: orimgasapp/templates/main/InstructionAddAll.html:88
+#: orimgasapp/templates/main/supervisor_edit_user.html:348
+#: orimgasapp/templates/main/user_add.html:68
+#: orimgasapp/templates/main/user_add_bootstrap.html:313
+#: orimgasapp/templates/main/user_edit.html:12
 msgid "Patvirtinti"
 msgstr "Подтвердить"
 
+#: accounts/templates/registration/password_reset_form.html:5
 msgid "Pamiršote slaptažodį | Orimgas"
 msgstr "Забыли пароль | Оримгас"
 
+#: accounts/templates/registration/password_reset_form.html:10
 msgid "Jūs turite uzpildyti visus laukus"
 msgstr "Вы должны заполнить все поля"
 
+#: orimgasapp/forms.py:227
 msgid "Nekeičiant, palikti tuščia."
 msgstr "Если не изменилось, оставьте пустым."
 
+#: orimgasapp/forms.py:360
 msgid "Selected test answer is incorrect."
 msgstr "Выбранный ответ теста неверный"
 
+#: orimgasapp/forms.py:362
 msgid "All questions must be answered."
 msgstr "На все вопросы должны быть даны ответы."
 
+#: orimgasapp/forms.py:509 orimgasapp/templates/main/menu.html:67
+#: orimgasapp/templates/main/my_company_users.html:53
+#: orimgasapp/templates/main/supervisor_edit_user.html:82
+#: orimgasapp/templates/main/user_add_bootstrap.html:82
+#: orimgasapp/templates/main/user_detail.html:39
 msgid "El. paštas"
 msgstr "Эл. почта"
 
+#: orimgasapp/forms.py:510
+#: orimgasapp/templates/main/supervisor_edit_user.html:52
+#: orimgasapp/templates/main/user_add_bootstrap.html:52
+#: orimgasapp/templates/main/user_detail.html:27
 msgid "Vardas"
 msgstr "Имя"
 
+#: orimgasapp/forms.py:511
+#: orimgasapp/templates/main/supervisor_edit_user.html:67
+#: orimgasapp/templates/main/user_add_bootstrap.html:67
+#: orimgasapp/templates/main/user_detail.html:31
 msgid "Pavardė"
 msgstr "Фамилия"
 
+#: orimgasapp/forms.py:513
+#: orimgasapp/templates/main/supervisor_edit_user.html:112
+#: orimgasapp/templates/main/user_add_bootstrap.html:97
 msgid "Slaptažodis"
 msgstr "Пароль"
 
+#: orimgasapp/forms.py:516
 msgid "Palikti tuščia, jeigu slaptažodis nekeičiamas."
 msgstr "Оставьте пустым, если пароль не менялся."
 
+#: orimgasapp/models.py:10
 msgid "6 mėnesiai"
 msgstr "6 месяцев"
 
+#: orimgasapp/models.py:11
 msgid "12 mėnesių"
 msgstr "12 месяцев"
 
+#: orimgasapp/models.py:12
 msgid "24 mėnesiai"
 msgstr "24 месяца"
 
+#: orimgasapp/models.py:13
 msgid "36 mėnesiai"
 msgstr "36 месяцев"
 
+#: orimgasapp/models.py:14
 msgid "60 mėnesių"
 msgstr "60 месяцев"
 
+#: orimgasapp/models.py:19
 msgid "Vnt."
 msgstr "Шт."
 
+#: orimgasapp/models.py:20
 msgid "Pora"
 msgstr "Пара"
 
+#: orimgasapp/models.py:21
 msgid "Kompl."
 msgstr "Kомпл."
 
+#: orimgasapp/models.py:33 orimgasapp/models.py:49 orimgasapp/models.py:62
+#: orimgasapp/models.py:73 orimgasapp/models.py:109 orimgasapp/models.py:139
+#: orimgasapp/models.py:162 orimgasapp/models.py:176 orimgasapp/models.py:198
+#: orimgasapp/models.py:225 orimgasapp/models.py:238
 msgid "pavadinimas"
 msgstr "название"
 
+#: orimgasapp/models.py:34 orimgasapp/models.py:110 orimgasapp/models.py:140
+#: orimgasapp/models.py:177 orimgasapp/models.py:199
 msgid "periodicity"
 msgstr "периодичность"
 
+#: orimgasapp/models.py:35
 msgid "mato vnt."
 msgstr "единицы измер."
 
+#: orimgasapp/models.py:36
 msgid "pdf"
 msgstr "pdf"
 
+#: orimgasapp/models.py:51
 msgid "Manager"
 msgstr "Менеджер"
 
+#: orimgasapp/models.py:80
 msgid "klausimas"
 msgstr "вопрос"
 
+#: orimgasapp/models.py:82 orimgasapp/models.py:113 orimgasapp/models.py:143
+#: orimgasapp/models.py:180 orimgasapp/models.py:202
 msgid "test"
 msgstr "тест"
 
+#: orimgasapp/models.py:91
 msgid "atsakymas"
 msgstr "ответ"
 
+#: orimgasapp/models.py:93
 msgid "answer"
 msgstr "ответ"
 
+#: orimgasapp/models.py:127
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:112
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:127
 msgid "Įvadinis"
 msgstr "Вводной"
 
+#: orimgasapp/models.py:128
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:114
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:131
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:129
 msgid "Periodinis"
 msgstr "Периодический"
 
+#: orimgasapp/models.py:221
 msgid "imone"
 msgstr "предприятие"
 
+#: orimgasapp/models.py:250
 msgid "positions"
 msgstr "должность"
 
+#: orimgasapp/models.py:254 orimgasapp/templates/main/AAP_zurnalas.html:120
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:117
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:135
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:80
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:85
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:85
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:133
 msgid "Nepasirašyta"
 msgstr "Не подписано"
 
+#: orimgasapp/models.py:255
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:82
+#: orimgasapp/templates/menu_bootstrap.html:103
 msgid "Pasirašyta"
 msgstr "Подписано"
 
+#: orimgasapp/models.py:261 orimgasapp/models.py:314 orimgasapp/models.py:366
+#: orimgasapp/models.py:417 orimgasapp/models.py:452 orimgasapp/models.py:487
 msgid "user"
 msgstr "пользователь"
 
+#: orimgasapp/models.py:265 orimgasapp/models.py:318 orimgasapp/models.py:370
+#: orimgasapp/models.py:421 orimgasapp/models.py:456 orimgasapp/models.py:491
 msgid "instruction"
 msgstr "инструкция"
 
+#: orimgasapp/models.py:269 orimgasapp/models.py:276 orimgasapp/models.py:322
+#: orimgasapp/models.py:329 orimgasapp/models.py:374 orimgasapp/models.py:381
+#: orimgasapp/models.py:425 orimgasapp/models.py:460 orimgasapp/models.py:495
 msgid "status"
 msgstr "статус"
 
+#: orimgasapp/models.py:271 orimgasapp/models.py:324 orimgasapp/models.py:376
+#: orimgasapp/models.py:427 orimgasapp/models.py:462 orimgasapp/models.py:497
 msgid "date signed"
 msgstr "дата подписи"
 
+#: orimgasapp/models.py:273 orimgasapp/models.py:326 orimgasapp/models.py:378
+#: orimgasapp/models.py:429 orimgasapp/models.py:464 orimgasapp/models.py:499
 msgid "next sign"
 msgstr "следующая дата подписи"
 
+#: orimgasapp/templates/base.html:6
 #, fuzzy
 #| msgid "Orimgas"
 msgid "Orimgas e-DSV | "
 msgstr "Оримгас э-УОТ | "
 
+#: orimgasapp/templates/base.html:49
+#: orimgasapp/templates/base_bootstrap.html:207
 msgid "Atsijungti"
 msgstr "Отключить"
 
+#: orimgasapp/templates/base.html:62
 msgid "© Visos autorinės teisės priklauso UAB „Orimgas“"
 msgstr "© Все авторские права принадлежат ЗАО “Orimgas”"
 
-msgid "Su man darbdavio išduodamų asmeninių apsaugos priemonių naudojimo instrukcijomis esu susipažinęs, pasižadu laikytis bendrovėje nustatytos asmeninių apsaugos priemonių naudojimo tvarkos, man išduotas priemones saugoti."
-msgstr "Я ознакомлен с инструкцией по использованию средств индивидуальной защиты, выданной мне работодателем, обязуюсь соблюдать установленный в компании порядок применения средств индивидуальной защиты, использовать выданные мне средства индивидуальной защиты по назначению."
+#: orimgasapp/templates/base_bootstrap.html:154
+msgid "Pradžia"
+msgstr "Начало"
 
+#: orimgasapp/templates/base_bootstrap.html:161
+msgid "Vadovas"
+msgstr "Руководитель"
+
+#: orimgasapp/templates/base_bootstrap.html:164
+#, fuzzy
+#| msgid "Darbuotojo pareigos"
+msgid "Darbuotojai"
+msgstr "Должностные обязанности сотрудника"
+
+#: orimgasapp/templates/base_bootstrap.html:165
+#, fuzzy
+#| msgid "Pridėti vartotoją"
+msgid "Pridėti darbuotoją"
+msgstr "Добавить пользователя"
+
+#: orimgasapp/templates/base_bootstrap.html:167
+#, fuzzy
+#| msgid "Instrukcijos Nr."
+msgid "Instrukcijos"
+msgstr "Инструкция №"
+
+#: orimgasapp/templates/base_bootstrap.html:174
+#, fuzzy
+#| msgid "kalba"
+msgid "Kalba"
+msgstr "язык"
+
+#: orimgasapp/templates/base_bootstrap.html:181
+msgid "Pasirinkite kalbą"
+msgstr "Выберите язык"
+
+#: orimgasapp/templates/base_bootstrap.html:201
+msgid "Profilis"
+msgstr "Профиль"
+
+#: orimgasapp/templates/base_bootstrap.html:249
+msgid "Visos teisės saugomos"
+msgstr "Все права защищены"
+
+#: orimgasapp/templates/main/AAP_sign.html:50
+msgid ""
+"Su man darbdavio išduodamų asmeninių apsaugos priemonių naudojimo "
+"instrukcijomis esu susipažinęs, pasižadu laikytis bendrovėje nustatytos "
+"asmeninių apsaugos priemonių naudojimo tvarkos, man išduotas priemones "
+"saugoti."
+msgstr ""
+"Я ознакомлен с инструкцией по использованию средств индивидуальной защиты, "
+"выданной мне работодателем, обязуюсь соблюдать установленный в компании "
+"порядок применения средств индивидуальной защиты, использовать выданные мне "
+"средства индивидуальной защиты по назначению."
+
+#: orimgasapp/templates/main/AAP_sign.html:52
+#: orimgasapp/templates/main/user_instruction_detail.html:95
+#: orimgasapp/templates/menu_bootstrap.html:173
+#: orimgasapp/templates/menu_bootstrap.html:198
+#: orimgasapp/templates/menu_bootstrap.html:223
+#: orimgasapp/templates/menu_bootstrap.html:248
+#: orimgasapp/templates/menu_bootstrap.html:273
+#: orimgasapp/templates/menu_bootstrap.html:298
+#: orimgasapp/templates/menu_bootstrap.html:450
+#: orimgasapp/templates/menu_bootstrap.html:676
+#: orimgasapp/templates/menu_bootstrap.html:682
 msgid "Pasirašyti"
 msgstr "Подписать"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:5
 msgid "AAP žurnalas"
 msgstr "Журнал СИЗ"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:10
 msgid "ASMENINIŲ APSAUGOS PRIEMONIŲ IŠDAVIMO ŽINIARAŠTIS"
 msgstr "РЕЕСТР ВЫДАЧИ СРЕДСТВ ИНДИВИДУАЛЬНОЙ ЗАЩИТЫ"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:17
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:17
 msgid "Nuo:"
 msgstr "От:"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:21
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:21
 msgid "Iki:"
 msgstr "До:"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:26
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:26
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:33
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:31
 msgid "Filtruoti"
 msgstr "Фильтр"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:29
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:29
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:36
+#: orimgasapp/templates/main/included/paginator_prev_next.html:26
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:34
 msgid "Nustatyti iš naujo"
 msgstr "Установить заново"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:32
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:32
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:39
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:11
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:9
+#: orimgasapp/templates/main/my_company_users.html:18
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:37
 msgid "Generuoti PDF"
 msgstr "Создать PDF"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:47
 msgid "Vardas ir pavardė"
 msgstr "Имя и фамилия"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:55
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:64
+#: orimgasapp/templates/main/my_company_users.html:45
+#: orimgasapp/templates/main/supervisor_edit_user.html:97
+#: orimgasapp/templates/main/sveikatos_tikrinimo_grafikas.html:16
+#: orimgasapp/templates/main/user_add_bootstrap.html:112
+#: orimgasapp/templates/main/user_detail.html:35
+#: orimgasapp/templates/menu_bootstrap.html:52
 msgid "Gimimo data"
 msgstr "Дата рождения"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:63
 msgid "Asmeninės apsaugos priemonės pavadinimas"
 msgstr "Название средств индивидуальной защиты"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:71
 msgid "Mato vnt."
 msgstr "Единицы измер."
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:79
 msgid "Kiekis"
 msgstr "Количество"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:87
 msgid "Parašas"
 msgstr "Подпись"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:95
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:87
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:104
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:57
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:102
 msgid "Pasirašymo data"
 msgstr "Дата подписи"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:103
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:95
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:112
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:65
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:110
 msgid "Sekančio pasirašymo data"
 msgstr "Дата следующей подписи"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:121
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:118
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:136
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:86
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:134
 msgid "Nepatikslinta"
 msgstr "Не уточнено"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:132
+#: orimgasapp/templates/main/AAP_zurnalas.html:142
+#: orimgasapp/templates/main/InstructionAddAll.html:55
+#: orimgasapp/templates/main/InstructionAddAll.html:89
+#: orimgasapp/templates/main/administracijos_priminimai.html:28
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:129
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:139
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:12
+#: orimgasapp/templates/main/dokumentai_list.html:139
+#: orimgasapp/templates/main/dokumento_view.html:76
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:96
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:106
+#: orimgasapp/templates/main/kitu_doc_zurnalas.html:39
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:93
+#: orimgasapp/templates/main/mokymu_zurnalas.html:39
+#: orimgasapp/templates/main/my_company_users.html:12
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:11
+#: orimgasapp/templates/main/supervisor_edit_user.html:30
+#: orimgasapp/templates/main/supervisor_edit_user.html:345
+#: orimgasapp/templates/main/sveikatos_tikrinimo_grafikas.html:42
+#: orimgasapp/templates/main/sveikatos_tikrinimo_grafikas.html:52
+#: orimgasapp/templates/main/user_add.html:69
+#: orimgasapp/templates/main/user_add_bootstrap.html:30
+#: orimgasapp/templates/main/user_add_bootstrap.html:310
+#: orimgasapp/templates/main/user_detail.html:12
+#: orimgasapp/templates/main/user_edit.html:13
+#: orimgasapp/templates/main/user_instruction_detail.html:97
 msgid "Atgal"
 msgstr "Назад"
 
+#: orimgasapp/templates/main/AAP_zurnalas.html:138
 msgid "ASMENINIŲ APSAUGOS PRIEMONIŲ IŠDAVIMO ŽINIARAŠTYJE ĮRAŠŲ NĖRA."
 msgstr "В ЖУРНАЛЕ ВЫДАЧИ СРЕДСТВ ИНДИВИДУАЛЬНОЙ ЗАЩИТЫ ЗАПИСИ НЕТ."
 
+#: orimgasapp/templates/main/InstructionAddAll.html:3
 msgid "Pridėti instrukciją"
 msgstr "Добавить инструкцию"
 
+#: orimgasapp/templates/main/InstructionAddAll.html:8
 msgid "Pridėti instrukciją/ -as vartotojams"
 msgstr "Добавить инструкцию/ -ции для пользователей"
 
+#: orimgasapp/templates/main/InstructionAddAll.html:15
+#: orimgasapp/templates/main/user_add.html:25
+msgid "Pareigos:"
+msgstr "Должностные обязанности:"
+
+#: orimgasapp/templates/main/InstructionAddAll.html:19
+#: orimgasapp/templates/main/user_add.html:28
+msgid "Skyrius:"
+msgstr "Отдел"
+
+#: orimgasapp/templates/main/InstructionAddAll.html:24
+#: orimgasapp/templates/main/user_add.html:31
 msgid "Darbuotojui suprantama kalba:"
 msgstr "На понятном для сотрудника языке:"
 
-msgid "Darbų saugos instrukcijos:"
+#: orimgasapp/templates/main/InstructionAddAll.html:26
+msgid "Pasirinkus kalbą, bus rodomi tik tos kalbos darbuotojai"
+msgstr "Выбрав язык, будут отображаться только сотрудники, говорящие на этом языке"
+
+#: orimgasapp/templates/main/InstructionAddAll.html:34
+#: orimgasapp/templates/main/user_add.html:40
+#, fuzzy
+#| msgid "Darbų saugos instrukcijos:"
+msgid "Darbų saugos instrukcijos:   "
 msgstr "Инструкции по безопасности труда:"
 
-msgid "Priesgaisrinės instrukcijos:"
+#: orimgasapp/templates/main/InstructionAddAll.html:44
+#: orimgasapp/templates/main/user_add.html:44
+#, fuzzy
+#| msgid "Priesgaisrinės instrukcijos:"
+msgid "Priesgaisrinės instrukcijos:   "
 msgstr "Инструкции по противопожарной безопасности:"
 
-msgid "Civilinės saugos instrukcijos:"
+#: orimgasapp/templates/main/InstructionAddAll.html:61
+#: orimgasapp/templates/main/user_add.html:46
+#, fuzzy
+#| msgid "Civilinės saugos instrukcijos:"
+msgid "Civilinės saugos instrukcijos:   "
 msgstr "Инструкции по гражданской безопасности:"
 
-msgid "Mokymai:"
+#: orimgasapp/templates/main/InstructionAddAll.html:69
+#: orimgasapp/templates/main/user_add.html:50
+#, fuzzy
+#| msgid "Mokymai:"
+msgid "Mokymai:   "
 msgstr "Учение:"
 
-msgid "Kiti dokumentai:"
+#: orimgasapp/templates/main/InstructionAddAll.html:80
+#: orimgasapp/templates/main/user_add.html:54
+#, fuzzy
+#| msgid "Kiti dokumentai:"
+msgid "Kiti dokumentai:   "
 msgstr "Другие документы:"
 
+#: orimgasapp/templates/main/administracijos_priminimai.html:3
 msgid "Priminimas administracijai"
 msgstr "Напоминание администрации"
 
+#: orimgasapp/templates/main/administracijos_priminimai.html:6
 msgid "Priminimai"
 msgstr "Напоминания"
 
+#: orimgasapp/templates/main/administracijos_priminimai.html:22
 msgid "Priminimų nėra"
 msgstr "Напоминаний нет"
 
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:5
+#: orimgasapp/templates/main/menu.html:174
+#: orimgasapp/templates/menu_bootstrap.html:356
 msgid "Civilinės saugos žurnalas"
 msgstr "Журнал гражданской безопасности"
 
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:10
 msgid "Civilinės saugos instruktavimų registracijos žurnalas"
 msgstr "Журнал регистрации инструктажей гражданской безопасности"
 
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:47
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:56
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:23
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:18
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:54
 msgid "Instruktuojamojo vardas ir pavardė"
 msgstr "Имя и фамилия инструктируемого"
 
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:55
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:31
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:26
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:62
 msgid "Instruktuojamojo gimimo data"
 msgstr "Дата рождения инструктируемого"
 
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:63
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:72
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:39
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:33
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:70
 msgid "Instruktuojamojo pareigos"
 msgstr "Должностные обязанности инструктируемого"
 
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:71
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:80
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:78
 msgid "Instrukcijos Nr."
 msgstr "Инструкция №"
 
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:79
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:86
 msgid "Instruktažo pavadinimas"
 msgstr "Название инструктажа"
 
-msgid "Darbų saugos žurnale įrašų nerasta."
-msgstr "В журнале охраны труда записей не обнаружено"
+#: orimgasapp/templates/main/civilines_saugos_zurnalas.html:135
+#, fuzzy
+#| msgid "Priešgaisrinės saugos žurnale įrašų nerasta."
+msgid "Civilinės saugos žurnale įrašų nerasta."
+msgstr "В журнале противопожарной безопасности записей не найдено."
 
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:4
 msgid "Darbų saugos žurnalas"
 msgstr "Журнал охраны труда"
 
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:14
 msgid "Darbuotojų saugos ir sveikatos instruktavimų darbo vietoje registras"
 msgstr "Журнал инструктажей по охране труда на рабочем месте"
 
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:24
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:22
+#, fuzzy
+#| msgid "Nuo:"
+msgid "Nuo"
+msgstr "От:"
+
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:28
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:26
+#, fuzzy
+#| msgid "Iki:"
+msgid "Iki"
+msgstr "До:"
+
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:88
 msgid "Instruktavimo pavadinimas"
 msgstr "Название инструктажа"
 
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:96
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:94
 msgid "Instruktuojamojo parašas"
 msgstr "Подпись инструктируемого"
 
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:129
 msgid "Pirminis"
 msgstr "Первичный"
 
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:141
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:139
+#, fuzzy
+#| msgid "Mokymų žurnale įrašų nerasta."
+msgid "Įrašų nerasta"
+msgstr "В журнале обучения записей не найдено."
+
+#: orimgasapp/templates/main/darbu_saugos_zurnalas.html:154
+msgid "Darbų saugos žurnale įrašų nerasta."
+msgstr "В журнале охраны труда записей не обнаружено"
+
+#: orimgasapp/templates/main/dokumentai_list.html:4
 msgid "Dokumetai"
 msgstr "Документы"
 
+#: orimgasapp/templates/main/dokumentai_list.html:28
+#: orimgasapp/templates/main/menu.html:179
+#: orimgasapp/templates/menu_bootstrap.html:381
 msgid "Įmonės dokumentai"
 msgstr "Документы предприятия"
 
+#: orimgasapp/templates/main/dokumentai_list.html:34
+#: orimgasapp/templates/main/menu.html:82
+#: orimgasapp/templates/main/supervisor_edit_user.html:236
+#: orimgasapp/templates/main/user_add_bootstrap.html:218
+#: orimgasapp/templates/main/user_detail.html:79
+#: orimgasapp/templates/main/user_instructions.html:43
+#: orimgasapp/templates/menu_bootstrap.html:162
 msgid "Darbų saugos instrukcijos"
 msgstr "Инструкции по безопасности труда"
 
-msgid "Šiuo metu darbų saugos instrukcijų neturite."
-msgstr "В настоящее время у вас нет инструкций по охране труда."
-
+#: orimgasapp/templates/main/dokumentai_list.html:45
+#: orimgasapp/templates/main/menu.html:89
 msgid "Darbų saugos instrukcijos šiuo metu neturite."
 msgstr "В настоящее время у вас нет инструкций по охране труда."
 
+#: orimgasapp/templates/main/dokumentai_list.html:55
+#: orimgasapp/templates/main/menu.html:95
+#: orimgasapp/templates/main/supervisor_edit_user.html:254
+#: orimgasapp/templates/main/user_add_bootstrap.html:233
+#: orimgasapp/templates/main/user_detail.html:88
+#: orimgasapp/templates/main/user_instructions.html:61
+#: orimgasapp/templates/menu_bootstrap.html:187
 msgid "Priešgaisrinės instrukcijos"
 msgstr "Противопожарные инструкции"
 
-msgid "Šiuo metu priešgaisrinės instrukcijų neturite."
-msgstr "В настоящее время у вас нет инструкции по противопожарной безопасности"
-
+#: orimgasapp/templates/main/dokumentai_list.html:66
+#: orimgasapp/templates/main/menu.html:102
 msgid "Priešgaisrinių instrukcijų šiuo metu neturite."
 msgstr "В настоящее время у вас нет инструкции по противопожарной безопасности"
 
+#: orimgasapp/templates/main/dokumentai_list.html:76
+#: orimgasapp/templates/main/menu.html:109
+#: orimgasapp/templates/main/supervisor_edit_user.html:272
+#: orimgasapp/templates/main/user_add_bootstrap.html:248
+#: orimgasapp/templates/main/user_instructions.html:78
+#: orimgasapp/templates/menu_bootstrap.html:212
 msgid "Civilinės saugos instrukcijos"
 msgstr "Инструкции по гражданской безопасности"
 
-msgid "Šiuo metu civilinės saugos instrukcijų neturite."
-msgstr "В настоящее время у вас нет инструкций по гражданской безопасности"
-
+#: orimgasapp/templates/main/dokumentai_list.html:87
+#: orimgasapp/templates/main/menu.html:116
 msgid "Civilinės saugos instrukcijų šiuo metu neturite."
 msgstr "В настоящее время у вас нет инструкций по гражданской безопасности"
 
+#: orimgasapp/templates/main/dokumentai_list.html:97
+#: orimgasapp/templates/main/menu.html:124
+#: orimgasapp/templates/main/supervisor_edit_user.html:290
+#: orimgasapp/templates/main/user_add_bootstrap.html:263
+#: orimgasapp/templates/main/user_detail.html:97
+#: orimgasapp/templates/main/user_instructions.html:95
+#: orimgasapp/templates/menu_bootstrap.html:237
 msgid "Mokymai"
 msgstr "Учение"
 
+#: orimgasapp/templates/main/dokumentai_list.html:108
+#: orimgasapp/templates/main/menu.html:131
 msgid "Mokymų šiuo metu neturite."
 msgstr "На данный момент у вас обучения нет"
 
+#: orimgasapp/templates/main/dokumentai_list.html:118
+#: orimgasapp/templates/main/menu.html:137
+#: orimgasapp/templates/main/menu.html:176
+#: orimgasapp/templates/main/supervisor_edit_user.html:308
+#: orimgasapp/templates/main/user_add_bootstrap.html:278
+#: orimgasapp/templates/main/user_detail.html:106
+#: orimgasapp/templates/main/user_instructions.html:113
+#: orimgasapp/templates/menu_bootstrap.html:262
+#: orimgasapp/templates/menu_bootstrap.html:366
 msgid "Kiti dokumentai"
 msgstr "Другие документы"
 
-msgid "Šiuo metu kitų dokumentų neturite."
-msgstr "В настоящее время у вас  других документов нет."
-
+#: orimgasapp/templates/main/dokumentai_list.html:129
+#: orimgasapp/templates/main/menu.html:144
 msgid "Kitų dokumentų šiuo metu neturite."
 msgstr "В настоящее время у вас  других документов нет."
 
+#: orimgasapp/templates/main/dokumentai_list.html:158
+#: orimgasapp/templates/main/dokumentai_list.html:222
+#: orimgasapp/templates/menu_bootstrap.html:416
+#: orimgasapp/templates/menu_bootstrap.html:534
+msgid "Kraunama..."
+msgstr "Загрузка…"
+
+#: orimgasapp/templates/main/dokumentai_list.html:169
+#: orimgasapp/templates/menu_bootstrap.html:447
+msgid "Uždaryti"
+msgstr "Закрыть"
+
+#: orimgasapp/templates/main/dokumentai_list.html:241
+#: orimgasapp/templates/menu_bootstrap.html:554
+msgid "PDF dokumentas nepridėtas"
+msgstr "PDF-документ не добавлен"
+
+#: orimgasapp/templates/main/dokumentai_list.html:244
+#: orimgasapp/templates/main/dokumentai_list.html:249
+msgid "Klaida kraunant dokumentą"
+msgstr "Ошибка при загрузке документа"
+
+#: orimgasapp/templates/main/included/paginator_prev_next.html:22
 msgid "Ieškoti"
 msgstr "Поиск"
 
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:3
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:6
+#: orimgasapp/templates/main/kitu_doc_zurnalas.html:6
 msgid "Kitų dokumentų registras"
 msgstr "Реестр других документов"
 
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:47
+#: orimgasapp/templates/main/kitu_doc_zurnalas.html:13
+#: orimgasapp/templates/main/user_instructions.html:117
 msgid "Dokumento pavadinimas"
 msgstr "Название документа"
 
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:55
 msgid "Pasirašymas"
 msgstr "Подписание"
 
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:63
 #, fuzzy
 #| msgid "Supažindinimo data"
 msgid "Susipažinimo data"
 msgstr "Дата ознакомления"
 
+#: orimgasapp/templates/main/kitu_doc_pasirasymu_zurnalas.html:102
+#: orimgasapp/templates/main/kitu_doc_zurnalas.html:33
 msgid "Kitų dokumentų žurnale įrašų nerasta."
 msgstr "В журнале других документов записей не найдено."
 
+#: orimgasapp/templates/main/kitu_doc_zurnalas.html:3
 msgid "Kitų dokumentų žurnalas"
 msgstr "Журнал других документов"
 
+#: orimgasapp/templates/main/kitu_doc_zurnalas.html:14
+#: orimgasapp/templates/main/mokymu_zurnalas.html:14
 msgid "Peržiūrėti protokolą"
 msgstr "Пересмотр протокола"
 
+#: orimgasapp/templates/main/kitu_doc_zurnalas.html:23
+#: orimgasapp/templates/main/mokymu_zurnalas.html:23
+#: orimgasapp/templates/main/my_company_users.html:94
+#: orimgasapp/templates/main/user_instructions.html:48
+#: orimgasapp/templates/main/user_instructions.html:66
+#: orimgasapp/templates/main/user_instructions.html:83
+#: orimgasapp/templates/main/user_instructions.html:100
+#: orimgasapp/templates/main/user_instructions.html:118
+#: orimgasapp/templates/main/user_instructions.html:135
 msgid "Peržiūrėti"
 msgstr "Пересмотреть"
 
+#: orimgasapp/templates/main/menu.html:5
 msgid "Menu"
 msgstr "Меню"
 
+#: orimgasapp/templates/main/menu.html:65
 msgid "Vardas pavardė"
 msgstr "Имя Фамилия"
 
+#: orimgasapp/templates/main/menu.html:69
 msgid "Pareigos ir kompanija"
 msgstr "Должность и компания"
 
+#: orimgasapp/templates/main/menu.html:71
+#: orimgasapp/templates/main/menu.html:72
+#: orimgasapp/templates/main/supervisor_edit_user.html:190
+#: orimgasapp/templates/main/user_add_bootstrap.html:177
 msgid "Medicininė apžiūra"
 msgstr "Медицинское обследование"
 
+#: orimgasapp/templates/main/menu.html:72
 msgid "Sekanti medicininė patikra iki"
 msgstr "Следующий медицинский осмотр до"
 
+#: orimgasapp/templates/main/menu.html:151
+#: orimgasapp/templates/main/menu.html:177
+#: orimgasapp/templates/main/supervisor_edit_user.html:326
+#: orimgasapp/templates/main/user_add_bootstrap.html:293
+#: orimgasapp/templates/main/user_instructions.html:130
+#: orimgasapp/templates/menu_bootstrap.html:287
+#: orimgasapp/templates/menu_bootstrap.html:371
 msgid "Asmeninės apsaugos priemonės"
 msgstr "Средства индивидуальной защиты"
 
-msgid "Šiuo metu AAP neturite"
-msgstr "В настоящее время у вас нет СИЗ"
-
+#: orimgasapp/templates/main/menu.html:158
+#: orimgasapp/templates/main/user_instructions.html:145
 msgid "Šiuo metu AAP neturite."
 msgstr "В настоящее время у вас нет СИЗ"
 
+#: orimgasapp/templates/main/menu.html:169
+#: orimgasapp/templates/menu_bootstrap.html:331
 msgid "Administratoriaus atmintinė"
 msgstr "Памятка администратора"
 
+#: orimgasapp/templates/main/menu.html:170
+#: orimgasapp/templates/menu_bootstrap.html:336
 msgid "Įtraukti naują darbuotoją"
 msgstr "Добавить нового сотрудника"
 
+#: orimgasapp/templates/main/menu.html:171
+#: orimgasapp/templates/main/my_company_users.html:4
+#: orimgasapp/templates/main/my_company_users.html:14
+#: orimgasapp/templates/menu_bootstrap.html:341
 msgid "Įmonės darbuotojai"
 msgstr "Сотрудники предприятия"
 
+#: orimgasapp/templates/main/menu.html:172
+#: orimgasapp/templates/menu_bootstrap.html:346
 msgid "Darbų saugos instruktavimo registras"
 msgstr "Журнал инструктажей по безопасности труда"
 
+#: orimgasapp/templates/main/menu.html:173
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:4
+#: orimgasapp/templates/menu_bootstrap.html:351
 msgid "Priešgaisrinės saugos žurnalas"
 msgstr "Журнал противопожарной безопасности"
 
+#: orimgasapp/templates/main/menu.html:175
+#: orimgasapp/templates/menu_bootstrap.html:361
 msgid "Neformalus mokymas"
 msgstr "Неформальное обучение"
 
+#: orimgasapp/templates/main/menu.html:178
+#: orimgasapp/templates/main/sveikatos_tikrinimo_grafikas.html:6
+#: orimgasapp/templates/menu_bootstrap.html:376
 msgid "Darbuotojų sveikatos tikrinimo grafikas"
 msgstr "График медосмотров сотрудников"
 
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:3
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:6
 msgid "Atestavimo protokolas"
 msgstr "Протокол аттестации"
 
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:41
 msgid "Mokymo programa"
 msgstr "Программа обучения"
 
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:49
 msgid "Vertinimo rezultatas"
 msgstr "Результат оценки"
 
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:81
 msgid "Neįskaityta"
 msgstr "Не зачтено"
 
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:82
 msgid "Įskaityta"
 msgstr "Зачтено"
 
+#: orimgasapp/templates/main/mokymu_pasirasymas_list.html:97
+#: orimgasapp/templates/main/mokymu_zurnalas.html:33
 msgid "Mokymų žurnale įrašų nerasta."
 msgstr "В журнале обучения записей не найдено."
 
+#: orimgasapp/templates/main/mokymu_zurnalas.html:3
+#: orimgasapp/templates/main/mokymu_zurnalas.html:6
 msgid "Mokymų žurnalas"
 msgstr "Журнал обучения"
 
+#: orimgasapp/templates/main/mokymu_zurnalas.html:13
 msgid "Mokymo pavadinimas"
 msgstr "Название обучения"
 
-msgid "Pridėti instrukciją visiems darbuotojams"
-msgstr "Добавить инструкцию для всех сотрудников"
+#: orimgasapp/templates/main/my_company_users.html:21
+#, fuzzy
+#| msgid "Pridėti instrukciją"
+msgid "Pridėti instrukciją visiems"
+msgstr "Добавить инструкцию"
 
+#: orimgasapp/templates/main/my_company_users.html:37
 msgid "Vardas Pavardė"
 msgstr "Имя Фамилия"
 
+#: orimgasapp/templates/main/my_company_users.html:61
+#: orimgasapp/templates/main/supervisor_edit_user.html:146
+#: orimgasapp/templates/main/user_add_bootstrap.html:149
+#: orimgasapp/templates/main/user_detail.html:47
 msgid "Pareigos"
 msgstr "Должностные обязанности"
 
+#: orimgasapp/templates/main/my_company_users.html:69
+#: orimgasapp/templates/main/my_company_users.html:87
+#: orimgasapp/templates/main/supervisor_edit_user.html:176
 msgid "Aktyvus"
 msgstr "Активный"
 
-msgid "Redaguoti"
-msgstr "Редактировать"
+#: orimgasapp/templates/main/my_company_users.html:75
+msgid "Veiksmai"
+msgstr "Действия"
 
+#: orimgasapp/templates/main/my_company_users.html:89
 msgid "Neaktyvus"
 msgstr "Неактивный"
 
-msgid "Peržiūrėti vartotoja"
-msgstr "Просмотр пользователя"
+#: orimgasapp/templates/main/my_company_users.html:97
+#: orimgasapp/templates/main/supervisor_edit_user.html:5
+#: orimgasapp/templates/main/user_edit.html:3
+msgid "Redaguoti"
+msgstr "Редактировать"
 
+#: orimgasapp/templates/main/my_company_users.html:106
+#, fuzzy
+#| msgid "Darbuotojo pareigos"
+msgid "Darbuotojų nerasta"
+msgstr "Должностные обязанности сотрудника"
+
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:13
 msgid "Gaisrinės saugos instruktažų registracijos žurnalas"
 msgstr "Журнал регистрации инструктажей по противопожарной безопасности"
 
+#: orimgasapp/templates/main/priesgaisrines_saugos_zurnalas.html:152
 msgid "Priešgaisrinės saugos žurnale įrašų nerasta."
 msgstr "В журнале противопожарной безопасности записей не найдено."
 
+#: orimgasapp/templates/main/supervisor_edit_user.html:32
 msgid "Redaguoti vartotoją"
 msgstr "Редактировать пользователя"
 
-msgid "Vardas:"
-msgstr "Имя:"
+#: orimgasapp/templates/main/supervisor_edit_user.html:48
+#: orimgasapp/templates/main/user_add_bootstrap.html:48
+msgid "Asmens duomenys"
+msgstr "Персональные данные"
 
-msgid "Pavardė:"
-msgstr "Фамилия:"
+#: orimgasapp/templates/main/supervisor_edit_user.html:127
+#: orimgasapp/templates/main/user_add_bootstrap.html:130
+#, fuzzy
+#| msgid "Darbuotojui suprantama kalba:"
+msgid "Darbuotojui suprantama kalba"
+msgstr "На понятном для сотрудника языке:"
 
-msgid "Gimimo data:"
-msgstr "Дата рождения:"
+#: orimgasapp/templates/main/supervisor_edit_user.html:142
+#: orimgasapp/templates/main/user_add_bootstrap.html:145
+#, fuzzy
+#| msgid "Vartotojo informacija"
+msgid "Darbo informacija"
+msgstr "Информация о пользователе"
 
-msgid "Pareigos:"
-msgstr "Должностные обязанности:"
+#: orimgasapp/templates/main/supervisor_edit_user.html:196
+#: orimgasapp/templates/main/user_add_bootstrap.html:181
+#: orimgasapp/templates/main/user_detail.html:61
+#, fuzzy
+#| msgid "Med patikros data"
+msgid "Med. patikros data"
+msgstr "Дата медицинского осмотра"
 
-msgid "Skyrius:"
-msgstr "Отдел"
+#: orimgasapp/templates/main/supervisor_edit_user.html:197
+msgid "Įrašoma faktinė med. patikros datą."
+msgstr "Вносится фактическая дата мед. осмотра."
 
-msgid "Aktyvus:"
-msgstr "Активный:"
+#: orimgasapp/templates/main/supervisor_edit_user.html:214
+#: orimgasapp/templates/main/user_add_bootstrap.html:199
+#: orimgasapp/templates/main/user_detail.html:65
+#, fuzzy
+#| msgid "Med patikros periodas"
+msgid "Med. patikros periodas"
+msgstr "Период медицинского осмотра"
 
-msgid "Med patikros data:"
-msgstr "Дата медицинского осмотра:"
+#: orimgasapp/templates/main/supervisor_edit_user.html:215
+msgid "Pasirenkama pagal gydytojo nurodytą terminą."
+msgstr "Выбирается в соответствии со сроком, указанным врачом."
 
-msgid "Med patikros periodas:"
-msgstr "Период медицинского осмотра:"
+#: orimgasapp/templates/main/supervisor_edit_user.html:231
+#: orimgasapp/templates/main/user_add_bootstrap.html:214
+#: orimgasapp/templates/main/user_detail.html:76
+#, fuzzy
+#| msgid "kiti dokumentai"
+msgid "Instrukcijos ir dokumentai"
+msgstr "Другие документы"
 
-msgid "Asmenines apsaugos priemones"
-msgstr "Средства индивидуальной защиты"
+#: orimgasapp/templates/main/supervisor_edit_user.html:237
+#: orimgasapp/templates/main/supervisor_edit_user.html:255
+#: orimgasapp/templates/main/supervisor_edit_user.html:273
+#: orimgasapp/templates/main/supervisor_edit_user.html:291
+#: orimgasapp/templates/main/supervisor_edit_user.html:309
+msgid "Paspaudę žemiau esančią lentelę ir pasirinkite norimus dokumentus."
+msgstr "Нажмите на таблицу ниже и выберите нужные документы."
 
+#: orimgasapp/templates/main/supervisor_edit_user.html:327
+msgid "Pasirenkama pagal darbuotojo atliekamą darbą."
+msgstr "Выбирается в зависимости от выполняемой сотрудником работы."
+
+#: orimgasapp/templates/main/sveikatos_tikrinimo_grafikas.html:3
 msgid "Sveikatos tikrinimo grafikas"
 msgstr "График медосмотров сотрудников"
 
+#: orimgasapp/templates/main/sveikatos_tikrinimo_grafikas.html:15
 msgid "Vardas ir Pavardė"
 msgstr "Имя и Фамилия"
 
+#: orimgasapp/templates/main/sveikatos_tikrinimo_grafikas.html:17
 msgid "Darbuotojo pareigos"
 msgstr "Должностные обязанности сотрудника"
 
+#: orimgasapp/templates/main/sveikatos_tikrinimo_grafikas.html:18
 msgid "Sveikatos patikrinimo data"
 msgstr "Дата медицинского осмотра"
 
+#: orimgasapp/templates/main/sveikatos_tikrinimo_grafikas.html:19
 msgid "Sveikatos tikrinimo periodiškumas"
 msgstr "Периодичность медицинских осмотров"
 
+#: orimgasapp/templates/main/sveikatos_tikrinimo_grafikas.html:20
 msgid "Sekanti sveikatos tikrinimo data"
 msgstr "Дата следующего медицинского осмотра"
 
+#: orimgasapp/templates/main/sveikatos_tikrinimo_grafikas.html:48
 msgid "Sveikatos tikrinimo žurnale įrašų nerasta."
 msgstr "В журнале медицинского осмотра записей не найдено."
 
+#: orimgasapp/templates/main/user_add.html:3
 msgid "Pridėti vartotoją"
 msgstr "Добавить пользователя"
 
+#: orimgasapp/templates/main/user_add.html:11
+#: orimgasapp/templates/main/user_add_bootstrap.html:32
 msgid "Pridėti naują vartotoją"
 msgstr "Добавить нового пользователя"
 
-msgid "Med patikros data"
-msgstr "Дата медицинского осмотра"
+#: orimgasapp/templates/main/user_add.html:17
+msgid "Vardas:"
+msgstr "Имя:"
 
-msgid "Med patikros periodas"
-msgstr "Период медицинского осмотра"
+#: orimgasapp/templates/main/user_add.html:19
+msgid "Pavardė:"
+msgstr "Фамилия:"
 
+#: orimgasapp/templates/main/user_add.html:23
+msgid "Gimimo data:"
+msgstr "Дата рождения:"
+
+#: orimgasapp/templates/main/user_add.html:36
+msgid "Aktyvus:"
+msgstr "Активный:"
+
+#: orimgasapp/templates/main/user_add.html:58
+#, fuzzy
+#| msgid "Med patikros data:"
+msgid "Med patikros data:   "
+msgstr "Дата медицинского осмотра:"
+
+#: orimgasapp/templates/main/user_add.html:60
+#, fuzzy
+#| msgid "Med patikros periodas:"
+msgid "Med patikros periodas:   "
+msgstr "Период медицинского осмотра:"
+
+#: orimgasapp/templates/main/user_add.html:63
+#, fuzzy
+#| msgid "Asmenines apsaugos priemones"
+msgid "Asmenines apsaugos priemones:   "
+msgstr "Средства индивидуальной защиты"
+
+#: orimgasapp/templates/main/user_add_bootstrap.html:5
+#, fuzzy
+#| msgid "Pridėti vartotoją"
+msgid "Pridėti vartotoją (demo)"
+msgstr "Добавить пользователя"
+
+#: orimgasapp/templates/main/user_add_bootstrap.html:117
+#: orimgasapp/templates/main/user_add_bootstrap.html:186
+msgid "Šiandien"
+msgstr "Сегодня"
+
+#: orimgasapp/templates/main/user_detail.html:5
 msgid "informacija"
 msgstr "информация"
 
+#: orimgasapp/templates/main/user_detail.html:14
 msgid "Vartotojo informacija"
 msgstr "Информация о пользователе"
 
-msgid "Pavarde"
-msgstr "Фамилия"
+#: orimgasapp/templates/main/user_detail.html:22
+#, fuzzy
+#| msgid "informacija"
+msgid "Asmens informacija"
+msgstr "Персональная информация"
 
-msgid "Gymimo data"
-msgstr "Дата рождения"
-
+#: orimgasapp/templates/main/user_detail.html:43
 #, fuzzy
 #| msgid "company"
 msgid "Kompanija"
 msgstr "предприятие"
 
-msgid "Medicininės patikros data"
-msgstr "Дата медицинского осмотра"
+#: orimgasapp/templates/main/user_detail.html:56
+#, fuzzy
+#| msgid "Medicininė apžiūra"
+msgid "Medicininė informacija"
+msgstr "Медицинское обследование"
 
-msgid "Medicininės patikros periodas"
-msgstr "Период медицинского осмотра"
+#: orimgasapp/templates/main/user_detail.html:84
+#: orimgasapp/templates/main/user_detail.html:93
+#: orimgasapp/templates/main/user_detail.html:102
+#: orimgasapp/templates/main/user_detail.html:111
+msgid "Nėra"
+msgstr "Нет"
 
+#: orimgasapp/templates/main/user_instruction_detail.html:91
 msgid "Su instrukcija susipažinau."
 msgstr "С инструкцией я ознакомился."
 
+#: orimgasapp/templates/main/user_instructions.html:3
 msgid "Vartotojo instrukcijos"
 msgstr "Инструкции пользователя"
 
+#: orimgasapp/templates/main/user_instructions.html:47
+#: orimgasapp/templates/main/user_instructions.html:65
+#: orimgasapp/templates/main/user_instructions.html:82
+#: orimgasapp/templates/main/user_instructions.html:99
 msgid "Instrukcijos pavadinimas"
 msgstr "Название инструкции"
 
+#: orimgasapp/templates/main/user_instructions.html:53
+#: orimgasapp/templates/main/user_instructions.html:71
+#: orimgasapp/templates/main/user_instructions.html:88
+#: orimgasapp/templates/main/user_instructions.html:105
+#: orimgasapp/templates/main/user_instructions.html:123
 msgid "Skaityti/Pasirašyti"
 msgstr "Читать/Подписать"
 
+#: orimgasapp/templates/main/user_instructions.html:58
+msgid "Šiuo metu darbų saugos instrukcijų neturite."
+msgstr "В настоящее время у вас нет инструкций по охране труда."
+
+#: orimgasapp/templates/main/user_instructions.html:76
+msgid "Šiuo metu priešgaisrinės instrukcijų neturite."
+msgstr "В настоящее время у вас нет инструкции по противопожарной безопасности"
+
+#: orimgasapp/templates/main/user_instructions.html:93
+msgid "Šiuo metu civilinės saugos instrukcijų neturite."
+msgstr "В настоящее время у вас нет инструкций по гражданской безопасности"
+
+#: orimgasapp/templates/main/user_instructions.html:110
 msgid "Šiuo metu mokymų neturite."
 msgstr "В настоящее время у вас нет обучения."
 
+#: orimgasapp/templates/main/user_instructions.html:128
+msgid "Šiuo metu kitų dokumentų neturite."
+msgstr "В настоящее время у вас  других документов нет."
+
+#: orimgasapp/templates/main/user_instructions.html:134
 msgid "AAP pavadinimas"
 msgstr "Название СИЗ"
 
+#: orimgasapp/templates/main/user_instructions.html:140
 msgid "Susipažinti"
 msgstr "Ознакомиться"
+
+#: orimgasapp/templates/menu_bootstrap.html:5
+#, fuzzy
+#| msgid "Periodinis"
+msgid "Pagrindinis"
+msgstr "Периодический"
+
+#: orimgasapp/templates/menu_bootstrap.html:37
+msgid "Sveiki"
+msgstr "Здравствуйте"
+
+#: orimgasapp/templates/menu_bootstrap.html:58
+msgid "Paskutinė med. patikra"
+msgstr "Последний медосмотр"
+
+#: orimgasapp/templates/menu_bootstrap.html:61
+msgid "Kita patikra"
+msgstr "Следующий осмотр"
+
+#: orimgasapp/templates/menu_bootstrap.html:64
+msgid "Periodiškumas (mėn.)"
+msgstr "Периодичность (мес.)"
+
+#: orimgasapp/templates/menu_bootstrap.html:87
+#, fuzzy
+#| msgid "Vartotojo instrukcijos"
+msgid "Viso instrukcijų"
+msgstr "Инструкции пользователя"
+
+#: orimgasapp/templates/menu_bootstrap.html:119
+#, fuzzy
+#| msgid "Sekančio pasirašymo data"
+msgid "Laukia pasirašymo"
+msgstr "Дата следующей подписи"
+
+#: orimgasapp/templates/menu_bootstrap.html:135
+msgid "Praleista"
+msgstr "Пропущено"
+
+#: orimgasapp/templates/menu_bootstrap.html:153
+msgid "Laukia jūsų pasirašymo"
+msgstr "Ожидает вашей подписи"
+
+#: orimgasapp/templates/menu_bootstrap.html:313
+msgid "Puiku! Šiuo metu neturite laukiančių pasirašymo instrukcijų."
+msgstr "Отлично! В данный момент у вас нет инструкций, ожидающих подписи."
+
+#: orimgasapp/templates/menu_bootstrap.html:325
+msgid "Vadybininko funkcijos"
+msgstr "Функции менеджера"
+
+#: orimgasapp/templates/menu_bootstrap.html:441
+#, fuzzy
+#| msgid "Su instrukcija susipažinau."
+msgid "Su instrukcija susipažinau ir pasižadu jos laikytis."
+msgstr "С инструкцией я ознакомился."
+
+#: orimgasapp/templates/menu_bootstrap.html:566
+msgid "Klaida kraunant duomenis"
+msgstr "Ошибка при загрузке данных"
+
+#: orimgasapp/templates/menu_bootstrap.html:634
+msgid "Prašome atsakyti į visus klausimus"
+msgstr "Пожалуйста, ответьте на все вопросы"
+
+#: orimgasapp/templates/menu_bootstrap.html:642
+#, fuzzy
+#| msgid "Pasirašymas"
+msgid "Pasirašoma..."
+msgstr "Подписание"
+
+#: orimgasapp/templates/menu_bootstrap.html:677
+msgid "Klaida:"
+msgstr "Ошибка:"
+
+#: orimgasapp/templates/menu_bootstrap.html:683
+msgid "Klaida pasirašant"
+msgstr "Ошибка при подписании"
+
+#~ msgid "Šiuo metu AAP neturite"
+#~ msgstr "В настоящее время у вас нет СИЗ"
+
+#~ msgid "Pridėti instrukciją visiems darbuotojams"
+#~ msgstr "Добавить инструкцию для всех сотрудников"
+
+#~ msgid "Peržiūrėti vartotoja"
+#~ msgstr "Просмотр пользователя"
+
+#~ msgid "Pavarde"
+#~ msgstr "Фамилия"
+
+#~ msgid "Gymimo data"
+#~ msgstr "Дата рождения"
+
+#~ msgid "Medicininės patikros data"
+#~ msgstr "Дата медицинского осмотра"
+
+#~ msgid "Medicininės patikros periodas"
+#~ msgstr "Период медицинского осмотра"
 
 #~ msgid "Įmonė"
 #~ msgstr "Предприятия"
@@ -670,7 +1427,8 @@ msgstr "Ознакомиться"
 #~ msgstr "Прочитать"
 
 #~ msgid "Šiuo metu priešgaisrinės instrukcijos neturite."
-#~ msgstr "В настоящее время у вас нет инструкции по противопожарной безопасности"
+#~ msgstr "В данный момент у вас нет инструкций по пожарной безопасности."
+#~ "В настоящее время у вас нет инструкции по противопожарной безопасности"
 
 #~ msgid "Šiuo metu kitu dokumentų neturite."
 #~ msgstr "В настоящее время у вас нет других документов."

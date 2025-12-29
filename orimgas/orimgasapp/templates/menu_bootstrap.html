@@ -544,22 +544,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('instructionContent').innerHTML = '';
                     
                     if (data.pdf_url) {
-                        // Use the same approach as forms - PDF.js viewer with absolute URL
-                        const pdfViewerPath = "{% static 'pdfjs/web/viewer.html' %}";
-                        // Build absolute URL for the PDF
+                        // Use browser's native PDF viewer (simpler and more reliable)
                         const absolutePdfUrl = window.location.origin + data.pdf_url;
-                        // Add cache buster to force browser to reload PDF.js
-                        const cacheBuster = new Date().getTime();
-                        const viewerUrl = `${pdfViewerPath}?v=${cacheBuster}&file=${encodeURIComponent(absolutePdfUrl)}`;
                         
-                        console.log('PDF URL:', data.pdf_url);
-                        console.log('Absolute PDF URL:', absolutePdfUrl);
-                        console.log('Viewer URL:', viewerUrl);
-                        
-                        document.getElementById('pdfViewer').src = viewerUrl;
+                        // Load PDF directly with browser's native viewer
+                        document.getElementById('pdfViewer').src = absolutePdfUrl + '#toolbar=1&navpanes=0&scrollbar=1';
                         document.getElementById('pdfContainer').style.display = 'block';
                     } else {
-                        console.log('No PDF URL provided');
                         document.getElementById('instructionContent').innerHTML = '<div class="alert alert-warning">{% trans "PDF dokumentas nepridėtas" %}</div>';
                     }
                     

@@ -8,6 +8,20 @@
             size: landscape;
             margin: 1cm;
         }
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .header-info {
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        .header-info p {
+            margin: 5px 0;
+        }
+        .company-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -34,7 +48,10 @@
     </style>
 </head>
 <body>
-    <h1>{{ user.company.name }}</h1>
+    <div class="header-info">
+        <p class="company-name">{{ company_name }}</p>
+        <p>Data: {{ generation_date }}</p>
+    </div>
     <h1>{{ title }}</h1>
     <table class="nice-table" id="table">
         <thead>
