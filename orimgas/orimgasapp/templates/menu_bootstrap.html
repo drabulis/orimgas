@@ -394,6 +394,52 @@
         </div>
     </div>
     {% endif %}
+
+    {% if user.company.Personalo_modulis %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <i class="bi bi-people"></i> Personalo modulis
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        {% if user.is_supervisor %}
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <a href="#" class="btn btn-outline-secondary w-100">Prašymas priimti į darbą</a>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <a href="#" class="btn btn-outline-secondary w-100">Darbo sutarties šablonas</a>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <a href="#" class="btn btn-outline-secondary w-100">Prašymas Taikyti/Netaikyti NPD</a>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <a href="#" class="btn btn-outline-secondary w-100">Prašymas dėl atlyginimo pervedimo</a>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <a href="#" class="btn btn-outline-secondary w-100">Sutikimas dėl asmens duomenų naudojimo</a>
+                        </div>
+                        {% else %}
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <a href="#" class="btn btn-outline-secondary w-100">Kasmetinių atostogų prašymas</a>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <a href="#" class="btn btn-outline-secondary w-100">Mamadienis/tėvadienis</a>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <a href="#" class="btn btn-outline-secondary w-100">Neapmokamų atostogų prašymas</a>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <a href="#" class="btn btn-outline-secondary w-100">Komandiruotės</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 <!-- CSRF Token for AJAX requests -->

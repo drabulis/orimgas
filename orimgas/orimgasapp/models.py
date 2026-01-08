@@ -49,6 +49,7 @@ class Company(models.Model):
     name = models.CharField(_("pavadinimas"), max_length=10000)
     company_id = models.CharField(max_length=50, unique=True, null=True, blank=True)
     manager = models.CharField(_("Manager"),max_length=10000)
+    Personalo_modulis = models.BooleanField(_("Personalo modulis"), default=False)
     AAP = models.ManyToManyField(AsmeninesApsaugosPriemones,
                                 blank=True, 
                                 default=None,
